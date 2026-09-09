@@ -25,3 +25,16 @@ export const rootMetadata: Metadata = {
     url: SITE_URL,
   },
 };
+
+export const buildPageMetadata = function (page: { path: string; title: string; description: string }): Metadata {
+  return {
+    title: page.title,
+    description: page.description,
+    alternates: { canonical: `${SITE_URL}${page.path}` },
+    openGraph: {
+      title: `${page.title} · ${SITE_NAME}`,
+      description: page.description,
+      url: `${SITE_URL}${page.path}`,
+    },
+  };
+};
