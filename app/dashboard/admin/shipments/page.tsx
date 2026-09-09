@@ -16,6 +16,7 @@ import { displayName, type AdminShipment, type PaginatedResponse } from "@/types
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// columns
 const COLUMNS = 7;
 
 export default function AdminShipmentsPage() {
