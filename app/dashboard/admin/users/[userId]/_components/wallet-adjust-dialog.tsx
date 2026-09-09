@@ -2,8 +2,8 @@
 
 import { FormInput } from "@/components/form/form-input";
 import { AppDialog } from "@/components/shared/app-dialog";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -74,15 +74,14 @@ export const WalletAdjustDialog = function ({ userId, open, onClose }: Props) {
       }
     >
       <form id="wallet-adjust-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Select value={direction} onValueChange={value => setValue("direction", value as "CREDIT" | "DEBIT")}>
-          <SelectTrigger className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="CREDIT">Credit — add funds</SelectItem>
-            <SelectItem value="DEBIT">Debit — remove funds</SelectItem>
-          </SelectContent>
-        </Select>
+        <AppSimpleSelect
+          value={direction}
+          onValueChange={value => setValue("direction", value as "CREDIT" | "DEBIT")}
+          options={[
+            { label: "Credit — add funds", value: "CREDIT" },
+            { label: "Debit — remove funds", value: "DEBIT" },
+          ]}
+        />
 
         <FormInput control={control} name="amount" errors={errors} label="Amount (₦)" type="number" step="0.01" placeholder="5000" />
         <FormInput control={control} name="narration" errors={errors} label="Narration" placeholder="Why this adjustment is happening" />

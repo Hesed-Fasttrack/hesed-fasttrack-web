@@ -2,9 +2,9 @@
 
 import { FormInput } from "@/components/form/form-input";
 import { AppDialog } from "@/components/shared/app-dialog";
+import { AppSelect } from "@/components/shared/app-select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -49,7 +49,6 @@ export const AddressFormDialog = function ({ open, address, onClose }: Props) {
     formState: { errors },
   } = useForm<AddressFormValues>({ resolver: zodResolver(addressSchema) });
 
-  const stateName = watch("state");
   const cityName = watch("city");
 
   const { data: countriesData } = useGetData<APIResponse<CountryOption[]>>({ url: API_ENDPOINTS.customer.lookups.countries, shouldFetch: open });
@@ -147,51 +146,33 @@ export const AddressFormDialog = function ({ open, address, onClose }: Props) {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <Label>Country</Label>
-            <Select
+            <AppSelect
+              placeholder="Country"
               value={country}
               onValueChange={value => {
-                setCountry(value);
+                setCountry(value ?? "NG");
                 setStateCode("");
                 setValue("state", "");
                 setValue("city", "");
               }}
-            >
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder="Country" />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map(option => (
-                  <SelectItem key={option.code} value={option.code}>
-                    {option.flag} {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              options={countries.map(option => ({ label: `${option.flag} ${option.name}`, value: option.code }))}
+            />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <Label>State</Label>
             {states.length > 0 ? (
-              <Select
-                value={stateCode}
+              <AppSelect
+                placeholder="State"
+                value={stateCode || null}
                 onValueChange={value => {
-                  setStateCode(value);
+                  setStateCode(value ?? "");
                   const selected = states.find(state => state.code === value);
-                  setValue("state", selected?.name ?? value, { shouldValidate: true });
+                  setValue("state", selected?.name ?? value ?? "", { shouldValidate: true });
                   setValue("city", "");
                 }}
-              >
-                <SelectTrigger className="h-11 w-full">
-                  <SelectValue placeholder="State">{stateName || undefined}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {states.map(option => (
-                    <SelectItem key={option.code} value={option.code}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={states.map(option => ({ label: option.name, value: option.code }))}
+              />
             ) : (
               <FormInput<AddressFormValues> control={control} name="state" errors={errors} placeholder="State or region" />
             )}
@@ -203,18 +184,7 @@ export const AddressFormDialog = function ({ open, address, onClose }: Props) {
           <div className="flex flex-col gap-1.5">
             <Label>City</Label>
             {cities.length > 0 ? (
-              <Select value={cityName || ""} onValueChange={value => setValue("city", value, { shouldValidate: true })}>
-                <SelectTrigger className="h-11 w-full">
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map(option => (
-                    <SelectItem key={option.name} value={option.name}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <AppSelect placeholder="City" value={cityName || null} onValueChange={value => setValue("city", value ?? "", { shouldValidate: true })} options={cities.map(option => ({ label: option.name, value: option.name }))} />
             ) : (
               <FormInput<AddressFormValues> control={control} name="city" errors={errors} placeholder="City" />
             )}

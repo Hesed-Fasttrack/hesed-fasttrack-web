@@ -2,9 +2,8 @@
 
 import { AppDialog } from "@/components/shared/app-dialog";
 import { AppInput } from "@/components/shared/app-input";
+import { AppSelect } from "@/components/shared/app-select";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
@@ -28,7 +27,8 @@ export const WithdrawDialog = function ({ open, onClose }: Props) {
   const debouncedAccountNumber = useDebounce(accountNumber, 500);
 
   const { data: banksData } = useGetData<APIResponse<Bank[]>>({ url: API_ENDPOINTS.customer.wallet.banks, shouldFetch: open });
-  const banks = banksData?.data ?? [];
+  // Paystack's list repeats codes across bank variants — dedupe for unique option keys
+  const banks = Array.from(new Map((banksData?.data ?? []).map(bank => [bank.code, bank])).values());
 
   const { mutate: resolveAccount, isPending: isResolving } = useSubmitData<{ bank_code: string; account_number: string }, APIResponse<{ account_name: string }>>({
     url: API_ENDPOINTS.customer.wallet.resolveAccount,
@@ -88,21 +88,7 @@ export const WithdrawDialog = function ({ open, onClose }: Props) {
       <div className="space-y-4">
         <AppInput label="Amount (₦)" type="number" min={500} placeholder="5000" value={amount} onChange={event => setAmount(event.target.value)} />
 
-        <div className="flex flex-col gap-1.5">
-          <Label>Bank</Label>
-          <Select value={bankCode} onValueChange={setBankCode}>
-            <SelectTrigger className="h-11 w-full">
-              <SelectValue placeholder="Choose your bank" />
-            </SelectTrigger>
-            <SelectContent>
-              {banks.map(bank => (
-                <SelectItem key={`${bank.code}-${bank.name}`} value={bank.code}>
-                  {bank.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <AppSelect label="Bank" placeholder="Choose your bank" value={bankCode || null} onValueChange={value => setBankCode(value ?? "")} options={banks.map(bank => ({ label: bank.name, value: bank.code }))} />
 
         <AppInput label="Account number" inputMode="numeric" maxLength={10} placeholder="0123456789" value={accountNumber} onChange={event => setAccountNumber(event.target.value.replace(/\D/g, ""))} />
 

@@ -3,7 +3,7 @@
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -37,23 +37,20 @@ export default function AdminKycPage() {
       <PageHeader title="KYC queue" description="Identity submissions, oldest first." />
 
       <div className="mb-4">
-        <Select
+        <AppSimpleSelect
+          containerClassName="w-48"
           value={status}
           onValueChange={value => {
             setStatus(value);
             setPage(1);
           }}
-        >
-          <SelectTrigger className="h-11 w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All submissions</SelectItem>
-            <SelectItem value="PENDING">Pending review</SelectItem>
-            <SelectItem value="APPROVED">Approved</SelectItem>
-            <SelectItem value="REJECTED">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
+          options={[
+            { label: "All submissions", value: "all" },
+            { label: "Pending review", value: "PENDING" },
+            { label: "Approved", value: "APPROVED" },
+            { label: "Rejected", value: "REJECTED" },
+          ]}
+        />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-line bg-white">

@@ -1,12 +1,12 @@
 "use client";
 
+import { AppDialog } from "@/components/shared/app-dialog";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
-import { AppDialog } from "@/components/shared/app-dialog";
-import { ConfirmDialog } from "@/components/shared/confirm-dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useGetData } from "@/hooks/use-get-data";
@@ -58,25 +58,15 @@ export default function AdminWithdrawalsPage() {
       <PageHeader title="Withdrawals" description="Approving a withdrawal sends the bank transfer immediately." />
 
       <div className="mb-4">
-        <Select
+        <AppSimpleSelect
+          containerClassName="w-48"
           value={status}
           onValueChange={value => {
             setStatus(value);
             setPage(1);
           }}
-        >
-          <SelectTrigger className="h-11 w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All withdrawals</SelectItem>
-            {Object.entries(WITHDRAWAL_STATUS).map(([value, presentation]) => (
-              <SelectItem key={value} value={value}>
-                {presentation.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={[{ label: "All withdrawals", value: "all" }, ...Object.entries(WITHDRAWAL_STATUS).map(([value, presentation]) => ({ label: presentation.label, value }))]}
+        />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-line bg-white">

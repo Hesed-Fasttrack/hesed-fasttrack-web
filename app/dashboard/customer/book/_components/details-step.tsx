@@ -1,8 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatNaira } from "@/lib/format";
@@ -60,36 +59,8 @@ export const DetailsStep = function () {
           </p>
         )}
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
-          <div className="flex flex-col gap-1.5">
-            <Label>Sender</Label>
-            <Select value={senderAddress?.id ?? ""} onValueChange={value => setSenderAddress(addresses.find(address => address.id === value)!)}>
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder="Who is sending?" />
-              </SelectTrigger>
-              <SelectContent>
-                {addresses.map(address => (
-                  <SelectItem key={address.id} value={address.id}>
-                    {formatAddress(address)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label>Receiver</Label>
-            <Select value={receiverAddress?.id ?? ""} onValueChange={value => setReceiverAddress(addresses.find(address => address.id === value)!)}>
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder="Who is receiving?" />
-              </SelectTrigger>
-              <SelectContent>
-                {addresses.map(address => (
-                  <SelectItem key={address.id} value={address.id}>
-                    {formatAddress(address)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <AppSimpleSelect label="Sender" placeholder="Who is sending?" value={senderAddress?.id ?? ""} onValueChange={value => setSenderAddress(addresses.find(address => address.id === value)!)} options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))} />
+          <AppSimpleSelect label="Receiver" placeholder="Who is receiving?" value={receiverAddress?.id ?? ""} onValueChange={value => setReceiverAddress(addresses.find(address => address.id === value)!)} options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))} />
         </div>
       </div>
 
@@ -117,18 +88,7 @@ export const DetailsStep = function () {
 
       <div className="rounded-2xl border border-line bg-white p-5">
         <p className="text-sm font-semibold text-foreground">Purpose of shipment</p>
-        <Select value={purpose ?? ""} onValueChange={value => setPurpose(value as ShipmentPurpose)}>
-          <SelectTrigger className="mt-3 h-11 w-full sm:w-72">
-            <SelectValue placeholder="What are you shipping this as?" />
-          </SelectTrigger>
-          <SelectContent>
-            {PURPOSES.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <AppSimpleSelect containerClassName="mt-3 sm:w-72" placeholder="What are you shipping this as?" value={purpose ?? ""} onValueChange={value => setPurpose(value as ShipmentPurpose)} options={PURPOSES} />
       </div>
 
       <div className="rounded-2xl border border-line bg-white p-5">

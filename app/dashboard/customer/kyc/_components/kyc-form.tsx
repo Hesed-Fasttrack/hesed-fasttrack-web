@@ -1,10 +1,10 @@
 "use client";
 
 import { AppInput } from "@/components/shared/app-input";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
@@ -76,21 +76,7 @@ export const KycForm = function ({ submission }: Props) {
     <div className="max-w-xl space-y-5 rounded-2xl border border-line bg-white p-6">
       {needsIdentity && (
         <>
-          <div className="flex flex-col gap-1.5">
-            <Label>Identity document type</Label>
-            <Select value={identityType} onValueChange={value => setIdentityType(value as KycIdentityType)}>
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {IDENTITY_OPTIONS.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <AppSimpleSelect label="Identity document type" value={identityType} onValueChange={value => setIdentityType(value as KycIdentityType)} options={IDENTITY_OPTIONS} />
 
           <AppInput label="ID number" placeholder={identityType === "NIN" ? "11 digits" : "Document number"} value={identityNumber} onChange={event => setIdentityNumber(event.target.value)} />
 

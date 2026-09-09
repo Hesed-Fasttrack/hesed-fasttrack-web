@@ -4,7 +4,7 @@ import { AppInput } from "@/components/shared/app-input";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGetData } from "@/hooks/use-get-data";
@@ -50,25 +50,15 @@ export default function AdminShipmentsPage() {
             setPage(1);
           }}
         />
-        <Select
+        <AppSimpleSelect
+          containerClassName="w-52"
           value={status}
           onValueChange={value => {
             setStatus(value);
             setPage(1);
           }}
-        >
-          <SelectTrigger className="h-11 w-52">
-            <SelectValue placeholder="All statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            {Object.entries(SHIPMENT_STATUS).map(([value, presentation]) => (
-              <SelectItem key={value} value={value}>
-                {presentation.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={[{ label: "All statuses", value: "all" }, ...Object.entries(SHIPMENT_STATUS).map(([value, presentation]) => ({ label: presentation.label, value }))]}
+        />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-line bg-white">

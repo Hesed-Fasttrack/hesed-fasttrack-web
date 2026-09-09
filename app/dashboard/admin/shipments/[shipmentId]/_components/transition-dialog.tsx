@@ -1,8 +1,8 @@
 "use client";
 
 import { AppDialog } from "@/components/shared/app-dialog";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -51,18 +51,7 @@ export const TransitionDialog = function ({ shipmentId, open, onClose }: Props) 
       }
     >
       <div className="space-y-4">
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="New status" />
-          </SelectTrigger>
-          <SelectContent>
-            {SHIPMENT_TRANSITIONS.map(value => (
-              <SelectItem key={value} value={value}>
-                {SHIPMENT_STATUS[value].label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <AppSimpleSelect placeholder="New status" value={status} onValueChange={setStatus} options={SHIPMENT_TRANSITIONS.map(value => ({ label: SHIPMENT_STATUS[value].label, value }))} />
 
         <Textarea placeholder="Optional note shown on the customer's tracking timeline" value={note} onChange={event => setNote(event.target.value)} maxLength={300} />
       </div>

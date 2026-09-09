@@ -37,7 +37,8 @@ export const AppDialog = function ({ isOpen, onOpenChange, children, title, desc
 
         <div className="scrollbar-hide max-h-[80vh] overflow-y-auto px-6 py-4">{children}</div>
 
-        {dialogFooter && <DialogFooter className="border-t px-6 py-4">{dialogFooter}</DialogFooter>}
+        {/* ui/dialog's footer bakes in -mx-4 -mb-4 for the default p-4 content — neutralise it, we run p-0 */}
+        {dialogFooter && <DialogFooter className="mx-0 mb-0 border-t px-6 py-4">{dialogFooter}</DialogFooter>}
       </DialogContent>
     </Dialog>
   );

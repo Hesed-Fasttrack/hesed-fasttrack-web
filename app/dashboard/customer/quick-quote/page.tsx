@@ -1,10 +1,10 @@
 "use client";
 
 import { AppInput } from "@/components/shared/app-input";
+import { AppSelect } from "@/components/shared/app-select";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -38,34 +38,12 @@ const LocationFields = function ({ label, value, onChange }: { label: string; va
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1.5">
           <Label>Country</Label>
-          <Select value={value.country} onValueChange={country => onChange({ country, stateCode: "", stateName: "", city: "" })}>
-            <SelectTrigger className="h-11 w-full">
-              <SelectValue placeholder="Country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map(option => (
-                <SelectItem key={option.code} value={option.code}>
-                  {option.flag} {option.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AppSelect placeholder="Country" value={value.country || null} onValueChange={country => onChange({ country: country ?? "", stateCode: "", stateName: "", city: "" })} options={countries.map(option => ({ label: `${option.flag} ${option.name}`, value: option.code }))} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label>State</Label>
           {states.length > 0 ? (
-            <Select value={value.stateCode} onValueChange={stateCode => onChange({ ...value, stateCode, stateName: states.find(state => state.code === stateCode)?.name ?? stateCode })}>
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder="State" />
-              </SelectTrigger>
-              <SelectContent>
-                {states.map(option => (
-                  <SelectItem key={option.code} value={option.code}>
-                    {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <AppSelect placeholder="State" value={value.stateCode || null} onValueChange={stateCode => onChange({ ...value, stateCode: stateCode ?? "", stateName: states.find(state => state.code === stateCode)?.name ?? stateCode ?? "" })} options={states.map(option => ({ label: option.name, value: option.code }))} />
           ) : (
             <AppInput placeholder="State or region" value={value.stateName} onChange={event => onChange({ ...value, stateName: event.target.value, stateCode: event.target.value })} />
           )}

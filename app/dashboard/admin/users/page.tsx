@@ -4,7 +4,7 @@ import { AppInput } from "@/components/shared/app-input";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGetData } from "@/hooks/use-get-data";
@@ -50,23 +50,20 @@ export default function AdminUsersPage() {
             setPage(1);
           }}
         />
-        <Select
+        <AppSimpleSelect
+          containerClassName="w-44"
           value={status}
           onValueChange={value => {
             setStatus(value);
             setPage(1);
           }}
-        >
-          <SelectTrigger className="h-11 w-44">
-            <SelectValue placeholder="All statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="ACTIVE">Active</SelectItem>
-            <SelectItem value="SUSPENDED">Suspended</SelectItem>
-            <SelectItem value="DEACTIVATED">Deactivated</SelectItem>
-          </SelectContent>
-        </Select>
+          options={[
+            { label: "All statuses", value: "all" },
+            { label: "Active", value: "ACTIVE" },
+            { label: "Suspended", value: "SUSPENDED" },
+            { label: "Deactivated", value: "DEACTIVATED" },
+          ]}
+        />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-line bg-white">

@@ -81,7 +81,7 @@ export const API_ENDPOINTS = {
     wallet: {
       balance: "/customer/wallet",
       transactions: "/customer/wallet/transactions",
-      fundingAccount: "/customer/wallet/funding-account",
+      fundingAccount: "/customer/wallet/virtual-account",
       sync: "/customer/wallet/sync",
       banks: "/customer/wallet/banks",
       resolveAccount: "/customer/wallet/resolve-account",
