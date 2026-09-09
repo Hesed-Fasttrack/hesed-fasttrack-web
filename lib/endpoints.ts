@@ -8,7 +8,7 @@ export const API_ENDPOINTS = {
     forgotPassword: "/auth/forgot-password",
     sendPasswordResetOtp: "/auth/send-password-reset-otp",
     verifyPasswordResetOtp: "/auth/verify-password-reset-otp",
-    resetPassword: "/auth/reset-password",
+    resetPassword: (token: string) => `/auth/reset-password?token=${token}`,
     updatePassword: "/auth/update-password",
     getProfile: "/auth/get-profile",
     updateProfile: "/auth/update-profile",
