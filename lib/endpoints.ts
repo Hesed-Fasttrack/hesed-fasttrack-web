@@ -71,6 +71,7 @@ export const API_ENDPOINTS = {
     quotes: "/customer/quotes",
     shipments: {
       list: (query = "") => `/customer/shipments${query}`,
+      create: "/customer/shipments",
       detail: (shipmentId: string) => `/customer/shipments/${shipmentId}`,
       tracking: (shipmentId: string) => `/customer/shipments/${shipmentId}/tracking`,
       trackByReference: (reference: string) => `/customer/shipments/track/${reference}`,

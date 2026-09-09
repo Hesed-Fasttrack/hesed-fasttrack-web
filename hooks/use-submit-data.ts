@@ -18,10 +18,11 @@ interface UseSubmitDataOptions<TData, TResponse> {
   onSuccess?: (data: TResponse) => void;
   redirectTo?: string;
   skipAuth?: boolean;
+  silent?: boolean;
 }
 
 export function useSubmitData<TData = unknown, TResponse = unknown>(options: UseSubmitDataOptions<TData, TResponse>) {
-  const { url, getBody, method = "post", additionalQueryKeys, onSuccessMessage = "Operation successful", onLoadingMessage, onError, onSuccess, redirectTo, skipAuth } = options;
+  const { url, getBody, method = "post", additionalQueryKeys, onSuccessMessage = "Operation successful", onLoadingMessage, onError, onSuccess, redirectTo, skipAuth, silent } = options;
 
   const router = useRouter();
   const handleErrors = useHandleErrors();
@@ -52,7 +53,7 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(options: Use
     },
 
     onSuccess: data => {
-      showToast("success", onSuccessMessage);
+      if (!silent) showToast("success", onSuccessMessage);
 
       queryClient.refetchQueries({ queryKey: [lastResolvedUrl.current] });
 

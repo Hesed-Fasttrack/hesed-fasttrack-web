@@ -33,8 +33,9 @@ export default function CustomerShipmentDetailPage() {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
 
   const trackingUrl = API_ENDPOINTS.customer.shipments.tracking(shipmentId);
-  const { data, isFetching } = useGetData<APIResponse<CustomerShipment & { events: CustomerShipmentEvent[] }>>({ url: trackingUrl });
-  const shipment = data?.data;
+  const { data, isFetching } = useGetData<APIResponse<{ shipment: CustomerShipment; events: CustomerShipmentEvent[] }>>({ url: trackingUrl });
+  const shipment = data?.data?.shipment;
+  const events = data?.data?.events ?? [];
 
   const isAwaitingPayment = shipment?.status === "RECEIVED" && shipment.payment_status === "UNPAID";
 
@@ -146,14 +147,14 @@ export default function CustomerShipmentDetailPage() {
         <div className="rounded-2xl border border-line bg-white p-5">
           <p className="text-sm font-semibold text-foreground">Tracking</p>
           <ol className="mt-4 space-y-4">
-            {shipment.events.map((event, index) => {
+            {events.map((event, index) => {
               const eventStatus = SHIPMENT_STATUS[event.to_status];
-              const isLatest = index === shipment.events.length - 1;
+              const isLatest = index === events.length - 1;
               return (
                 <li key={event.id} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <div className={`mt-1 h-2.5 w-2.5 rounded-full ${isLatest ? "bg-brand" : "bg-line-strong"}`} />
-                    {index < shipment.events.length - 1 && <div className="w-px flex-1 bg-line" />}
+                    {index < events.length - 1 && <div className="w-px flex-1 bg-line" />}
                   </div>
                   <div className="pb-1">
                     <p className="text-sm font-semibold text-foreground">{eventStatus?.label ?? event.to_status}</p>
