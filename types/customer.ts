@@ -111,6 +111,7 @@ export interface CustomerShipment {
   pickup_date: string | null;
   eta_min_days: number | null;
   eta_max_days: number | null;
+  courier_tracking_number?: string | null;
   createdAt: string;
 }
 

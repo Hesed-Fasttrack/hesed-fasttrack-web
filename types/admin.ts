@@ -80,6 +80,10 @@ export interface AdminShipment {
   pickup_date: string | null;
   eta_min_days: number | null;
   eta_max_days: number | null;
+  courier_shipment_reference: string | null;
+  courier_tracking_number: string | null;
+  courier_tracking_url: string | null;
+  courier_purchase_error: string | null;
   createdAt: string;
   user?: ReviewUser;
 }
@@ -128,6 +132,16 @@ export interface AdminRow {
   account_status: AccountStatus;
   lastLogin: string | null;
   createdAt: string;
+}
+
+export interface AdminActivity {
+  id: string;
+  action: string;
+  target_type: string;
+  target_id: string | null;
+  summary: string;
+  createdAt: string;
+  actor: ReviewUser & { role: string };
 }
 
 export const displayName = function (user?: { first_name?: string | null; last_name?: string | null; email?: string } | null) {

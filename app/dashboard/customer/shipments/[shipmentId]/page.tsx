@@ -130,6 +130,7 @@ export default function CustomerShipmentDetailPage() {
             <InfoRow label="To" value={`${shipment.destination.contact_name} — ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}`} />
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
             <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "—"} />
+            {shipment.courier_tracking_number && <InfoRow label="Tracking number" value={<span className="font-mono">{shipment.courier_tracking_number}</span>} />}
             <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "—"} />
             <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
           </div>

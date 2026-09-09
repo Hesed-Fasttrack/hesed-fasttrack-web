@@ -32,6 +32,8 @@ export const API_ENDPOINTS = {
       list: (query = "") => `/admin/shipments${query}`,
       detail: (shipmentId: string) => `/admin/shipments/${shipmentId}`,
       transition: (shipmentId: string) => `/admin/shipments/${shipmentId}/transition`,
+      edit: (shipmentId: string) => `/admin/shipments/${shipmentId}`,
+      retryCourierPurchase: (shipmentId: string) => `/admin/shipments/${shipmentId}/courier-purchase`,
     },
 
     kyc: {
@@ -51,6 +53,10 @@ export const API_ENDPOINTS = {
       create: "/admin/admins",
       updateStatus: (adminId: string) => `/admin/admins/${adminId}/status`,
       remove: (adminId: string) => `/admin/admins/${adminId}`,
+    },
+
+    activities: {
+      list: (query = "") => `/admin/activities${query}`,
     },
   },
 

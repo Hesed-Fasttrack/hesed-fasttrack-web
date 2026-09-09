@@ -1,7 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { AppSimpleSelect } from "@/components/shared/app-simple-select";
+import { ParcelDialog } from "@/components/shared/parcel-dialog";
+import { Button } from "@/components/ui/button";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatNaira } from "@/lib/format";
@@ -13,7 +14,6 @@ import type { APIResponse } from "@/types/response";
 import { Building2, Pencil, Plus, Trash2, Truck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { ParcelDialog } from "./parcel-dialog";
 
 const PURPOSES: { value: ShipmentPurpose; label: string }[] = [
   { value: "PERSONAL", label: "Personal belongings" },
@@ -59,8 +59,20 @@ export const DetailsStep = function () {
           </p>
         )}
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
-          <AppSimpleSelect label="Sender" placeholder="Who is sending?" value={senderAddress?.id ?? ""} onValueChange={value => setSenderAddress(addresses.find(address => address.id === value)!)} options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))} />
-          <AppSimpleSelect label="Receiver" placeholder="Who is receiving?" value={receiverAddress?.id ?? ""} onValueChange={value => setReceiverAddress(addresses.find(address => address.id === value)!)} options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))} />
+          <AppSimpleSelect
+            label="Sender"
+            placeholder="Who is sending?"
+            value={senderAddress?.id ?? ""}
+            onValueChange={value => setSenderAddress(addresses.find(address => address.id === value)!)}
+            options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))}
+          />
+          <AppSimpleSelect
+            label="Receiver"
+            placeholder="Who is receiving?"
+            value={receiverAddress?.id ?? ""}
+            onValueChange={value => setReceiverAddress(addresses.find(address => address.id === value)!)}
+            options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))}
+          />
         </div>
       </div>
 

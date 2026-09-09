@@ -2,7 +2,7 @@
 
 import { DashboardSidebar, type DashboardNavItem } from "@/components/shared/dashboard-sidebar";
 import Cookies from "js-cookie";
-import { Banknote, LayoutDashboard, Package, ShieldCheck, UserRoundCog, Users } from "lucide-react";
+import { Banknote, History, LayoutDashboard, Package, ShieldCheck, UserRoundCog, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NAV_ITEMS: (DashboardNavItem & { superOnly?: boolean })[] = [
@@ -12,6 +12,7 @@ const NAV_ITEMS: (DashboardNavItem & { superOnly?: boolean })[] = [
   { label: "KYC", href: "/dashboard/admin/kyc", icon: ShieldCheck },
   { label: "Withdrawals", href: "/dashboard/admin/withdrawals", icon: Banknote },
   { label: "Admins", href: "/dashboard/admin/admins", icon: UserRoundCog, superOnly: true },
+  { label: "Activity", href: "/dashboard/admin/activities", icon: History, superOnly: true },
 ];
 
 export const AdminSidebar = function ({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
@@ -23,7 +24,7 @@ export const AdminSidebar = function ({ className, onNavigate }: { className?: s
     setIsSuperAdmin(Cookies.get("session_type") === "SUPER_ADMIN");
   }, []);
 
-  const items = NAV_ITEMS.filter((item) => !item.superOnly || isSuperAdmin);
+  const items = NAV_ITEMS.filter(item => !item.superOnly || isSuperAdmin);
 
   return <DashboardSidebar items={items} homeHref="/dashboard/admin" className={className} onNavigate={onNavigate} />;
 };

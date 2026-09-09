@@ -5,13 +5,16 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
+import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatDate, formatDateTime, formatNaira } from "@/lib/format";
 import { PAYMENT_STATUS, SHIPMENT_STATUS } from "@/lib/statuses";
 import { displayName, type AdminShipment, type ShipmentEvent } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
+import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { EditShipmentDialog } from "./_components/edit-shipment-dialog";
 import { TransitionDialog } from "./_components/transition-dialog";
 
 const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
@@ -28,11 +31,18 @@ const TERMINAL_STATUSES = ["DELIVERED", "CANCELLED"] as const;
 export default function AdminShipmentDetailPage() {
   const { shipmentId = "" } = useParams<{ shipmentId: string }>();
   const [isTransitionOpen, setIsTransitionOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { data, isFetching } = useGetData<APIResponse<AdminShipment & { events: ShipmentEvent[] }>>({
     url: API_ENDPOINTS.admin.shipments.detail(shipmentId),
   });
   const shipment = data?.data;
+
+  const { mutate: retryDispatch, isPending: isRetrying } = useSubmitData<Record<string, never>, unknown>({
+    url: API_ENDPOINTS.admin.shipments.retryCourierPurchase(shipmentId),
+    onSuccessMessage: "Shipment dispatched to the courier",
+    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)]],
+  });
 
   if (isFetching && !shipment) {
     return (
@@ -49,6 +59,8 @@ export default function AdminShipmentDetailPage() {
   const status = SHIPMENT_STATUS[shipment.status];
   const paymentStatus = PAYMENT_STATUS[shipment.payment_status];
   const isTerminal = TERMINAL_STATUSES.includes(shipment.status as (typeof TERMINAL_STATUSES)[number]);
+  // Office verification may correct a drop-off's parcels while it's still unpaid.
+  const isEditable = shipment.fulfilment_type === "DROP_OFF" && shipment.payment_status === "UNPAID" && (shipment.status === "PENDING_DROP_OFF" || shipment.status === "RECEIVED");
   const parcelSummary = shipment.parcels.map(parcel => `${parcel.length_cm}×${parcel.width_cm}×${parcel.height_cm}cm · ${parcel.items.map(item => `${item.quantity}× ${item.name}`).join(", ")}`);
 
   return (
@@ -56,7 +68,18 @@ export default function AdminShipmentDetailPage() {
       <PageHeader
         title={shipment.reference}
         description={`Booked ${formatDateTime(shipment.createdAt)}${shipment.user ? ` by ${displayName(shipment.user)}` : ""}`}
-        action={!isTerminal ? <Button onClick={() => setIsTransitionOpen(true)}>Update status</Button> : undefined}
+        action={
+          !isTerminal ? (
+            <div className="flex gap-2">
+              {isEditable && (
+                <Button variant="outline" onClick={() => setIsEditOpen(true)}>
+                  Edit details
+                </Button>
+              )}
+              <Button onClick={() => setIsTransitionOpen(true)}>Update status</Button>
+            </div>
+          ) : undefined
+        }
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -86,6 +109,39 @@ export default function AdminShipmentDetailPage() {
               </li>
             ))}
           </ul>
+
+          <p className="mt-6 text-sm font-semibold text-foreground">Courier dispatch</p>
+          <div className="mt-2 divide-y divide-line">
+            {shipment.courier_tracking_number ? (
+              <>
+                <InfoRow label="Courier reference" value={shipment.courier_shipment_reference ?? "—"} />
+                <InfoRow
+                  label="Tracking number"
+                  value={
+                    shipment.courier_tracking_url ? (
+                      <a href={shipment.courier_tracking_url} target="_blank" rel="noopener noreferrer" className="font-mono text-brand hover:underline">
+                        {shipment.courier_tracking_number}
+                      </a>
+                    ) : (
+                      <span className="font-mono">{shipment.courier_tracking_number}</span>
+                    )
+                  }
+                />
+              </>
+            ) : shipment.courier_purchase_error ? (
+              <div className="py-3">
+                <p className="rounded-lg bg-danger/5 px-3 py-2 text-sm text-danger">{shipment.courier_purchase_error}</p>
+                {shipment.payment_status === "PAID" && (
+                  <Button size="sm" variant="outline" className="mt-3" onClick={() => retryDispatch({})} disabled={isRetrying}>
+                    {isRetrying && <Loader2 className="animate-spin" />}
+                    Retry courier dispatch
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <p className="py-3 text-sm text-muted-foreground">{shipment.payment_status === "PAID" ? "Dispatch pending…" : "Dispatches once the shipment is paid."}</p>
+            )}
+          </div>
         </div>
 
         <div className="rounded-2xl border border-line bg-white p-5">
@@ -113,6 +169,7 @@ export default function AdminShipmentDetailPage() {
       </div>
 
       <TransitionDialog shipmentId={shipmentId} open={isTransitionOpen} onClose={() => setIsTransitionOpen(false)} />
+      <EditShipmentDialog shipment={shipment} open={isEditOpen} onClose={() => setIsEditOpen(false)} />
     </div>
   );
 }
