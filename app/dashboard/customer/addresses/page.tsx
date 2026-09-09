@@ -23,7 +23,7 @@ export default function CustomerAddressesPage() {
   const addresses = data?.data ?? [];
 
   const { mutate: removeAddress, isPending: isRemoving } = useSubmitData<{ id: string }, unknown>({
-    url: (variables) => API_ENDPOINTS.customer.addresses.remove(variables.id),
+    url: variables => API_ENDPOINTS.customer.addresses.remove(variables.id),
     method: "delete",
     getBody: () => undefined,
     onSuccessMessage: "Address deleted",
@@ -32,7 +32,7 @@ export default function CustomerAddressesPage() {
   });
 
   const { mutate: setDefault } = useSubmitData<{ id: string }, unknown>({
-    url: (variables) => API_ENDPOINTS.customer.addresses.setDefault(variables.id),
+    url: variables => API_ENDPOINTS.customer.addresses.setDefault(variables.id),
     getBody: () => ({}),
     onSuccessMessage: "Default address updated",
     additionalQueryKeys: [[API_ENDPOINTS.customer.addresses.list]],
@@ -78,7 +78,7 @@ export default function CustomerAddressesPage() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {addresses.map((address) => (
+          {addresses.map(address => (
             <div key={address.id} className="rounded-2xl border border-line bg-white p-5">
               <div className="flex items-start justify-between gap-2">
                 <div>

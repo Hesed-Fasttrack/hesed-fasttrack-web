@@ -1,7 +1,7 @@
 "use client";
 
+import { AppDialog } from "@/components/shared/app-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 
 interface Props {
@@ -18,13 +18,13 @@ interface Props {
 
 export const ConfirmDialog = function ({ open, title, description, confirmLabel = "Confirm", cancelLabel = "Cancel", isDestructive, isLoading, onConfirm, onCancel }: Props) {
   return (
-    <Dialog open={open} onOpenChange={isOpen => !isOpen && onCancel()}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter className="gap-2">
+    <AppDialog
+      isOpen={open}
+      onOpenChange={isOpen => !isOpen && onCancel()}
+      title={title}
+      isSubmitting={isLoading}
+      dialogFooter={
+        <>
           <Button variant="outline" onClick={onCancel} disabled={isLoading}>
             {cancelLabel}
           </Button>
@@ -32,8 +32,10 @@ export const ConfirmDialog = function ({ open, title, description, confirmLabel 
             {isLoading && <Loader2 className="animate-spin" />}
             {confirmLabel}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </AppDialog>
   );
 };

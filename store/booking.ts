@@ -31,26 +31,26 @@ const initialState = {
   quote: null,
 };
 
-export const useBookingStore = create<BookingState>((set) => ({
+export const useBookingStore = create<BookingState>(set => ({
   ...initialState,
 
-  setStep: (step) => set({ step }),
-  setSenderAddress: (address) => set({ senderAddress: address }),
-  setReceiverAddress: (address) => set({ receiverAddress: address }),
-  setFulfilmentType: (fulfilmentType) => set({ fulfilmentType }),
-  setPurpose: (purpose) => set({ purpose }),
+  setStep: step => set({ step }),
+  setSenderAddress: address => set({ senderAddress: address }),
+  setReceiverAddress: address => set({ receiverAddress: address }),
+  setFulfilmentType: fulfilmentType => set({ fulfilmentType }),
+  setPurpose: purpose => set({ purpose }),
 
   upsertParcel: (index, parcel) =>
-    set((state) => ({
+    set(state => ({
       parcels: index === null ? [...state.parcels, parcel] : state.parcels.map((entry, i) => (i === index ? parcel : entry)),
     })),
 
-  removeParcel: (index) =>
-    set((state) => ({
+  removeParcel: index =>
+    set(state => ({
       parcels: state.parcels.filter((_, i) => i !== index),
     })),
 
-  setQuote: (quote) => set({ quote }),
+  setQuote: quote => set({ quote }),
 
   reset: () => set(initialState),
 }));

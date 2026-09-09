@@ -1,7 +1,7 @@
 "use client";
 
+import { AppDialog } from "@/components/shared/app-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useSubmitData } from "@/hooks/use-submit-data";
@@ -32,31 +32,14 @@ export const TransitionDialog = function ({ shipmentId, open, onClose }: Props) 
   });
 
   return (
-    <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Update shipment status</DialogTitle>
-          <DialogDescription>The status machine validates the move, records the event, refunds cancelled paid shipments and notifies the customer.</DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="New status" />
-            </SelectTrigger>
-            <SelectContent>
-              {SHIPMENT_TRANSITIONS.map(value => (
-                <SelectItem key={value} value={value}>
-                  {SHIPMENT_STATUS[value].label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Textarea placeholder="Optional note shown on the customer's tracking timeline" value={note} onChange={event => setNote(event.target.value)} maxLength={300} />
-        </div>
-
-        <DialogFooter className="gap-2">
+    <AppDialog
+      isOpen={open}
+      onOpenChange={isOpen => !isOpen && onClose()}
+      title="Update shipment status"
+      description="The status machine validates the move, records the event, refunds cancelled paid shipments and notifies the customer."
+      isSubmitting={isPending}
+      dialogFooter={
+        <>
           <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
@@ -64,8 +47,25 @@ export const TransitionDialog = function ({ shipmentId, open, onClose }: Props) 
             {isPending && <Loader2 className="animate-spin" />}
             Update status
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="New status" />
+          </SelectTrigger>
+          <SelectContent>
+            {SHIPMENT_TRANSITIONS.map(value => (
+              <SelectItem key={value} value={value}>
+                {SHIPMENT_STATUS[value].label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Textarea placeholder="Optional note shown on the customer's tracking timeline" value={note} onChange={event => setNote(event.target.value)} maxLength={300} />
+      </div>
+    </AppDialog>
   );
 };

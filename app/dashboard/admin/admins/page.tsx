@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AppDialog } from "@/components/shared/app-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
@@ -142,30 +142,30 @@ export default function AdminManagementPage() {
         <PaginationControls page={data?.page ?? 1} totalPages={data?.totalPages ?? 1} total={data?.total ?? 0} onPageChange={setPage} />
       </div>
 
-      <Dialog open={isCreateOpen} onOpenChange={isOpen => !isOpen && setIsCreateOpen(false)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add an admin</DialogTitle>
-            <DialogDescription>The account is verified from birth — share the email and password with them securely. They can change the password after signing in.</DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit(data => createAdmin(data))} className="space-y-4">
-            <FormInput<CreateAdminFormValues> control={control} name="full_name" errors={errors} label="Full name" icon={UserRound} placeholder="Ops Admin" />
-            <FormInput<CreateAdminFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="ops@hesedfasttrack.com" />
-            <FormInput<CreateAdminFormValues> control={control} name="password" errors={errors} label="Temporary password" type="password" icon={Lock} placeholder="At least 8 characters" />
-
-            <DialogFooter className="gap-2">
-              <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)} disabled={isCreating}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isCreating}>
-                {isCreating && <Loader2 className="animate-spin" />}
-                Create admin
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <AppDialog
+        isOpen={isCreateOpen}
+        onOpenChange={isOpen => !isOpen && setIsCreateOpen(false)}
+        title="Add an admin"
+        description="The account is verified from birth — share the email and password with them securely. They can change the password after signing in."
+        isSubmitting={isCreating}
+        dialogFooter={
+          <>
+            <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)} disabled={isCreating}>
+              Cancel
+            </Button>
+            <Button type="submit" form="create-admin-form" disabled={isCreating}>
+              {isCreating && <Loader2 className="animate-spin" />}
+              Create admin
+            </Button>
+          </>
+        }
+      >
+        <form id="create-admin-form" onSubmit={handleSubmit(data => createAdmin(data))} className="space-y-4">
+          <FormInput<CreateAdminFormValues> control={control} name="full_name" errors={errors} label="Full name" icon={UserRound} placeholder="Ops Admin" />
+          <FormInput<CreateAdminFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="ops@hesedfasttrack.com" />
+          <FormInput<CreateAdminFormValues> control={control} name="password" errors={errors} label="Temporary password" type="password" icon={Lock} placeholder="At least 8 characters" />
+        </form>
+      </AppDialog>
 
       <ConfirmDialog
         open={!!togglingStatus}

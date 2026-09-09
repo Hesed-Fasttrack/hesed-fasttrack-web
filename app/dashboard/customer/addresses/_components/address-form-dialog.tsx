@@ -1,8 +1,8 @@
 "use client";
 
 import { FormInput } from "@/components/form/form-input";
+import { AppDialog } from "@/components/shared/app-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetData } from "@/hooks/use-get-data";
@@ -89,7 +89,7 @@ export const AddressFormDialog = function ({ open, address, onClose }: Props) {
 
   useEffect(() => {
     if (!address || states.length === 0) return;
-    const match = states.find((state) => state.name === address.state);
+    const match = states.find(state => state.name === address.state);
     if (match) setStateCode(match.code);
   }, [address, states]);
 
@@ -115,115 +115,115 @@ export const AddressFormDialog = function ({ open, address, onClose }: Props) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit address" : "New address"}</DialogTitle>
-        </DialogHeader>
+    <AppDialog
+      isOpen={open}
+      onOpenChange={isOpen => !isOpen && onClose()}
+      title={isEditing ? "Edit address" : "New address"}
+      isSubmitting={isPending}
+      dialogFooter={
+        <>
+          <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
+            Cancel
+          </Button>
+          <Button type="submit" form="address-form" disabled={isPending}>
+            {isPending && <Loader2 className="animate-spin" />}
+            {isEditing ? "Save changes" : "Save address"}
+          </Button>
+        </>
+      }
+    >
+      <form id="address-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <FormInput<AddressFormValues> control={control} name="label" errors={errors} label="Label (optional)" placeholder="Home, Office…" />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <FormInput<AddressFormValues> control={control} name="label" errors={errors} label="Label (optional)" placeholder="Home, Office…" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormInput<AddressFormValues> control={control} name="contact_name" errors={errors} label="Contact name" placeholder="Ada Obi" />
+          <FormInput<AddressFormValues> control={control} name="contact_phone" errors={errors} label="Phone" placeholder="0801 234 5678" />
+        </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormInput<AddressFormValues> control={control} name="contact_name" errors={errors} label="Contact name" placeholder="Ada Obi" />
-            <FormInput<AddressFormValues> control={control} name="contact_phone" errors={errors} label="Phone" placeholder="0801 234 5678" />
+        <FormInput<AddressFormValues> control={control} name="contact_email" errors={errors} label="Email (optional)" type="email" placeholder="them@example.com" />
+        <FormInput<AddressFormValues> control={control} name="line1" errors={errors} label="Street address" placeholder="12 Marina Road" />
+        <FormInput<AddressFormValues> control={control} name="line2" errors={errors} label="Apartment, suite… (optional)" />
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <Label>Country</Label>
+            <Select
+              value={country}
+              onValueChange={value => {
+                setCountry(value);
+                setStateCode("");
+                setValue("state", "");
+                setValue("city", "");
+              }}
+            >
+              <SelectTrigger className="h-11 w-full">
+                <SelectValue placeholder="Country" />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map(option => (
+                  <SelectItem key={option.code} value={option.code}>
+                    {option.flag} {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <FormInput<AddressFormValues> control={control} name="contact_email" errors={errors} label="Email (optional)" type="email" placeholder="them@example.com" />
-          <FormInput<AddressFormValues> control={control} name="line1" errors={errors} label="Street address" placeholder="12 Marina Road" />
-          <FormInput<AddressFormValues> control={control} name="line2" errors={errors} label="Apartment, suite… (optional)" />
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <Label>Country</Label>
+          <div className="flex flex-col gap-1.5">
+            <Label>State</Label>
+            {states.length > 0 ? (
               <Select
-                value={country}
-                onValueChange={(value) => {
-                  setCountry(value);
-                  setStateCode("");
-                  setValue("state", "");
+                value={stateCode}
+                onValueChange={value => {
+                  setStateCode(value);
+                  const selected = states.find(state => state.code === value);
+                  setValue("state", selected?.name ?? value, { shouldValidate: true });
                   setValue("city", "");
                 }}
               >
                 <SelectTrigger className="h-11 w-full">
-                  <SelectValue placeholder="Country" />
+                  <SelectValue placeholder="State">{stateName || undefined}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {countries.map((option) => (
+                  {states.map(option => (
                     <SelectItem key={option.code} value={option.code}>
-                      {option.flag} {option.name}
+                      {option.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            ) : (
+              <FormInput<AddressFormValues> control={control} name="state" errors={errors} placeholder="State or region" />
+            )}
+            {errors.state && states.length > 0 && <p className="text-destructive text-xs">{errors.state.message}</p>}
+          </div>
+        </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label>State</Label>
-              {states.length > 0 ? (
-                <Select
-                  value={stateCode}
-                  onValueChange={(value) => {
-                    setStateCode(value);
-                    const selected = states.find((state) => state.code === value);
-                    setValue("state", selected?.name ?? value, { shouldValidate: true });
-                    setValue("city", "");
-                  }}
-                >
-                  <SelectTrigger className="h-11 w-full">
-                    <SelectValue placeholder="State">{stateName || undefined}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {states.map((option) => (
-                      <SelectItem key={option.code} value={option.code}>
-                        {option.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <FormInput<AddressFormValues> control={control} name="state" errors={errors} placeholder="State or region" />
-              )}
-              {errors.state && states.length > 0 && <p className="text-destructive text-xs">{errors.state.message}</p>}
-            </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <Label>City</Label>
+            {cities.length > 0 ? (
+              <Select value={cityName || ""} onValueChange={value => setValue("city", value, { shouldValidate: true })}>
+                <SelectTrigger className="h-11 w-full">
+                  <SelectValue placeholder="City" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map(option => (
+                    <SelectItem key={option.name} value={option.name}>
+                      {option.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <FormInput<AddressFormValues> control={control} name="city" errors={errors} placeholder="City" />
+            )}
+            {errors.city && cities.length > 0 && <p className="text-destructive text-xs">{errors.city.message}</p>}
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <Label>City</Label>
-              {cities.length > 0 ? (
-                <Select value={cityName || ""} onValueChange={(value) => setValue("city", value, { shouldValidate: true })}>
-                  <SelectTrigger className="h-11 w-full">
-                    <SelectValue placeholder="City" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {cities.map((option) => (
-                      <SelectItem key={option.name} value={option.name}>
-                        {option.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <FormInput<AddressFormValues> control={control} name="city" errors={errors} placeholder="City" />
-              )}
-              {errors.city && cities.length > 0 && <p className="text-destructive text-xs">{errors.city.message}</p>}
-            </div>
-
-            <FormInput<AddressFormValues> control={control} name="postal_code" errors={errors} label="Postal code" placeholder="Needed for express rates" />
-          </div>
-
-          <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending && <Loader2 className="animate-spin" />}
-              {isEditing ? "Save changes" : "Save address"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          <FormInput<AddressFormValues> control={control} name="postal_code" errors={errors} label="Postal code" placeholder="Needed for express rates" />
+        </div>
+      </form>
+    </AppDialog>
   );
 };

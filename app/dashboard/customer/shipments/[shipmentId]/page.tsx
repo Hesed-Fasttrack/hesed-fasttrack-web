@@ -130,14 +130,14 @@ export default function CustomerShipmentDetailPage() {
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
             <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "—"} />
             <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "—"} />
-            <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find((entry) => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
+            <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
           </div>
 
           <p className="mt-6 text-sm font-semibold text-foreground">Parcels</p>
           <ul className="mt-2 space-y-2">
             {shipment.parcels.map((parcel, index) => (
               <li key={index} className="rounded-lg bg-canvas px-3 py-2 text-sm text-foreground">
-                {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm · {parcel.items.map((item) => `${item.quantity}× ${item.name}`).join(", ")}
+                {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm · {parcel.items.map(item => `${item.quantity}× ${item.name}`).join(", ")}
               </li>
             ))}
           </ul>

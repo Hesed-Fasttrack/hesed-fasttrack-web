@@ -48,7 +48,7 @@ export default function CustomerShipmentsPage() {
       <div className="mb-4">
         <Select
           value={status}
-          onValueChange={(value) => {
+          onValueChange={value => {
             setStatus(value);
             setPage(1);
           }}
@@ -85,7 +85,7 @@ export default function CustomerShipmentsPage() {
             ) : shipments.length === 0 ? (
               <TableEmptyRow columns={COLUMNS} message="No shipments in this view — book one to get started." />
             ) : (
-              shipments.map((shipment) => {
+              shipments.map(shipment => {
                 const shipmentStatus = SHIPMENT_STATUS[shipment.status];
                 const paymentStatus = PAYMENT_STATUS[shipment.payment_status];
                 return (

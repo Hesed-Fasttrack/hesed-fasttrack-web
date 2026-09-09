@@ -1,8 +1,8 @@
 "use client";
 
+import { AppDialog } from "@/components/shared/app-dialog";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -67,14 +67,14 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
         </div>
       )}
 
-      <Dialog open={isRejectOpen} onOpenChange={isOpen => !isOpen && setIsRejectOpen(false)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Reject {title.toLowerCase()}</DialogTitle>
-            <DialogDescription>The reason is shown to the customer so they can fix and resubmit.</DialogDescription>
-          </DialogHeader>
-          <Textarea placeholder="e.g. The photo is blurry — retake it with all corners visible." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
-          <DialogFooter className="gap-2">
+      <AppDialog
+        isOpen={isRejectOpen}
+        onOpenChange={isOpen => !isOpen && setIsRejectOpen(false)}
+        title={`Reject ${title.toLowerCase()}`}
+        description="The reason is shown to the customer so they can fix and resubmit."
+        isSubmitting={isPending}
+        dialogFooter={
+          <>
             <Button variant="outline" onClick={() => setIsRejectOpen(false)} disabled={isPending}>
               Cancel
             </Button>
@@ -82,9 +82,11 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
               {isPending && <Loader2 className="animate-spin" />}
               Reject document
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <Textarea placeholder="e.g. The photo is blurry — retake it with all corners visible." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
+      </AppDialog>
     </div>
   );
 };

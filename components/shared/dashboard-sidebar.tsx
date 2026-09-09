@@ -31,7 +31,7 @@ export const DashboardSidebar = function ({ items, homeHref, className, onNaviga
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-        {items.map((item) => {
+        {items.map(item => {
           const isActive = item.href === homeHref ? pathname === item.href : pathname.startsWith(item.href);
 
           return (
@@ -39,10 +39,7 @@ export const DashboardSidebar = function ({ items, homeHref, className, onNaviga
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive ? "bg-brand-muted text-brand" : "text-foreground-muted hover:bg-muted hover:text-foreground",
-              )}
+              className={cn("flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors", isActive ? "bg-brand-muted text-brand" : "text-foreground-muted hover:bg-muted hover:text-foreground")}
             >
               <item.icon className="h-4.5 w-4.5" />
               {item.label}

@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AppDialog } from "@/components/shared/app-dialog";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
@@ -136,32 +137,24 @@ export default function AdminWithdrawalsPage() {
         <PaginationControls page={data?.page ?? 1} totalPages={data?.totalPages ?? 1} total={data?.total ?? 0} onPageChange={setPage} />
       </div>
 
-      <Dialog open={!!approving} onOpenChange={isOpen => !isOpen && setApproving(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Approve this withdrawal?</DialogTitle>
-            <DialogDescription>{approving && `${formatNaira(approving.amount_minor)} is transferred to ${approving.account_name} (${approving.bank_name} · ${approving.account_number}) immediately.`}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setApproving(null)} disabled={isPending}>
-              Cancel
-            </Button>
-            <Button onClick={() => approving && decide({ id: approving.id, decision: "APPROVE" })} disabled={isPending}>
-              {isPending && <Loader2 className="animate-spin" />}
-              Approve & transfer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!approving}
+        title="Approve this withdrawal?"
+        description={approving ? `${formatNaira(approving.amount_minor)} is transferred to ${approving.account_name} (${approving.bank_name} · ${approving.account_number}) immediately.` : ""}
+        confirmLabel="Approve & transfer"
+        isLoading={isPending}
+        onConfirm={() => approving && decide({ id: approving.id, decision: "APPROVE" })}
+        onCancel={() => setApproving(null)}
+      />
 
-      <Dialog open={!!rejecting} onOpenChange={isOpen => !isOpen && setRejecting(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Reject this withdrawal?</DialogTitle>
-            <DialogDescription>The amount is refunded to the customer's wallet and the reason is shown to them.</DialogDescription>
-          </DialogHeader>
-          <Textarea placeholder="e.g. The account name doesn't match your profile." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
-          <DialogFooter className="gap-2">
+      <AppDialog
+        isOpen={!!rejecting}
+        onOpenChange={isOpen => !isOpen && setRejecting(null)}
+        title="Reject this withdrawal?"
+        description="The amount is refunded to the customer's wallet and the reason is shown to them."
+        isSubmitting={isPending}
+        dialogFooter={
+          <>
             <Button variant="outline" onClick={() => setRejecting(null)} disabled={isPending}>
               Cancel
             </Button>
@@ -169,9 +162,11 @@ export default function AdminWithdrawalsPage() {
               {isPending && <Loader2 className="animate-spin" />}
               Reject & refund
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <Textarea placeholder="e.g. The account name doesn't match your profile." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
+      </AppDialog>
     </div>
   );
 }
