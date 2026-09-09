@@ -12,7 +12,7 @@ const FOOTER_LINKS = {
   ],
   Shipping: [
     { label: "Get a quote", href: "/auth/signup" },
-    { label: "Track a shipment", href: "/auth/signin" },
+    { label: "Track a shipment", href: "/dashboard/customer/track" },
     { label: "Sign in", href: "/auth/signin" },
   ],
 } as const;

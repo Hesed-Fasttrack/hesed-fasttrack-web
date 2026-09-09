@@ -11,9 +11,10 @@ import { useState } from "react";
 interface Props {
   title: string;
   renderSidebar: (onNavigate: () => void) => React.ReactNode;
+  actions?: React.ReactNode;
 }
 
-export const DashboardTopbar = function ({ title, renderSidebar }: Props) {
+export const DashboardTopbar = function ({ title, renderSidebar, actions }: Props) {
   const { profile } = useGetProfile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -40,25 +41,28 @@ export const DashboardTopbar = function ({ title, renderSidebar }: Props) {
         <p className="text-sm font-semibold text-foreground">{title}</p>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <Avatar>
-            <AvatarImage src={profile?.profile_pic ?? undefined} alt={fullName} />
-            <AvatarFallback className="bg-brand-muted text-sm font-semibold text-brand">{initials}</AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>
-            <p className="text-sm font-semibold">{fullName || "Account"}</p>
-            <p className="text-xs font-normal text-muted-foreground">{profile?.email}</p>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-            <LogOut />
-            Sign out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-2">
+        {actions}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <Avatar>
+              <AvatarImage src={profile?.profile_pic ?? undefined} alt={fullName} />
+              <AvatarFallback className="bg-brand-muted text-sm font-semibold text-brand">{initials}</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <p className="text-sm font-semibold">{fullName || "Account"}</p>
+              <p className="text-xs font-normal text-muted-foreground">{profile?.email}</p>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
+              <LogOut />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 };

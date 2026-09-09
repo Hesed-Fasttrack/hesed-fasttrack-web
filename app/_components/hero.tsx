@@ -28,7 +28,7 @@ export const Hero = function () {
               <Link href="/auth/signup">Get an instant quote</Link>
             </Button>
             <Button size="lg" variant="outline" className="h-12 border-white/40 bg-transparent px-7 text-base text-white hover:bg-white/10 hover:text-white" asChild>
-              <Link href="/auth/signin">Track a shipment</Link>
+              <Link href="/dashboard/customer/track">Track a shipment</Link>
             </Button>
           </div>
 

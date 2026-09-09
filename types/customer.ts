@@ -157,3 +157,27 @@ export const SHIPMENT_PURPOSES: { value: ShipmentPurpose; label: string }[] = [
   { value: "GIFT", label: "Gift" },
   { value: "DOCUMENTS", label: "Documents" },
 ];
+
+export type NotificationType = "INFO" | "SUCCESS" | "WARNING" | "ERROR" | "SHIPMENT_STATUS" | "PAYMENT" | "WALLET" | "KYC" | "PROMO" | "MESSAGE";
+
+export interface CustomerNotification {
+  id: string;
+  type: NotificationType;
+  title: string | null;
+  message: string;
+  status: "UNREAD" | "READ";
+  createdAt: string;
+}
+
+// The sanitized track-by-reference payload — no money, no contacts.
+export interface PublicTracking {
+  reference: string;
+  status: ShipmentStatus;
+  courier_name: string;
+  service_name: string;
+  origin: { city: string | null; state: string | null };
+  destination: { city: string | null; state: string | null };
+  createdAt: string;
+  delivered_at: string | null;
+  events: { id: string; to_status: ShipmentStatus; note: string | null; createdAt: string }[];
+}

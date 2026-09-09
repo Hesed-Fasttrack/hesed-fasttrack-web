@@ -93,7 +93,7 @@ export const API_ENDPOINTS = {
       submit: "/customer/kyc",
     },
     notifications: {
-      list: "/notifications",
+      list: (query = "") => `/notifications${query}`,
       unreadCount: "/notifications/unread-count",
       read: (notificationId: string) => `/notifications/${notificationId}/read`,
       readAll: "/notifications/read-all",
