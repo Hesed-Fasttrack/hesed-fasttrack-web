@@ -2,7 +2,8 @@ import { format } from "date-fns";
 
 // All money is minor units (kobo) end to end; divide only at render.
 export const formatNaira = function (amountMinor: number) {
-  return `₦${(amountMinor / 100).toLocaleString("en-NG", {
+  const sign = amountMinor < 0 ? "-" : "";
+  return `${sign}₦${Math.abs(amountMinor / 100).toLocaleString("en-NG", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;

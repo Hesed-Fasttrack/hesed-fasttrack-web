@@ -24,3 +24,9 @@ export const ENV = {
     return process.env.NEXT_PUBLIC_API_URL ?? "";
   },
 } as const;
+
+export const buildQuery = function (params: Record<string, string | number | undefined>) {
+  const entries = Object.entries(params).filter(([, value]) => value !== undefined && value !== "");
+  if (entries.length === 0) return "";
+  return `?${entries.map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`).join("&")}`;
+};

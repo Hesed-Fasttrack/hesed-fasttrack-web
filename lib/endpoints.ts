@@ -60,6 +60,13 @@ export const API_ENDPOINTS = {
       create: "/customer/addresses",
       update: (addressId: string) => `/customer/addresses/${addressId}`,
       remove: (addressId: string) => `/customer/addresses/${addressId}`,
+      setDefault: (addressId: string) => `/customer/addresses/${addressId}/default`,
+    },
+    lookups: {
+      countries: "/customer/lookups/countries",
+      states: (country: string) => `/customer/lookups/states?country=${country}`,
+      cities: (country: string, state: string) => `/customer/lookups/cities?country=${country}&state=${encodeURIComponent(state)}`,
+      categories: (search: string) => `/customer/lookups/categories?search=${encodeURIComponent(search)}`,
     },
     quotes: "/customer/quotes",
     shipments: {
