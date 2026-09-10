@@ -9,11 +9,12 @@ import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatDate, formatDateTime, formatNaira } from "@/lib/format";
+import { showToast } from "@/lib/show-toast";
 import { PAYMENT_STATUS, SHIPMENT_STATUS } from "@/lib/statuses";
 import type { CustomerKycSubmission, CustomerShipment, CustomerShipmentEvent, Wallet } from "@/types/customer";
 import { SHIPMENT_PURPOSES } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Loader2 } from "lucide-react";
+import { Copy, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -130,7 +131,27 @@ export default function CustomerShipmentDetailPage() {
             <InfoRow label="To" value={`${shipment.destination.contact_name} — ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}`} />
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
             <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "—"} />
-            {shipment.courier_tracking_number && <InfoRow label="Tracking number" value={<span className="font-mono">{shipment.courier_tracking_number}</span>} />}
+            {shipment.courier_tracking_number && (
+              <InfoRow
+                label="Tracking number"
+                value={
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="font-mono">{shipment.courier_tracking_number}</span>
+                    <button
+                      type="button"
+                      aria-label="Copy tracking number"
+                      onClick={() => {
+                        navigator.clipboard.writeText(shipment.courier_tracking_number as string);
+                        showToast("success", "Tracking number copied");
+                      }}
+                      className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-6 items-center justify-center rounded-md transition-colors"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
+                  </span>
+                }
+              />
+            )}
             <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "—"} />
             <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
           </div>

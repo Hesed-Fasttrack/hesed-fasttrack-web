@@ -87,10 +87,10 @@ export const AppSelect = function ({ label, options, value, onValueChange, place
             disabled={disabled}
             aria-invalid={!!error}
             autoComplete="off"
-            className="placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none disabled:cursor-not-allowed"
+            className="placeholder:text-muted-foreground w-full min-w-0 flex-1 truncate bg-transparent text-sm outline-none disabled:cursor-not-allowed"
           />
 
-          <div className="flex items-center gap-0.5">
+          <div className="flex shrink-0 items-center gap-0.5">
             {selectedOption && !disabled && (
               <button type="button" onClick={handleClear} className="text-muted-foreground hover:text-foreground flex size-5 items-center justify-center rounded-sm">
                 <X className="size-3.5" />
