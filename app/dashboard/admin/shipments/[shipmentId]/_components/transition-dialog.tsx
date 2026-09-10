@@ -6,17 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { SHIPMENT_STATUS, SHIPMENT_TRANSITIONS } from "@/lib/statuses";
+import { NEXT_SHIPMENT_STATUSES, SHIPMENT_STATUS } from "@/lib/statuses";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
   shipmentId: string;
+  currentStatus: string;
   open: boolean;
   onClose: () => void;
 }
 
-export const TransitionDialog = function ({ shipmentId, open, onClose }: Props) {
+export const TransitionDialog = function ({ shipmentId, currentStatus, open, onClose }: Props) {
   const [status, setStatus] = useState<string>("");
   const [note, setNote] = useState("");
 
@@ -51,7 +52,7 @@ export const TransitionDialog = function ({ shipmentId, open, onClose }: Props) 
       }
     >
       <div className="space-y-4">
-        <AppSimpleSelect placeholder="New status" value={status} onValueChange={setStatus} options={SHIPMENT_TRANSITIONS.map(value => ({ label: SHIPMENT_STATUS[value].label, value }))} />
+        <AppSimpleSelect placeholder="New status" value={status} onValueChange={setStatus} options={(NEXT_SHIPMENT_STATUSES[currentStatus] ?? []).map(value => ({ label: SHIPMENT_STATUS[value as keyof typeof SHIPMENT_STATUS].label, value }))} />
 
         <Textarea placeholder="Optional note shown on the customer's tracking timeline" value={note} onChange={event => setNote(event.target.value)} maxLength={300} />
       </div>

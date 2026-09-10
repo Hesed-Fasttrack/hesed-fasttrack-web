@@ -96,6 +96,7 @@ export default function CustomerShipmentDetailPage() {
   return (
     <div>
       <PageHeader
+        backHref="/dashboard/customer/shipments"
         title={shipment.reference}
         description={`Booked ${formatDateTime(shipment.createdAt)}`}
         action={

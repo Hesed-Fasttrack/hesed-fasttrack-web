@@ -59,3 +59,15 @@ export const ACCOUNT_STATUS: Record<AccountStatus, StatusPresentation> = {
 
 // The transition machine enforces legality server-side; the UI offers the enum.
 export const SHIPMENT_TRANSITIONS = ["RECEIVED", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"] as const;
+
+// Mirrors the server's ALLOWED_TRANSITIONS so dialogs only offer legal moves.
+export const NEXT_SHIPMENT_STATUSES: Record<string, string[]> = {
+  PENDING_PICKUP: ["PICKED_UP", "CANCELLED"],
+  PENDING_DROP_OFF: ["RECEIVED", "CANCELLED"],
+  RECEIVED: ["IN_TRANSIT", "CANCELLED"],
+  PICKED_UP: ["IN_TRANSIT", "CANCELLED"],
+  IN_TRANSIT: ["OUT_FOR_DELIVERY"],
+  OUT_FOR_DELIVERY: ["DELIVERED"],
+  DELIVERED: [],
+  CANCELLED: [],
+};

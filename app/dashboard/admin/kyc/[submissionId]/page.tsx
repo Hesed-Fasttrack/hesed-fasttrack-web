@@ -40,6 +40,7 @@ export default function AdminKycDetailPage() {
   return (
     <div>
       <PageHeader
+        backHref="/dashboard/admin/kyc"
         title={displayName(submission.user)}
         description={`${IDENTITY_LABELS[submission.identity_type]} · ${submission.identity_number} — submitted ${formatDateTime(submission.submittedAt)}`}
         action={<StatusBadge label={overall.label} className={overall.className} />}

@@ -66,6 +66,7 @@ export default function AdminShipmentDetailPage() {
   return (
     <div>
       <PageHeader
+        backHref="/dashboard/admin/shipments"
         title={shipment.reference}
         description={`Booked ${formatDateTime(shipment.createdAt)}${shipment.user ? ` by ${displayName(shipment.user)}` : ""}`}
         action={
@@ -168,7 +169,7 @@ export default function AdminShipmentDetailPage() {
         </div>
       </div>
 
-      <TransitionDialog shipmentId={shipmentId} open={isTransitionOpen} onClose={() => setIsTransitionOpen(false)} />
+      <TransitionDialog shipmentId={shipmentId} currentStatus={shipment.status} open={isTransitionOpen} onClose={() => setIsTransitionOpen(false)} />
       <EditShipmentDialog shipment={shipment} open={isEditOpen} onClose={() => setIsEditOpen(false)} />
     </div>
   );

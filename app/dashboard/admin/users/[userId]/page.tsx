@@ -70,6 +70,7 @@ export default function AdminUserDetailPage() {
   return (
     <div>
       <PageHeader
+        backHref="/dashboard/admin/users"
         title={displayName(user)}
         description={user.email}
         action={
