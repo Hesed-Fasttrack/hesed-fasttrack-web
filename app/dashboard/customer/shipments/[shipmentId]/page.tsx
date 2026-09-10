@@ -28,6 +28,22 @@ const InfoRow = function ({ label, value }: { label: string; value: React.ReactN
   );
 };
 
+const CopyButton = function ({ label, value }: { label: string; value: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={`Copy ${label.toLowerCase()}`}
+      onClick={() => {
+        navigator.clipboard.writeText(value);
+        showToast("success", `${label} copied`);
+      }}
+      className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-6 items-center justify-center rounded-md transition-colors"
+    >
+      <Copy className="size-3.5" />
+    </button>
+  );
+};
+
 export default function CustomerShipmentDetailPage() {
   const { shipmentId = "" } = useParams<{ shipmentId: string }>();
   const router = useRouter();
@@ -127,6 +143,15 @@ export default function CustomerShipmentDetailPage() {
         <div className="rounded-2xl border border-line bg-white p-5">
           <p className="text-sm font-semibold text-foreground">Details</p>
           <div className="mt-2 divide-y divide-line">
+            <InfoRow
+              label="Reference"
+              value={
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="font-mono">{shipment.reference}</span>
+                  <CopyButton label="Reference" value={shipment.reference} />
+                </span>
+              }
+            />
             <InfoRow label="From" value={`${shipment.origin.contact_name} — ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}`} />
             <InfoRow label="To" value={`${shipment.destination.contact_name} — ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}`} />
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
@@ -137,17 +162,7 @@ export default function CustomerShipmentDetailPage() {
                 value={
                   <span className="inline-flex items-center gap-1.5">
                     <span className="font-mono">{shipment.courier_tracking_number}</span>
-                    <button
-                      type="button"
-                      aria-label="Copy tracking number"
-                      onClick={() => {
-                        navigator.clipboard.writeText(shipment.courier_tracking_number as string);
-                        showToast("success", "Tracking number copied");
-                      }}
-                      className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-6 items-center justify-center rounded-md transition-colors"
-                    >
-                      <Copy className="size-3.5" />
-                    </button>
+                    <CopyButton label="Tracking number" value={shipment.courier_tracking_number} />
                   </span>
                 }
               />
