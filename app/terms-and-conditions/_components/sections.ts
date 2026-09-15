@@ -73,6 +73,6 @@ export const TERMS_SECTIONS: LegalSection[] = [
   },
   {
     heading: "Contact",
-    paragraphs: ["For questions about these terms, email support@hesedfasttrack.com or call 0807 064 8120."],
+    paragraphs: ["For questions about these terms, email support@hesedfastrack.com or call 0807 064 8120."],
   },
 ];

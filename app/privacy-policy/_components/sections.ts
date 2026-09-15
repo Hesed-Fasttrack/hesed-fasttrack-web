@@ -54,6 +54,6 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
   },
   {
     heading: "Contact",
-    paragraphs: ["Questions about this policy or your data? Email support@hesedfasttrack.com or visit our Support page for phone contacts and office addresses."],
+    paragraphs: ["Questions about this policy or your data? Email support@hesedfastrack.com or visit our Support page for phone contacts and office addresses."],
   },
 ];

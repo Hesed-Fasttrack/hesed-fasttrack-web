@@ -1,12 +1,12 @@
 "use client";
 
 import { FormInput } from "@/components/form/form-input";
+import { AppDialog } from "@/components/shared/app-dialog";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
-import { AppDialog } from "@/components/shared/app-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
@@ -162,7 +162,7 @@ export default function AdminManagementPage() {
       >
         <form id="create-admin-form" onSubmit={handleSubmit(data => createAdmin(data))} className="space-y-4">
           <FormInput<CreateAdminFormValues> control={control} name="full_name" errors={errors} label="Full name" icon={UserRound} placeholder="Ops Admin" />
-          <FormInput<CreateAdminFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="ops@hesedfasttrack.com" />
+          <FormInput<CreateAdminFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="ops@hesedfastrack.com" />
           <FormInput<CreateAdminFormValues> control={control} name="password" errors={errors} label="Temporary password" type="password" icon={Lock} placeholder="At least 8 characters" />
         </form>
       </AppDialog>

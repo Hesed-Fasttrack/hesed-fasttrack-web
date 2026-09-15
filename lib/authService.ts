@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { accessTokenExpiration } from "./api";
 
 export const isProd = process.env.NODE_ENV === "production";
-export const COOKIE_DOMAIN = ".hesedfasttrack.com";
+export const COOKIE_DOMAIN = ".hesedfastrack.com";
 
 export type SessionRole = "CUSTOMER" | "ADMIN" | "SUPER_ADMIN";
 

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 
 const SITE_NAME = "HESED FastTrack";
 const SITE_DESCRIPTION = "Ship faster, track easily, deliver safely. Compare courier rates, book domestic and international shipments, and track every delivery from one place.";
-const SITE_URL = "https://hesedfasttrack.com";
+const SITE_URL = "https://hesedfastrack.com";
 
 export const viewport: Viewport = {
   themeColor: "#6D2FA4",

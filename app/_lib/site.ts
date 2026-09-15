@@ -1,7 +1,7 @@
 export const SITE = {
   name: "HESED FastTrack",
   tagline: "Ship Faster. Track Easily. Deliver Safely.",
-  supportEmail: "support@hesedfasttrack.com",
+  supportEmail: "support@hesedfastrack.com",
   phones: {
     customerService: { label: "Customer service", number: "0807 064 8120" },
     salesOyin: { label: "Sales — Oyin", number: "0708 224 5801" },
