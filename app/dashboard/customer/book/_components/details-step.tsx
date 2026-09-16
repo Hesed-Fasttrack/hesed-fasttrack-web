@@ -1,5 +1,6 @@
 "use client";
 
+import { AddressFormDialog } from "@/app/dashboard/customer/addresses/_components/address-form-dialog";
 import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { ParcelDialog } from "@/components/shared/parcel-dialog";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,6 @@ import { useBookingStore } from "@/store/booking";
 import type { Address, FulfilmentType, ShipmentPurpose } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { Building2, Pencil, Plus, Trash2, Truck } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 const PURPOSES: { value: ShipmentPurpose; label: string }[] = [
@@ -32,9 +32,16 @@ const formatAddress = (address: Address) => `${address.contact_name} — ${addre
 export const DetailsStep = function () {
   const { senderAddress, receiverAddress, fulfilmentType, purpose, parcels, setSenderAddress, setReceiverAddress, setFulfilmentType, setPurpose, upsertParcel, removeParcel, setStep } = useBookingStore();
   const [editingParcel, setEditingParcel] = useState<number | null | "new">(null);
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
 
   const { data: addressesData } = useGetData<APIResponse<Address[]>>({ url: API_ENDPOINTS.customer.addresses.list });
   const addresses = addressesData?.data ?? [];
+
+  // A freshly created address slots into whichever side is still empty.
+  const handleAddressCreated = function (created: Address) {
+    if (!senderAddress) setSenderAddress(created);
+    else if (!receiverAddress) setReceiverAddress(created);
+  };
 
   const handleContinue = function () {
     if (!senderAddress || !receiverAddress) return showToast("warning", "Choose both a sender and a receiver address");
@@ -48,16 +55,14 @@ export const DetailsStep = function () {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="rounded-2xl border border-line bg-white p-5">
-        <p className="text-sm font-semibold text-foreground">Route</p>
-        {addresses.length === 0 && (
-          <p className="mt-2 text-sm text-muted-foreground">
-            No saved addresses yet —{" "}
-            <Link href="/dashboard/customer/addresses" className="font-medium text-brand hover:underline">
-              add one first
-            </Link>
-            .
-          </p>
-        )}
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-foreground">Route</p>
+          <Button variant="outline" size="sm" onClick={() => setIsAddingAddress(true)}>
+            <Plus />
+            New address
+          </Button>
+        </div>
+        {addresses.length === 0 && <p className="mt-2 text-sm text-muted-foreground">No saved addresses yet — create one right here with the button above.</p>}
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <AppSimpleSelect
             label="Sender"
@@ -150,6 +155,8 @@ export const DetailsStep = function () {
         onSave={parcel => upsertParcel(typeof editingParcel === "number" ? editingParcel : null, parcel)}
         onClose={() => setEditingParcel(null)}
       />
+
+      <AddressFormDialog open={isAddingAddress} address={null} onClose={() => setIsAddingAddress(false)} onCreated={handleAddressCreated} />
     </div>
   );
 };

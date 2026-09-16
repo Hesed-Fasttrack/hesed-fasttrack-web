@@ -2,7 +2,7 @@
 
 import { DashboardSidebar, type DashboardNavItem } from "@/components/shared/dashboard-sidebar";
 import Cookies from "js-cookie";
-import { Banknote, History, LayoutDashboard, Package, ShieldCheck, UserRoundCog, Users } from "lucide-react";
+import { Banknote, History, LayoutDashboard, Package, Settings, ShieldCheck, UserRoundCog, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NAV_ITEMS: (DashboardNavItem & { superOnly?: boolean })[] = [
@@ -13,6 +13,7 @@ const NAV_ITEMS: (DashboardNavItem & { superOnly?: boolean })[] = [
   { label: "Withdrawals", href: "/dashboard/admin/withdrawals", icon: Banknote },
   { label: "Admins", href: "/dashboard/admin/admins", icon: UserRoundCog, superOnly: true },
   { label: "Activity", href: "/dashboard/admin/activities", icon: History, superOnly: true },
+  { label: "Settings", href: "/dashboard/admin/settings", icon: Settings },
 ];
 
 export const AdminSidebar = function ({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {

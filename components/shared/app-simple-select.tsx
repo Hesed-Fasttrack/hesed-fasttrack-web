@@ -31,7 +31,7 @@ export const AppSimpleSelect = function ({ label, options, value, onValueChange,
   const selectedLabel = options.find(option => option.value === value)?.label;
 
   return (
-    <div className={cn("flex flex-col gap-1.5", containerClassName)}>
+    <div className={cn("flex min-w-0 flex-col gap-1.5", containerClassName)}>
       {label && <Label htmlFor={inputId}>{label}</Label>}
       <DropdownMenu>
         {triggerVariant === "ellipsis" ? (
@@ -46,7 +46,7 @@ export const AppSimpleSelect = function ({ label, options, value, onValueChange,
             aria-invalid={!!error}
             className={cn(
               // h-11 matches AppInput so mixed rows line up
-              "border-input bg-background focus-visible:ring-ring flex h-11 w-full items-center justify-between rounded-md border px-3 py-2 text-sm whitespace-nowrap shadow-xs outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+              "border-input bg-background focus-visible:ring-ring flex h-11 w-full min-w-0 items-center justify-between rounded-md border px-3 py-2 text-sm whitespace-nowrap shadow-xs outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
               !!error && "border-destructive",
               !selectedLabel && "text-muted-foreground",
               className,
@@ -56,13 +56,13 @@ export const AppSimpleSelect = function ({ label, options, value, onValueChange,
             <ChevronDown className="text-muted-foreground ml-2 h-4 w-4 shrink-0" />
           </DropdownMenuTrigger>
         )}
-        <DropdownMenuContent className={triggerVariant === "ellipsis" ? "w-40" : "min-w-(--radix-dropdown-menu-trigger-width)"} align="end">
+        <DropdownMenuContent className={triggerVariant === "ellipsis" ? "w-40" : "w-(--radix-dropdown-menu-trigger-width) max-w-[calc(100vw-2rem)]"} align="end">
           {options.map(option => {
             const Icon = optionIcons?.[option.value];
             return (
               <DropdownMenuItem key={option.value} disabled={option.disabled} onSelect={() => onValueChange?.(option.value)} className={cn("cursor-pointer gap-2", option.value === value && "text-brand font-medium")}>
                 {Icon && <Icon className="h-4 w-4" />}
-                {option.label}
+                <span className="min-w-0 truncate">{option.label}</span>
               </DropdownMenuItem>
             );
           })}

@@ -34,9 +34,10 @@ interface Props {
   open: boolean;
   address: Address | null;
   onClose: () => void;
+  onCreated?: (address: Address) => void;
 }
 
-export const AddressFormDialog = function ({ open, address, onClose }: Props) {
+export const AddressFormDialog = function ({ open, address, onClose, onCreated }: Props) {
   const [country, setCountry] = useState("NG");
   const [stateCode, setStateCode] = useState("");
 
@@ -94,12 +95,15 @@ export const AddressFormDialog = function ({ open, address, onClose }: Props) {
 
   const isEditing = !!address;
 
-  const { mutate: saveAddress, isPending } = useSubmitData<AddressFormValues & { country: string }, unknown>({
+  const { mutate: saveAddress, isPending } = useSubmitData<AddressFormValues & { country: string }, APIResponse<Address>>({
     url: isEditing ? API_ENDPOINTS.customer.addresses.update(address.id) : API_ENDPOINTS.customer.addresses.create,
     method: isEditing ? "put" : "post",
     onSuccessMessage: isEditing ? "Address updated" : "Address saved",
     additionalQueryKeys: [[API_ENDPOINTS.customer.addresses.list]],
-    onSuccess: onClose,
+    onSuccess: response => {
+      if (!isEditing && response?.data) onCreated?.(response.data);
+      onClose();
+    },
   });
 
   const onSubmit = function (data: AddressFormValues) {
