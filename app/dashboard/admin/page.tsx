@@ -10,11 +10,29 @@ import { formatNaira } from "@/lib/format";
 import { SHIPMENT_STATUS, type ShipmentStatus } from "@/lib/statuses";
 import type { AdminStats } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
+import Cookies from "js-cookie";
 import { Banknote, Package, ShieldCheck, TrendingUp, Users, Wallet } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function AdminOverviewPage() {
-  const { data, isFetching } = useGetData<APIResponse<AdminStats>>({ url: API_ENDPOINTS.admin.stats });
+  const router = useRouter();
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  // Stats are confidential — regular admins land on their work queue instead.
+  useEffect(() => {
+    if (Cookies.get("session_type") !== "SUPER_ADMIN") {
+      router.replace("/dashboard/admin/shipments");
+      return;
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsSuperAdmin(true);
+  }, [router]);
+
+  const { data, isFetching } = useGetData<APIResponse<AdminStats>>({ url: API_ENDPOINTS.admin.stats, shouldFetch: isSuperAdmin });
   const stats = data?.data;
+
+  if (!isSuperAdmin) return null;
 
   return (
     <div>
