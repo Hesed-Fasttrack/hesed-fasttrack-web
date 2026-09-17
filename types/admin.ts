@@ -59,9 +59,11 @@ export interface SnapshotAddress {
   contact_name: string;
   contact_phone?: string;
   line1: string;
+  line2?: string | null;
   city: string;
   state: string;
   country: string;
+  postal_code?: string | null;
 }
 
 export interface AdminShipment {
