@@ -10,7 +10,7 @@ import { formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import type { ShipmentItem, ShipmentParcel } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const EMPTY_ITEM = { name: "", category: "", value: "", quantity: "1", weight: "" };
@@ -26,6 +26,7 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
   const [dims, setDims] = useState({ length: "", width: "", height: "" });
   const [items, setItems] = useState<ShipmentItem[]>([]);
   const [draft, setDraft] = useState(EMPTY_ITEM);
+  const [editingItem, setEditingItem] = useState<number | null>(null);
   const debouncedCategory = useDebounce(draft.category, 300);
 
   const { data: categoriesData } = useGetData<APIResponse<string[]>>({
@@ -44,7 +45,22 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
       setItems([]);
     }
     setDraft(EMPTY_ITEM);
+    setEditingItem(null);
   }, [open, parcel]);
+
+  const handleEditItem = function (index: number) {
+    const item = items[index];
+    setDraft({ name: item.name, category: item.category, value: String(item.value_minor / 100), quantity: String(item.quantity), weight: String(item.weight_kg) });
+    setEditingItem(index);
+  };
+
+  const handleRemoveItem = function (index: number) {
+    setItems(current => current.filter((_, i) => i !== index));
+    if (editingItem === index) {
+      setDraft(EMPTY_ITEM);
+      setEditingItem(null);
+    }
+  };
 
   const handleAddItem = function () {
     const value = Number(draft.value);
@@ -57,8 +73,13 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
     if (!quantity || quantity < 1) return showToast("warning", "Quantity must be at least 1");
     if (!weight || weight <= 0) return showToast("warning", "Enter the line's total weight");
 
-    setItems(current => [...current, { name: draft.name.trim(), category: draft.category.trim(), value_minor: Math.round(value * 100), quantity, weight_kg: weight }]);
+    const entry = { name: draft.name.trim(), category: draft.category.trim(), value_minor: Math.round(value * 100), quantity, weight_kg: weight };
+
+    if (editingItem !== null) setItems(current => current.map((item, i) => (i === editingItem ? entry : item)));
+    else setItems(current => [...current, entry]);
+
     setDraft(EMPTY_ITEM);
+    setEditingItem(null);
   };
 
   const handleSave = function () {
@@ -98,7 +119,7 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
         {items.length > 0 && (
           <ul className="divide-y divide-line rounded-xl border border-line">
             {items.map((item, index) => (
-              <li key={`${item.name}-${index}`} className="flex items-center justify-between gap-3 px-4 py-3">
+              <li key={`${item.name}-${index}`} className={`flex items-center justify-between gap-3 px-4 py-3 ${editingItem === index ? "bg-brand-muted/30" : ""}`}>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-foreground">
                     {item.quantity}× {item.name}
@@ -107,16 +128,21 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
                     {item.category} · {item.weight_kg}kg · {formatNaira(item.value_minor)}
                   </p>
                 </div>
-                <Button size="icon-sm" variant="ghost" aria-label="Remove item" onClick={() => setItems(current => current.filter((_, i) => i !== index))}>
-                  <Trash2 className="text-danger" />
-                </Button>
+                <div className="flex gap-1">
+                  <Button size="icon-sm" variant="ghost" aria-label="Edit item" onClick={() => handleEditItem(index)}>
+                    <Pencil />
+                  </Button>
+                  <Button size="icon-sm" variant="ghost" aria-label="Remove item" onClick={() => handleRemoveItem(index)}>
+                    <Trash2 className="text-danger" />
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>
         )}
 
         <div className="space-y-3 rounded-xl border border-line bg-canvas p-4">
-          <p className="text-sm font-semibold text-foreground">Add an item</p>
+          <p className="text-sm font-semibold text-foreground">{editingItem !== null ? "Edit item" : "Add an item"}</p>
           <div className="grid gap-3 sm:grid-cols-2">
             <AppInput label="Item" placeholder="Leather shoes" value={draft.name} onChange={event => setDraft({ ...draft, name: event.target.value })} />
             <div className="relative">
@@ -138,8 +164,21 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
             <AppInput label="Total kg" type="number" min={0.1} step="0.1" value={draft.weight} onChange={event => setDraft({ ...draft, weight: event.target.value })} />
           </div>
           <Button type="button" variant="outline" size="sm" onClick={handleAddItem}>
-            Add item
+            {editingItem !== null ? "Update item" : "Add item"}
           </Button>
+          {editingItem !== null && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setDraft(EMPTY_ITEM);
+                setEditingItem(null);
+              }}
+            >
+              Cancel edit
+            </Button>
+          )}
         </div>
       </div>
     </AppDialog>
