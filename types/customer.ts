@@ -61,7 +61,9 @@ export interface CourierQuote {
   eta_days: { min: number; max: number };
 }
 
-export type ShipmentPurpose = "PERSONAL" | "COMMERCIAL" | "GIFT" | "DOCUMENTS";
+export type ShipmentPurpose = "PERSONAL" | "COMMERCIAL" | "GIFT" | "DOCUMENTS" | "RETURN";
+
+export type PackageType = "DOCUMENT" | "PACKAGE";
 export type FulfilmentType = "PICKUP" | "DROP_OFF";
 
 // One declared line inside a box. weight_kg is the line's total, not per unit.
@@ -107,6 +109,7 @@ export interface CustomerShipment {
   destination: ShipmentAddressSnapshot;
   parcels: ShipmentParcel[];
   purpose: ShipmentPurpose;
+  package_type?: PackageType;
   fulfilment_type: FulfilmentType;
   pickup_date: string | null;
   eta_min_days: number | null;
@@ -152,11 +155,20 @@ export interface CityOption {
   name: string;
 }
 
+// DOCUMENTS is legacy: still labelled for old shipments, no longer offered.
 export const SHIPMENT_PURPOSES: { value: ShipmentPurpose; label: string }[] = [
-  { value: "PERSONAL", label: "Personal effects" },
-  { value: "COMMERCIAL", label: "Commercial goods" },
-  { value: "GIFT", label: "Gift" },
+  { value: "PERSONAL", label: "Personal (items are not for sale)" },
+  { value: "COMMERCIAL", label: "Commercial (items are for sale)" },
+  { value: "GIFT", label: "Gift (items are gifted to the receiver)" },
+  { value: "RETURN", label: "Return (items are being sent back)" },
   { value: "DOCUMENTS", label: "Documents" },
+];
+
+export const BOOKABLE_PURPOSES = SHIPMENT_PURPOSES.filter(entry => entry.value !== "DOCUMENTS");
+
+export const PACKAGE_TYPES: { value: PackageType; label: string }[] = [
+  { value: "PACKAGE", label: "Package (physical goods)" },
+  { value: "DOCUMENT", label: "Document (papers only)" },
 ];
 
 export type NotificationType = "INFO" | "SUCCESS" | "WARNING" | "ERROR" | "SHIPMENT_STATUS" | "PAYMENT" | "WALLET" | "KYC" | "PROMO" | "MESSAGE";

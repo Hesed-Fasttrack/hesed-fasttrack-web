@@ -33,7 +33,7 @@ const SummaryRow = function ({ label, value }: { label: string; value: string })
 
 export const ConfirmStep = function () {
   const router = useRouter();
-  const { senderAddress, receiverAddress, fulfilmentType, purpose, parcels, quote, setStep, reset } = useBookingStore();
+  const { senderAddress, receiverAddress, fulfilmentType, purpose, packageType, parcels, quote, setStep, reset } = useBookingStore();
   const [pickupKey, setPickupKey] = useState(PICKUP_OPTIONS[0].key);
 
   const isDropOff = fulfilmentType === "DROP_OFF";
@@ -69,6 +69,7 @@ export const ConfirmStep = function () {
       sender_address_id: senderAddress.id,
       receiver_address_id: receiverAddress.id,
       purpose,
+      package_type: packageType ?? "PACKAGE",
       fulfilment_type: fulfilmentType,
       parcels,
       pickup_date: isDropOff ? undefined : pickup?.date.toISOString(),

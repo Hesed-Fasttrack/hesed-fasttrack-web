@@ -10,17 +10,13 @@ import { formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import { cn } from "@/lib/utils";
 import { useBookingStore } from "@/store/booking";
-import type { Address, FulfilmentType, ShipmentPurpose } from "@/types/customer";
+import type { Address, FulfilmentType, PackageType, ShipmentPurpose } from "@/types/customer";
+import { BOOKABLE_PURPOSES, PACKAGE_TYPES } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Building2, Pencil, Plus, Trash2, Truck } from "lucide-react";
+import { Building2, FileText, Package, Pencil, Plus, Trash2, Truck } from "lucide-react";
 import { useState } from "react";
 
-const PURPOSES: { value: ShipmentPurpose; label: string }[] = [
-  { value: "PERSONAL", label: "Personal belongings" },
-  { value: "COMMERCIAL", label: "Commercial goods" },
-  { value: "GIFT", label: "Gift" },
-  { value: "DOCUMENTS", label: "Documents" },
-];
+const PACKAGE_TYPE_ICONS: Record<PackageType, typeof Package> = { PACKAGE: Package, DOCUMENT: FileText };
 
 const FULFILMENT_OPTIONS: { value: FulfilmentType; label: string; description: string; icon: typeof Truck }[] = [
   { value: "DROP_OFF", label: "Drop off at our office", description: "Bring your parcel in — we verify it, then you pay in-app.", icon: Building2 },
@@ -30,7 +26,7 @@ const FULFILMENT_OPTIONS: { value: FulfilmentType; label: string; description: s
 const formatAddress = (address: Address) => `${address.contact_name} — ${address.line1}, ${address.city}, ${address.state}`;
 
 export const DetailsStep = function () {
-  const { senderAddress, receiverAddress, fulfilmentType, purpose, parcels, setSenderAddress, setReceiverAddress, setFulfilmentType, setPurpose, upsertParcel, removeParcel, setStep } = useBookingStore();
+  const { senderAddress, receiverAddress, fulfilmentType, purpose, packageType, parcels, setSenderAddress, setReceiverAddress, setFulfilmentType, setPurpose, setPackageType, upsertParcel, removeParcel, setStep } = useBookingStore();
   const [editingParcel, setEditingParcel] = useState<number | null | "new">(null);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
 
@@ -47,6 +43,7 @@ export const DetailsStep = function () {
     if (!senderAddress || !receiverAddress) return showToast("warning", "Choose both a sender and a receiver address");
     if (senderAddress.id === receiverAddress.id) return showToast("warning", "Sender and receiver can't be the same address");
     if (!fulfilmentType) return showToast("warning", "Choose pickup or drop-off");
+    if (!packageType) return showToast("warning", "Are you shipping a package or a document?");
     if (!purpose) return showToast("warning", "What is this shipment for?");
     if (parcels.length === 0) return showToast("warning", "Add at least one parcel");
     setStep("rates");
@@ -104,8 +101,30 @@ export const DetailsStep = function () {
       </div>
 
       <div className="rounded-2xl border border-line bg-white p-5">
+        <p className="text-sm font-semibold text-foreground">What are you shipping?</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {PACKAGE_TYPES.map(option => {
+            const Icon = PACKAGE_TYPE_ICONS[option.value];
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setPackageType(option.value)}
+                className={cn("flex items-center gap-3 rounded-xl border p-4 text-left transition-colors", packageType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:bg-muted")}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted">
+                  <Icon className="h-5 w-5 text-brand" />
+                </div>
+                <p className="text-sm font-semibold text-foreground">{option.label}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-line bg-white p-5">
         <p className="text-sm font-semibold text-foreground">Purpose of shipment</p>
-        <AppSimpleSelect containerClassName="mt-3 sm:w-72" placeholder="What are you shipping this as?" value={purpose ?? ""} onValueChange={value => setPurpose(value as ShipmentPurpose)} options={PURPOSES} />
+        <AppSimpleSelect containerClassName="mt-3 sm:w-96" placeholder="What are you shipping this as?" value={purpose ?? ""} onValueChange={value => setPurpose(value as ShipmentPurpose)} options={BOOKABLE_PURPOSES} />
       </div>
 
       <div className="rounded-2xl border border-line bg-white p-5">

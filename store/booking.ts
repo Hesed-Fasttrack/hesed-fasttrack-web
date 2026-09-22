@@ -1,4 +1,4 @@
-import type { Address, CourierQuote, FulfilmentType, ShipmentParcel, ShipmentPurpose } from "@/types/customer";
+import type { Address, CourierQuote, FulfilmentType, PackageType, ShipmentParcel, ShipmentPurpose } from "@/types/customer";
 import { create } from "zustand";
 
 // The booking wizard's working state, shared across its steps.
@@ -8,6 +8,7 @@ interface BookingState {
   receiverAddress: Address | null;
   fulfilmentType: FulfilmentType | null;
   purpose: ShipmentPurpose | null;
+  packageType: PackageType | null;
   parcels: ShipmentParcel[];
   quote: CourierQuote | null;
   setStep: (step: BookingState["step"]) => void;
@@ -15,6 +16,7 @@ interface BookingState {
   setReceiverAddress: (address: Address) => void;
   setFulfilmentType: (fulfilmentType: FulfilmentType) => void;
   setPurpose: (purpose: ShipmentPurpose) => void;
+  setPackageType: (packageType: PackageType) => void;
   upsertParcel: (index: number | null, parcel: ShipmentParcel) => void;
   removeParcel: (index: number) => void;
   setQuote: (quote: CourierQuote) => void;
@@ -27,6 +29,7 @@ const initialState = {
   receiverAddress: null,
   fulfilmentType: null,
   purpose: null,
+  packageType: null,
   parcels: [],
   quote: null,
 };
@@ -39,6 +42,7 @@ export const useBookingStore = create<BookingState>(set => ({
   setReceiverAddress: address => set({ receiverAddress: address }),
   setFulfilmentType: fulfilmentType => set({ fulfilmentType }),
   setPurpose: purpose => set({ purpose }),
+  setPackageType: packageType => set({ packageType }),
 
   upsertParcel: (index, parcel) =>
     set(state => ({
