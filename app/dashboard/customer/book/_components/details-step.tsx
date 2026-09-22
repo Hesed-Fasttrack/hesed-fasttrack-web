@@ -18,9 +18,10 @@ import { useState } from "react";
 
 const PACKAGE_TYPE_ICONS: Record<PackageType, typeof Package> = { PACKAGE: Package, DOCUMENT: FileText };
 
-const FULFILMENT_OPTIONS: { value: FulfilmentType; label: string; description: string; icon: typeof Truck }[] = [
+const FULFILMENT_OPTIONS: { value: FulfilmentType; label: string; description: string; icon: typeof Truck; comingSoon?: boolean }[] = [
   { value: "DROP_OFF", label: "Drop off at our office", description: "Bring your parcel in — we verify it, then you pay in-app.", icon: Building2 },
-  { value: "PICKUP", label: "Courier pickup", description: "The courier collects from the sender's address. Paid at booking.", icon: Truck },
+  // Launch decision: drop-off only until pickup operations are ready.
+  { value: "PICKUP", label: "Courier pickup", description: "The courier collects from the sender's address. Paid at booking.", icon: Truck, comingSoon: true },
 ];
 
 const formatAddress = (address: Address) => `${address.contact_name} — ${address.line1}, ${address.city}, ${address.state}`;
@@ -85,14 +86,22 @@ export const DetailsStep = function () {
             <button
               key={option.value}
               type="button"
+              disabled={option.comingSoon}
               onClick={() => setFulfilmentType(option.value)}
-              className={cn("flex items-start gap-3 rounded-xl border p-4 text-left transition-colors", fulfilmentType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:bg-muted")}
+              className={cn(
+                "flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
+                fulfilmentType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:bg-muted",
+                option.comingSoon && "cursor-not-allowed opacity-60 hover:bg-transparent",
+              )}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted">
                 <option.icon className="h-5 w-5 text-brand" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-foreground">{option.label}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-foreground">{option.label}</p>
+                  {option.comingSoon && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Coming soon</span>}
+                </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">{option.description}</p>
               </div>
             </button>
