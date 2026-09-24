@@ -15,6 +15,7 @@ import type { APIResponse } from "@/types/response";
 import { MapPin, Package, PackagePlus, Wallet as WalletIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { SurveyPromptCard } from "./_components/survey-prompt-card";
 
 const QUICK_ACTIONS = [
   { label: "Book a shipment", href: "/dashboard/customer/book", icon: PackagePlus },
@@ -36,6 +37,7 @@ export default function CustomerOverviewPage() {
 
   return (
     <div>
+      <SurveyPromptCard />
       <PageHeader
         title={`Hello${profile?.first_name ? `, ${profile.first_name}` : ""}`}
         description="Ship, pay and track — all from here."

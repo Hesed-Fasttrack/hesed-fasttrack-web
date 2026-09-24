@@ -173,6 +173,35 @@ export const PACKAGE_TYPES: { value: PackageType; label: string }[] = [
 
 export type NotificationType = "INFO" | "SUCCESS" | "WARNING" | "ERROR" | "SHIPMENT_STATUS" | "PAYMENT" | "WALLET" | "KYC" | "PROMO" | "MESSAGE";
 
+export type SurveyFrequency = "FIRST_TIME" | "OCCASIONALLY" | "MONTHLY" | "WEEKLY";
+
+export const SURVEY_FREQUENCIES: { value: SurveyFrequency; label: string }[] = [
+  { value: "FIRST_TIME", label: "This was my first shipment" },
+  { value: "OCCASIONALLY", label: "Occasionally" },
+  { value: "MONTHLY", label: "A few times a month" },
+  { value: "WEEKLY", label: "Weekly or more" },
+];
+
+export interface SurveyResponse {
+  id: string;
+  satisfaction: number;
+  booking_ease: number;
+  delivery: number;
+  nps: number;
+  frequency: SurveyFrequency;
+  improvements: string | null;
+  createdAt: string;
+  user?: { id: string; first_name: string | null; last_name: string | null; email: string };
+}
+
+export interface SurveySummary {
+  total: number;
+  avg_satisfaction: number | null;
+  avg_booking_ease: number | null;
+  avg_delivery: number | null;
+  avg_nps: number | null;
+}
+
 export interface CustomerNotification {
   id: string;
   type: NotificationType;

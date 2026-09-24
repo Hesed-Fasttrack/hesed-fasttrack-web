@@ -58,6 +58,9 @@ export const API_ENDPOINTS = {
     activities: {
       list: (query = "") => `/admin/activities${query}`,
     },
+    surveys: {
+      list: (query = "") => `/admin/surveys${query}`,
+    },
   },
 
   customer: {
@@ -97,6 +100,10 @@ export const API_ENDPOINTS = {
     kyc: {
       status: "/customer/kyc",
       submit: "/customer/kyc",
+    },
+    survey: {
+      status: "/customer/survey/status",
+      submit: "/customer/survey",
     },
     notifications: {
       list: (query = "") => `/notifications${query}`,

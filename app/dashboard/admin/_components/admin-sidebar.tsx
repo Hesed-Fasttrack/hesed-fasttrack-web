@@ -2,7 +2,7 @@
 
 import { DashboardSidebar, type DashboardNavItem } from "@/components/shared/dashboard-sidebar";
 import Cookies from "js-cookie";
-import { Banknote, History, LayoutDashboard, Package, Settings, ShieldCheck, UserRoundCog, Users } from "lucide-react";
+import { Banknote, History, LayoutDashboard, MessageSquareHeart, Package, Settings, ShieldCheck, UserRoundCog, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NAV_ITEMS: (DashboardNavItem & { superOnly?: boolean })[] = [
@@ -15,6 +15,7 @@ const NAV_ITEMS: (DashboardNavItem & { superOnly?: boolean })[] = [
   { label: "Withdrawals", href: "/dashboard/admin/withdrawals", icon: Banknote, superOnly: true },
   { label: "Admins", href: "/dashboard/admin/admins", icon: UserRoundCog, superOnly: true },
   { label: "Activity", href: "/dashboard/admin/activities", icon: History, superOnly: true },
+  { label: "Surveys", href: "/dashboard/admin/surveys", icon: MessageSquareHeart, superOnly: true },
   { label: "Settings", href: "/dashboard/admin/settings", icon: Settings },
 ];
 
