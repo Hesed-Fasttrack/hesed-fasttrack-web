@@ -61,7 +61,7 @@ export const RatesStep = function () {
                 key={`${option.courier_code}-${option.service_code}`}
                 type="button"
                 onClick={() => setQuote(option)}
-                className={cn("flex w-full items-center justify-between gap-4 rounded-2xl border bg-white p-5 text-left transition-colors", isSelected ? "border-brand bg-brand-muted/30" : "border-line hover:bg-muted")}
+                className={cn("flex w-full items-center justify-between gap-4 rounded-2xl border p-5 text-left transition-colors", isSelected ? "border-brand bg-brand-muted" : "border-line bg-white hover:bg-muted")}
               >
                 <div>
                   <p className="text-sm font-semibold text-foreground">

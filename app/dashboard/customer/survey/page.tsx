@@ -123,7 +123,7 @@ export default function SurveyPage() {
                 key={option.value}
                 type="button"
                 onClick={() => setFrequency(option.value)}
-                className={cn("rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors", frequency === option.value ? "border-brand bg-brand-muted/40 text-foreground" : "border-line text-foreground hover:bg-muted")}
+                className={cn("rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors", frequency === option.value ? "border-brand bg-brand-muted text-foreground" : "border-line text-foreground hover:bg-muted")}
               >
                 {option.label}
               </button>

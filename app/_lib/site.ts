@@ -7,6 +7,7 @@ export const SITE = {
     salesOyin: { label: "Sales — Oyin", number: "0708 224 5801" },
     salesPrecious: { label: "Sales — Precious", number: "0913 836 2185" },
   },
+  whatsapp: { display: "+234 708 224 5801", href: "https://wa.me/2347082245801" },
   addresses: {
     operations: "Shop 5, NAHCO Export Car Park, Murtala Muhammed International Airport Road, Ikeja, Lagos, Nigeria",
     office: "14/16, Isolo Way, Beside UBA Bank, Lagos, Nigeria",

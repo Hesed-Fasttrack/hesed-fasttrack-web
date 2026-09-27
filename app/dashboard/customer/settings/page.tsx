@@ -5,6 +5,8 @@ import { AppDialog } from "@/components/shared/app-dialog";
 import { AppInput } from "@/components/shared/app-input";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { clearAuthCookies } from "@/lib/authService";
@@ -44,6 +46,7 @@ export default function CustomerSettingsPage() {
   const { profile } = useGetProfile();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
+  const [deleteReason, setDeleteReason] = useState("");
 
   const profileForm = useForm<ProfileFormValues>({ resolver: zodResolver(profileSchema), defaultValues: { first_name: "", last_name: "", phone_no: "" } });
   const passwordForm = useForm<PasswordFormValues>({ resolver: zodResolver(passwordSchema) });
@@ -68,7 +71,7 @@ export default function CustomerSettingsPage() {
     onSuccess: () => passwordForm.reset(),
   });
 
-  const { mutate: deleteAccount, isPending: isDeleting } = useSubmitData<{ password: string }, unknown>({
+  const { mutate: deleteAccount, isPending: isDeleting } = useSubmitData<{ password: string; reason: string }, unknown>({
     url: API_ENDPOINTS.auth.deleteAccount,
     onSuccessMessage: "Your account has been deleted",
     onSuccess: () => {
@@ -79,7 +82,8 @@ export default function CustomerSettingsPage() {
 
   const handleDelete = function () {
     if (!deletePassword) return showToast("warning", "Confirm with your password");
-    deleteAccount({ password: deletePassword });
+    if (deleteReason.trim().length < 5) return showToast("warning", "Tell us why you're leaving");
+    deleteAccount({ password: deletePassword, reason: deleteReason.trim() });
   };
 
   return (
@@ -140,7 +144,14 @@ export default function CustomerSettingsPage() {
           </>
         }
       >
-        <AppInput label="Confirm with your password" type="password" value={deletePassword} onChange={event => setDeletePassword(event.target.value)} />
+        <div className="space-y-4">
+          <AppInput label="Confirm with your password" type="password" value={deletePassword} onChange={event => setDeletePassword(event.target.value)} />
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="delete-reason">Why are you leaving?</Label>
+            <Textarea id="delete-reason" placeholder="Tell us what didn't work for you" value={deleteReason} onChange={event => setDeleteReason(event.target.value)} rows={3} />
+          </div>
+        </div>
       </AppDialog>
     </div>
   );

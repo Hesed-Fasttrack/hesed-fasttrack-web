@@ -60,12 +60,8 @@ export default function CustomerOverviewPage() {
           </Button>
         </div>
 
-        {QUICK_ACTIONS.map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            className="hidden items-center gap-4 rounded-2xl border border-line bg-white p-6 transition-colors hover:border-brand lg:flex"
-          >
+        {QUICK_ACTIONS.map(action => (
+          <Link key={action.href} href={action.href} className="hidden items-center gap-4 rounded-2xl border border-line bg-white p-6 transition-colors hover:border-brand lg:flex">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-muted">
               <action.icon className="h-5 w-5 text-brand" />
             </div>
@@ -98,14 +94,10 @@ export default function CustomerOverviewPage() {
           </div>
         ) : (
           <ul className="divide-y divide-line">
-            {shipments.map((shipment) => {
+            {shipments.map(shipment => {
               const status = SHIPMENT_STATUS[shipment.status];
               return (
-                <li
-                  key={shipment.id}
-                  className="flex cursor-pointer flex-wrap items-center justify-between gap-3 px-5 py-4 hover:bg-canvas"
-                  onClick={() => router.push(`/dashboard/customer/shipments/${shipment.id}`)}
-                >
+                <li key={shipment.id} className="flex cursor-pointer flex-wrap items-center justify-between gap-3 px-5 py-4 hover:bg-canvas" onClick={() => router.push(`/dashboard/customer/shipments/${shipment.id}`)}>
                   <div>
                     <p className="font-mono text-xs font-semibold text-foreground">{shipment.reference}</p>
                     <p className="mt-0.5 text-sm text-muted-foreground">

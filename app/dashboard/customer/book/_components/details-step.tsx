@@ -90,11 +90,11 @@ export const DetailsStep = function () {
               onClick={() => setFulfilmentType(option.value)}
               className={cn(
                 "flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
-                fulfilmentType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:bg-muted",
+                fulfilmentType === option.value ? "border-brand bg-brand-muted" : "border-line hover:bg-muted",
                 option.comingSoon && "cursor-not-allowed opacity-60 hover:bg-transparent",
               )}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted">
+              <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg", fulfilmentType === option.value ? "bg-white" : "bg-brand-muted")}>
                 <option.icon className="h-5 w-5 text-brand" />
               </div>
               <div>
@@ -119,9 +119,9 @@ export const DetailsStep = function () {
                 key={option.value}
                 type="button"
                 onClick={() => setPackageType(option.value)}
-                className={cn("flex items-center gap-3 rounded-xl border p-4 text-left transition-colors", packageType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:bg-muted")}
+                className={cn("flex items-center gap-3 rounded-xl border p-4 text-left transition-colors", packageType === option.value ? "border-brand bg-brand-muted" : "border-line hover:bg-muted")}
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted">
+                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg", packageType === option.value ? "bg-white" : "bg-brand-muted")}>
                   <Icon className="h-5 w-5 text-brand" />
                 </div>
                 <p className="text-sm font-semibold text-foreground">{option.label}</p>

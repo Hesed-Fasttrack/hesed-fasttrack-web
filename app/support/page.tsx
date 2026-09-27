@@ -2,7 +2,7 @@ import { Footer } from "@/app/_components/footer";
 import { Header } from "@/app/_components/header";
 import { buildPageMetadata } from "@/app/_lib/metadata";
 import { SITE } from "@/app/_lib/site";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 export const metadata = buildPageMetadata({
   path: "/support",
@@ -11,6 +11,10 @@ export const metadata = buildPageMetadata({
 });
 
 const FAQS = [
+  {
+    q: "How do I ship a package?",
+    a: "Sign in, get a quote with your route and parcel details, then compare courier prices. Pick a rate and book with 'Drop off at our office' — once we receive and verify your parcel, pay from your wallet and shipping begins.",
+  },
   {
     q: "How do I pay for a shipment?",
     a: "Shipments are paid from your in-app wallet. Fund it once by bank transfer to your personal account number and every booking settles instantly.",
@@ -65,6 +69,17 @@ export default function SupportPage() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="rounded-2xl border border-line bg-canvas p-6 md:col-span-2">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-muted">
+              <MessageCircle className="h-5 w-5 text-brand" />
+            </div>
+            <h2 className="mt-4 text-lg font-bold text-foreground">Chat on WhatsApp</h2>
+            <a href={SITE.whatsapp.href} target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-brand hover:underline">
+              {SITE.whatsapp.display}
+            </a>
+            <p className="mt-2 text-sm text-foreground-muted">Message us directly — fastest during business hours.</p>
           </div>
 
           <div className="rounded-2xl border border-line bg-canvas p-6 md:col-span-2">
