@@ -119,7 +119,7 @@ export default function CustomerSettingsPage() {
 
         <div className="rounded-2xl border border-danger/30 bg-white p-6 lg:col-span-2">
           <p className="text-sm font-semibold text-danger">Danger zone</p>
-          <p className="mt-1 text-sm text-muted-foreground">Deleting your account is permanent — withdraw any wallet balance first.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Deleting your account is permanent. Withdraw any wallet balance first.</p>
           <Button variant="destructive" className="mt-4" onClick={() => setIsDeleteOpen(true)}>
             Delete account
           </Button>

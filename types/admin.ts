@@ -147,6 +147,6 @@ export interface AdminActivity {
 }
 
 export const displayName = function (user?: { first_name?: string | null; last_name?: string | null; email?: string } | null) {
-  if (!user) return "—";
-  return [user.first_name, user.last_name].filter(Boolean).join(" ") || user.email || "—";
+  if (!user) return "-";
+  return [user.first_name, user.last_name].filter(Boolean).join(" ") || user.email || "-";
 };

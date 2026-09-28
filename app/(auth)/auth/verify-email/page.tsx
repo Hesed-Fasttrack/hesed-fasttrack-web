@@ -28,7 +28,7 @@ export default function VerifyEmailPage() {
   const { mutate: verify, isPending } = useSubmitData<{ email: string; code: string }, APIResponse<{ user: User; token: AuthTokens }>>({
     url: API_ENDPOINTS.auth.verifyEmailOtp,
     skipAuth: true,
-    onSuccessMessage: "Email verified — welcome aboard",
+    onSuccessMessage: "Email verified. Welcome aboard",
     onSuccess: response => {
       const { user, token } = response.data;
       setAuthCookies({ tokens: { access: token.accessToken, refresh: token.refreshToken }, role: user.role });

@@ -30,7 +30,7 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
     onSuccess: response => {
       const credited = response?.data?.credited ?? 0;
       if (credited > 0) showToast("success", "Your wallet has been credited");
-      else showToast("warning", "Nothing new yet — transfers usually land within a minute. Try again shortly.");
+      else showToast("warning", "Nothing new yet. Transfers usually land within a minute. Try again shortly.");
     },
   });
 
@@ -46,7 +46,7 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Fund your wallet"
       description={
-        hasAccount ? "Transfer any amount to your personal account number below — it lands in your wallet automatically, usually within a minute." : "We'll create your personal funding account — transfers to it credit your wallet automatically."
+        hasAccount ? "Transfer any amount to your personal account number below. It lands in your wallet automatically, usually within a minute." : "We'll create your personal funding account. Transfers to it credit your wallet automatically."
       }
       dialogFooter={
         <Button variant="outline" onClick={onClose}>
@@ -68,7 +68,7 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
           </div>
           <Button variant="outline" className="w-full" onClick={() => syncFunding({})} disabled={isSyncing}>
             {isSyncing && <Loader2 className="animate-spin" />}
-            I've sent the money — check for it
+            I've sent the money, check for it
           </Button>
         </div>
       ) : (

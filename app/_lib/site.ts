@@ -4,8 +4,8 @@ export const SITE = {
   supportEmail: "support@hesedfastrack.com",
   phones: {
     customerService: { label: "Customer service", number: "0807 064 8120" },
-    salesOyin: { label: "Sales — Oyin", number: "0708 224 5801" },
-    salesPrecious: { label: "Sales — Precious", number: "0913 836 2185" },
+    salesOyin: { label: "Sales (Oyin)", number: "0708 224 5801" },
+    salesPrecious: { label: "Sales (Precious)", number: "0913 836 2185" },
   },
   whatsapp: { display: "+234 708 224 5801", href: "https://wa.me/2347082245801" },
   addresses: {

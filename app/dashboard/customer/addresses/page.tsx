@@ -65,7 +65,7 @@ export default function CustomerAddressesPage() {
       ) : addresses.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong bg-white px-5 py-16 text-center">
           <MapPin className="h-8 w-8 text-foreground-subtle" />
-          <p className="text-sm text-muted-foreground">No saved addresses yet — add the places you ship from and to.</p>
+          <p className="text-sm text-muted-foreground">No saved addresses yet. Add the places you ship from and to.</p>
           <Button
             size="sm"
             onClick={() => {

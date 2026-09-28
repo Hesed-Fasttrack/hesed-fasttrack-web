@@ -55,7 +55,7 @@ export default function AdminManagementPage() {
 
   const { mutate: createAdmin, isPending: isCreating } = useSubmitData<CreateAdminFormValues, unknown>({
     url: API_ENDPOINTS.admin.admins.create,
-    onSuccessMessage: "Admin created — share their sign-in details securely",
+    onSuccessMessage: "Admin created. Share their sign-in details securely",
     additionalQueryKeys: [[listUrl]],
     onSuccess: () => {
       reset();
@@ -111,7 +111,7 @@ export default function AdminManagementPage() {
             {isFetching && admins.length === 0 ? (
               <TableSkeletonRows columns={COLUMNS} />
             ) : admins.length === 0 ? (
-              <TableEmptyRow columns={COLUMNS} message="No admins yet — add the first one." />
+              <TableEmptyRow columns={COLUMNS} message="No admins yet. Add the first one." />
             ) : (
               admins.map(admin => {
                 const status = ACCOUNT_STATUS[admin.account_status];
@@ -146,7 +146,7 @@ export default function AdminManagementPage() {
         isOpen={isCreateOpen}
         onOpenChange={isOpen => !isOpen && setIsCreateOpen(false)}
         title="Add an admin"
-        description="The account is verified from birth — share the email and password with them securely. They can change the password after signing in."
+        description="The account is verified from birth. Share the email and password with them securely. They can change the password after signing in."
         isSubmitting={isCreating}
         dialogFooter={
           <>

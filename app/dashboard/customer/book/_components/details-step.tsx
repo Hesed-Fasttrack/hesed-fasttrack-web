@@ -19,12 +19,12 @@ import { useState } from "react";
 const PACKAGE_TYPE_ICONS: Record<PackageType, typeof Package> = { PACKAGE: Package, DOCUMENT: FileText };
 
 const FULFILMENT_OPTIONS: { value: FulfilmentType; label: string; description: string; icon: typeof Truck; comingSoon?: boolean }[] = [
-  { value: "DROP_OFF", label: "Drop off at our office", description: "Bring your parcel in — we verify it, then you pay in-app.", icon: Building2 },
+  { value: "DROP_OFF", label: "Drop off at our office", description: "Bring your parcel in. We verify it, then you pay in-app.", icon: Building2 },
   // Launch decision: drop-off only until pickup operations are ready.
   { value: "PICKUP", label: "Courier pickup", description: "The courier collects from the sender's address. Paid at booking.", icon: Truck, comingSoon: true },
 ];
 
-const formatAddress = (address: Address) => `${address.contact_name} — ${address.line1}, ${address.city}, ${address.state}`;
+const formatAddress = (address: Address) => `${address.contact_name} · ${address.line1}, ${address.city}, ${address.state}`;
 
 export const DetailsStep = function () {
   const { senderAddress, receiverAddress, fulfilmentType, purpose, packageType, parcels, setSenderAddress, setReceiverAddress, setFulfilmentType, setPurpose, setPackageType, upsertParcel, removeParcel, setStep } = useBookingStore();
@@ -60,7 +60,7 @@ export const DetailsStep = function () {
             New address
           </Button>
         </div>
-        {addresses.length === 0 && <p className="mt-2 text-sm text-muted-foreground">No saved addresses yet — create one right here with the button above.</p>}
+        {addresses.length === 0 && <p className="mt-2 text-sm text-muted-foreground">No saved addresses yet. Create one right here with the button above.</p>}
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <AppSimpleSelect
             label="Sender"
@@ -146,7 +146,7 @@ export const DetailsStep = function () {
         </div>
 
         {parcels.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">Add your first parcel — its box size and what's inside.</p>
+          <p className="mt-3 text-sm text-muted-foreground">Add your first parcel with its box size and what's inside.</p>
         ) : (
           <ul className="mt-3 divide-y divide-line rounded-xl border border-line">
             {parcels.map((parcel, index) => (

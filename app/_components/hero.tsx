@@ -21,7 +21,7 @@ export const Hero = function () {
             Ship Faster. Track Easily. <span className="text-[#E4D8F2]">Deliver Safely.</span>
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
-            Compare courier rates in seconds, book domestic and international shipments, pay from your wallet and follow every delivery from pickup to doorstep — all in one place.
+            Compare courier rates in seconds, book domestic and international shipments, pay from your wallet and follow every delivery from pickup to doorstep. All in one place.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" className="h-12 px-7 text-base" asChild>

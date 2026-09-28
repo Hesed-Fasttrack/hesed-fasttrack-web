@@ -14,7 +14,7 @@ import { Gauge, MessageSquareHeart, PackageCheck, Star, ThumbsUp } from "lucide-
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const rating = (value: number | null | undefined, max = 5) => (value == null ? "—" : `${value.toFixed(1)} / ${max}`);
+const rating = (value: number | null | undefined, max = 5) => (value == null ? "-" : `${value.toFixed(1)} / ${max}`);
 
 export default function AdminSurveysPage() {
   const router = useRouter();
@@ -40,10 +40,10 @@ export default function AdminSurveysPage() {
 
   return (
     <div>
-      <PageHeader title="Survey responses" description="What customers say about the service — every submission, newest first." />
+      <PageHeader title="Survey responses" description="What customers say about the service. Every submission, newest first." />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <StatCard label="Responses" value={String(summary?.total ?? "—")} icon={MessageSquareHeart} />
+        <StatCard label="Responses" value={String(summary?.total ?? "-")} icon={MessageSquareHeart} />
         <StatCard label="Overall satisfaction" value={rating(summary?.avg_satisfaction)} icon={Star} />
         <StatCard label="Booking ease" value={rating(summary?.avg_booking_ease)} icon={Gauge} />
         <StatCard label="Delivery" value={rating(summary?.avg_delivery)} icon={PackageCheck} />
@@ -57,7 +57,7 @@ export default function AdminSurveysPage() {
           ))}
         </div>
       ) : responses.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center text-sm text-muted-foreground">No survey responses yet — customers see the survey prompt on their dashboard until they take it.</p>
+        <p className="rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center text-sm text-muted-foreground">No survey responses yet. Customers see the survey prompt on their dashboard until they take it.</p>
       ) : (
         <ul className="space-y-3">
           {responses.map(response => (

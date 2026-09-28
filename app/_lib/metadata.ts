@@ -13,14 +13,14 @@ export const viewport: Viewport = {
 export const rootMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Ship Faster. Track Easily. Deliver Safely.`,
+    default: `${SITE_NAME}: Ship Faster. Track Easily. Deliver Safely.`,
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — Ship Faster. Track Easily. Deliver Safely.`,
+    title: `${SITE_NAME}: Ship Faster. Track Easily. Deliver Safely.`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
   },

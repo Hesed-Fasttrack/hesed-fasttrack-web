@@ -88,8 +88,8 @@ export const ConfirmStep = function () {
       <div className="rounded-2xl border border-line bg-white p-5">
         <p className="text-sm font-semibold text-foreground">Summary</p>
         <div className="mt-2 divide-y divide-line">
-          <SummaryRow label="From" value={`${senderAddress.contact_name} — ${senderAddress.line1}, ${senderAddress.city}`} />
-          <SummaryRow label="To" value={`${receiverAddress.contact_name} — ${receiverAddress.line1}, ${receiverAddress.city}`} />
+          <SummaryRow label="From" value={`${senderAddress.contact_name} · ${senderAddress.line1}, ${senderAddress.city}`} />
+          <SummaryRow label="To" value={`${receiverAddress.contact_name} · ${receiverAddress.line1}, ${receiverAddress.city}`} />
           <SummaryRow label="Package" value={parcelSummary} />
           <SummaryRow label="Courier" value={`${quote.courier_name} · ${quote.service_name} (${etaText})`} />
           <SummaryRow label="Fulfilment" value={isDropOff ? "Drop off at our office" : "Courier pickup"} />
@@ -101,7 +101,7 @@ export const ConfirmStep = function () {
           <p className="text-sm font-semibold text-foreground">Drop-off location</p>
           <p className="mt-2 text-sm text-foreground">{OFFICE_ADDRESS.name}</p>
           <p className="mt-0.5 text-sm text-muted-foreground">{OFFICE_ADDRESS.lines}</p>
-          <p className="mt-2 text-xs text-muted-foreground">No payment now — you pay from your wallet after we verify your parcel at the office.</p>
+          <p className="mt-2 text-xs text-muted-foreground">No payment now. You pay from your wallet after we verify your parcel at the office.</p>
         </div>
       ) : (
         <div className="rounded-2xl border border-line bg-white p-5">
@@ -118,7 +118,7 @@ export const ConfirmStep = function () {
               </button>
             ))}
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">When the courier collects your parcel — delivery takes {etaText} from pickup.</p>
+          <p className="mt-2 text-xs text-muted-foreground">When the courier collects your parcel. Delivery takes {etaText} from pickup.</p>
         </div>
       )}
 
@@ -129,14 +129,14 @@ export const ConfirmStep = function () {
 
       <p className={cn("text-center text-sm", isGated ? "text-danger" : "text-muted-foreground")}>
         {isDropOff
-          ? "No payment now — you pay after we verify your parcel."
+          ? "No payment now. You pay after we verify your parcel."
           : !isKycVerified
             ? isKycPending
-              ? "Your identity verification is under review — you can pay once it's approved."
+              ? "Your identity verification is under review. You can pay once it's approved."
               : "Verify your identity once to pay for shipments."
             : hasEnoughBalance
               ? `Paid from your wallet · balance ${formatNaira(balance)}`
-              : `Your wallet holds ${formatNaira(balance)} — fund it to book this shipment.`}
+              : `Your wallet holds ${formatNaira(balance)}. Fund it to book this shipment.`}
       </p>
 
       {!isDropOff && !isKycVerified ? (

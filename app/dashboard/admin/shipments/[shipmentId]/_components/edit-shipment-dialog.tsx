@@ -37,7 +37,7 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
   const { mutate: saveShipment, isPending } = useSubmitData<{ parcels: EditableParcel[]; origin: SnapshotAddress; destination: SnapshotAddress }, unknown>({
     url: API_ENDPOINTS.admin.shipments.edit(shipment.id),
     method: "patch",
-    onSuccessMessage: "Shipment updated — the price was re-derived and the customer notified",
+    onSuccessMessage: "Shipment updated. The price was re-derived and the customer notified",
     additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipment.id)]],
     onSuccess: onClose,
   });
@@ -80,7 +80,7 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
               <li key={entry.key} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground">
-                    {entry.label} — {entry.address?.contact_name}
+                    {entry.label} · {entry.address?.contact_name}
                   </p>
                   <p className="truncate text-xs text-muted-foreground">{entry.address && `${entry.address.line1}, ${entry.address.city}, ${entry.address.state}, ${entry.address.country}`}</p>
                 </div>
@@ -102,7 +102,7 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
           </div>
 
           {parcels.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-line-strong px-4 py-6 text-center text-sm text-muted-foreground">No parcels — add what actually arrived.</p>
+            <p className="rounded-xl border border-dashed border-line-strong px-4 py-6 text-center text-sm text-muted-foreground">No parcels. Add what actually arrived.</p>
           ) : (
             <ul className="divide-y divide-line rounded-xl border border-line">
               {parcels.map((parcel, index) => (

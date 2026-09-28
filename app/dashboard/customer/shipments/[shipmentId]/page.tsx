@@ -65,14 +65,14 @@ export default function CustomerShipmentDetailPage() {
 
   const { mutate: cancelShipment, isPending: isCancelling } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.customer.shipments.cancel(shipmentId),
-    onSuccessMessage: isPaid ? "Shipment cancelled — your wallet has been refunded" : "Shipment cancelled",
+    onSuccessMessage: isPaid ? "Shipment cancelled. Your wallet has been refunded" : "Shipment cancelled",
     additionalQueryKeys: refetchKeys,
     onSuccess: () => setIsConfirmingCancel(false),
   });
 
   const { mutate: payShipment, isPending: isPaying } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.customer.shipments.pay(shipmentId),
-    onSuccessMessage: "Payment received — your shipment is on its way",
+    onSuccessMessage: "Payment received. Your shipment is on its way",
     additionalQueryKeys: refetchKeys,
   });
 
@@ -122,7 +122,7 @@ export default function CustomerShipmentDetailPage() {
             {isKycVerified
               ? hasEnoughBalance
                 ? "Complete payment to start shipping."
-                : `Your wallet holds ${formatNaira(walletData?.data?.available_minor ?? 0)} — fund it to pay for this shipment.`
+                : `Your wallet holds ${formatNaira(walletData?.data?.available_minor ?? 0)}. Fund it to pay for this shipment.`
               : "Verify your identity once to pay for shipments."}
           </p>
           {!isKycVerified ? (
@@ -153,10 +153,10 @@ export default function CustomerShipmentDetailPage() {
                 </span>
               }
             />
-            <InfoRow label="From" value={`${shipment.origin.contact_name} — ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}`} />
-            <InfoRow label="To" value={`${shipment.destination.contact_name} — ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}`} />
+            <InfoRow label="From" value={`${shipment.origin.contact_name} · ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}`} />
+            <InfoRow label="To" value={`${shipment.destination.contact_name} · ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}`} />
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
-            <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "—"} />
+            <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "-"} />
             {shipment.courier_tracking_number && (
               <InfoRow
                 label="Tracking number"
@@ -168,7 +168,7 @@ export default function CustomerShipmentDetailPage() {
                 }
               />
             )}
-            <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "—"} />
+            <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "-"} />
             <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
           </div>
 

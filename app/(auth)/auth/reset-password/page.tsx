@@ -29,7 +29,7 @@ export default function ResetPasswordPage() {
     url: data => API_ENDPOINTS.auth.resetPassword(data.token),
     getBody: data => ({ password: data.password }),
     skipAuth: true,
-    onSuccessMessage: "Password reset — sign in with your new password",
+    onSuccessMessage: "Password reset. Sign in with your new password",
     onSuccess: () => router.push("/auth/signin"),
   });
 

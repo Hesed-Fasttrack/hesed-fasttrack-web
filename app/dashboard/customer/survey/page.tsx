@@ -100,7 +100,7 @@ export default function SurveyPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader title="Help us serve you better" description="Two minutes, six questions — your feedback goes straight to the team." />
+      <PageHeader title="Help us serve you better" description="Two minutes, six questions. Your feedback goes straight to the team." />
 
       <div className="space-y-5">
         {RATING_QUESTIONS.map(entry => (
@@ -133,7 +133,7 @@ export default function SurveyPage() {
 
         <div className="rounded-2xl border border-line bg-white p-5">
           <p className="mb-3 text-sm font-semibold text-foreground">What could we do better? (optional)</p>
-          <Textarea placeholder="Tell us anything — pricing, speed, the app, support…" value={improvements} onChange={event => setImprovements(event.target.value)} maxLength={1000} rows={4} />
+          <Textarea placeholder="Tell us anything: pricing, speed, the app, support…" value={improvements} onChange={event => setImprovements(event.target.value)} maxLength={1000} rows={4} />
         </div>
 
         <Button size="lg" className="w-full sm:w-auto sm:px-10" onClick={handleSubmit} disabled={isPending}>

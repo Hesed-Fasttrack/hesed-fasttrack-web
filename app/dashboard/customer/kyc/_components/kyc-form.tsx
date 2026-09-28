@@ -51,7 +51,7 @@ export const KycForm = function ({ submission }: Props) {
 
   const { mutate: submitKyc, isPending } = useSubmitData<FormData, unknown>({
     url: API_ENDPOINTS.customer.kyc.submit,
-    onSuccessMessage: "Documents submitted — we'll review them shortly",
+    onSuccessMessage: "Documents submitted. We'll review them shortly",
     additionalQueryKeys: [[API_ENDPOINTS.customer.kyc.status]],
   });
 
@@ -111,10 +111,10 @@ export const KycStatusBanner = function ({ submission }: { submission: CustomerK
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
         {submission.status === "APPROVED"
-          ? "You're verified — you can pay for shipments and withdraw from your wallet."
+          ? "You're verified. You can pay for shipments and withdraw from your wallet."
           : submission.status === "PENDING"
             ? "Your documents are with our team. This usually takes less than a business day."
-            : "One or more documents were rejected — fix the issues below and resubmit."}
+            : "One or more documents were rejected. Fix the issues below and resubmit."}
       </p>
     </div>
   );

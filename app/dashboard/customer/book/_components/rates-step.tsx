@@ -49,7 +49,7 @@ export const RatesStep = function () {
         <div className="rounded-2xl border border-line bg-white p-10 text-center">
           <PackageSearch className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-3 text-sm font-semibold text-foreground">No rates for this route</p>
-          <p className="mt-1 text-sm text-muted-foreground">Check the addresses — a valid destination postal code unlocks express options.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Check the addresses. A valid destination postal code unlocks express options.</p>
         </div>
       ) : (
         <div className="space-y-3">

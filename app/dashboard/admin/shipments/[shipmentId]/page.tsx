@@ -94,10 +94,10 @@ export default function AdminShipmentDetailPage() {
         <div className="rounded-2xl border border-line bg-white p-5">
           <p className="text-sm font-semibold text-foreground">Route</p>
           <div className="mt-2 divide-y divide-line">
-            <InfoRow label="From" value={`${shipment.origin.contact_name} — ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}, ${shipment.origin.country}`} />
-            <InfoRow label="To" value={`${shipment.destination.contact_name} — ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}, ${shipment.destination.country}`} />
+            <InfoRow label="From" value={`${shipment.origin.contact_name} · ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}, ${shipment.origin.country}`} />
+            <InfoRow label="To" value={`${shipment.destination.contact_name} · ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}, ${shipment.destination.country}`} />
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
-            <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "—"} />
+            <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "-"} />
             <InfoRow label="Pickup date" value={shipment.pickup_date ? formatDate(shipment.pickup_date) : "Drop-off"} />
             <InfoRow label="Purpose" value={shipment.purpose} />
           </div>
@@ -115,7 +115,7 @@ export default function AdminShipmentDetailPage() {
           <div className="mt-2 divide-y divide-line">
             {shipment.courier_tracking_number ? (
               <>
-                <InfoRow label="Courier reference" value={shipment.courier_shipment_reference ?? "—"} />
+                <InfoRow label="Courier reference" value={shipment.courier_shipment_reference ?? "-"} />
                 <InfoRow
                   label="Tracking number"
                   value={

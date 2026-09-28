@@ -38,11 +38,11 @@ export default function CustomerWalletPage() {
 
   return (
     <div>
-      <PageHeader title="Wallet" description="Fund once by bank transfer — every booking settles instantly." />
+      <PageHeader title="Wallet" description="Fund once by bank transfer. Every booking settles instantly." />
 
       <div className="rounded-2xl bg-brand p-6 text-white">
         <p className="text-sm font-medium text-[#E4D8F2]">Available balance</p>
-        <p className="mt-2 text-4xl font-bold">{wallet ? formatNaira(wallet.available_minor) : "—"}</p>
+        <p className="mt-2 text-4xl font-bold">{wallet ? formatNaira(wallet.available_minor) : "-"}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button className="bg-white text-brand hover:bg-white/90" onClick={() => setIsFundingOpen(true)}>
             <Plus />
@@ -76,7 +76,7 @@ export default function CustomerWalletPage() {
                 {isFetchingTransactions && transactions.length === 0 ? (
                   <TableSkeletonRows columns={4} />
                 ) : transactions.length === 0 ? (
-                  <TableEmptyRow columns={4} message="No transactions yet — fund your wallet to get started." />
+                  <TableEmptyRow columns={4} message="No transactions yet. Fund your wallet to get started." />
                 ) : (
                   transactions.map(transaction => (
                     <TableRow key={transaction.id}>
@@ -85,7 +85,7 @@ export default function CustomerWalletPage() {
                         {transaction.amount_minor > 0 ? "+" : ""}
                         {formatNaira(transaction.amount_minor)}
                       </TableCell>
-                      <TableCell className="max-w-64 truncate">{transaction.narration ?? "—"}</TableCell>
+                      <TableCell className="max-w-64 truncate">{transaction.narration ?? "-"}</TableCell>
                       <TableCell>{formatDateTime(transaction.createdAt)}</TableCell>
                     </TableRow>
                   ))

@@ -52,7 +52,7 @@ export default function AdminOverviewPage() {
             <StatCard label="Revenue" value={formatNaira(stats.revenue.lifetime_minor)} hint={`${formatNaira(stats.revenue.this_month_minor)} this month`} icon={TrendingUp} />
             <StatCard label="Wallet liabilities" value={formatNaira(stats.wallets.total_balance_minor)} hint="Held in customer wallets" icon={Wallet} />
             <StatCard label="Pending KYC" value={String(stats.kyc.pending_review)} hint="Waiting for review" icon={ShieldCheck} />
-            <StatCard label="Withdrawals" value="—" hint="See the withdrawals queue" icon={Banknote} />
+            <StatCard label="Withdrawals" value="-" hint="See the withdrawals queue" icon={Banknote} />
           </div>
 
           <div className="mt-6 rounded-2xl border border-line bg-white p-5">

@@ -37,7 +37,7 @@ export const SurveyPromptCard = function () {
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-foreground">How are we doing?</p>
-        <p className="text-xs text-muted-foreground">Take our 2-minute survey — your feedback shapes what we build next.</p>
+        <p className="text-xs text-muted-foreground">Take our 2-minute survey. Your feedback shapes what we build next.</p>
       </div>
       <div className="flex items-center gap-1">
         <Button asChild size="sm">

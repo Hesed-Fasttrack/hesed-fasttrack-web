@@ -87,7 +87,7 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
     const width_cm = Number(dims.width);
     const height_cm = Number(dims.height);
 
-    if (!length_cm || !width_cm || !height_cm) return showToast("warning", "Enter the box dimensions — couriers charge on size too");
+    if (!length_cm || !width_cm || !height_cm) return showToast("warning", "Enter the box dimensions. Couriers charge on size too");
     if (items.length === 0) return showToast("warning", "Add at least one item to this parcel");
 
     onSave({ length_cm, width_cm, height_cm, items });
@@ -99,7 +99,7 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title={parcel ? "Edit parcel" : "Add a parcel"}
-      description="The box size and what's inside — couriers charge on the larger of actual and volumetric weight."
+      description="The box size and what's inside. Couriers charge on the larger of actual and volumetric weight."
       dialogFooter={
         <>
           <Button variant="outline" onClick={onClose}>

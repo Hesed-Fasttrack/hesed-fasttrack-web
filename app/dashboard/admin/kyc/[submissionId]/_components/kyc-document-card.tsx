@@ -85,7 +85,7 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
           </>
         }
       >
-        <Textarea placeholder="e.g. The photo is blurry — retake it with all corners visible." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
+        <Textarea placeholder="e.g. The photo is blurry. Retake it with all corners visible." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
       </AppDialog>
     </div>
   );

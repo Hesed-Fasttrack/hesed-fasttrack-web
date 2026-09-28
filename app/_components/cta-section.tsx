@@ -7,7 +7,7 @@ export const CtaSection = function () {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-brand px-6 py-16 text-center sm:px-16">
           <h2 className="mx-auto max-w-2xl text-3xl font-extrabold text-white sm:text-4xl">Ready to ship your first parcel?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[#E4D8F2]">Create a free account, get an instant quote and have your shipment on its way today — from Lagos to anywhere.</p>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[#E4D8F2]">Create a free account, get an instant quote and have your shipment on its way today, from Lagos to anywhere.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button size="lg" className="h-12 bg-white px-7 text-base text-brand hover:bg-white/90" asChild>
               <Link href="/auth/signup">Create free account</Link>

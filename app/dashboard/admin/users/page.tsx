@@ -1,10 +1,10 @@
 "use client";
 
 import { AppInput } from "@/components/shared/app-input";
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
-import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGetData } from "@/hooks/use-get-data";
@@ -90,7 +90,7 @@ export default function AdminUsersPage() {
                   <TableRow key={user.id} className="cursor-pointer" onClick={() => router.push(`/dashboard/admin/users/${user.id}`)}>
                     <TableCell className="font-medium">{displayName(user)}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone_no ?? "—"}</TableCell>
+                    <TableCell>{user.phone_no ?? "-"}</TableCell>
                     <TableCell>
                       <StatusBadge label={status.label} className={status.className} />
                     </TableCell>

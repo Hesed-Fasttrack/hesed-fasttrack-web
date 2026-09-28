@@ -1,10 +1,10 @@
 "use client";
 
+import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { PaginationControls, TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
-import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -73,7 +73,7 @@ export default function CustomerShipmentsPage() {
             {isFetching && shipments.length === 0 ? (
               <TableSkeletonRows columns={COLUMNS} />
             ) : shipments.length === 0 ? (
-              <TableEmptyRow columns={COLUMNS} message="No shipments in this view — book one to get started." />
+              <TableEmptyRow columns={COLUMNS} message="No shipments in this view. Book one to get started." />
             ) : (
               shipments.map(shipment => {
                 const shipmentStatus = SHIPMENT_STATUS[shipment.status];

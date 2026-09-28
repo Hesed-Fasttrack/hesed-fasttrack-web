@@ -45,7 +45,7 @@ export default function TrackShipmentPage() {
 
   return (
     <div>
-      <PageHeader title="Track a shipment" description="Enter any HESED FastTrack tracking number — yours or one sent to you." />
+      <PageHeader title="Track a shipment" description="Enter any HESED FastTrack tracking number, yours or one sent to you." />
 
       <form onSubmit={handleSearch} className="flex max-w-xl gap-2">
         <AppInput placeholder="HFT-XXXXXXXX-XXXXX" value={reference} onChange={event => setReference(event.target.value)} containerClassName="flex-1" />
@@ -58,7 +58,7 @@ export default function TrackShipmentPage() {
         <div className="mt-8 max-w-xl rounded-2xl border border-line bg-white p-10 text-center">
           <PackageSearch className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-3 text-sm font-semibold text-foreground">No shipment matches that tracking number</p>
-          <p className="mt-1 text-sm text-muted-foreground">Check for typos — references look like HFT-ABC12345-DEF67.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Check for typos. References look like HFT-ABC12345-DEF67.</p>
         </div>
       )}
 
@@ -71,8 +71,8 @@ export default function TrackShipmentPage() {
             </div>
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
               <p>
-                <span className="font-medium text-foreground">Route:</span> {[tracking.origin.city, tracking.origin.state].filter(Boolean).join(", ") || "—"} →{" "}
-                {[tracking.destination.city, tracking.destination.state].filter(Boolean).join(", ") || "—"}
+                <span className="font-medium text-foreground">Route:</span> {[tracking.origin.city, tracking.origin.state].filter(Boolean).join(", ") || "-"} →{" "}
+                {[tracking.destination.city, tracking.destination.state].filter(Boolean).join(", ") || "-"}
               </p>
               <p>
                 <span className="font-medium text-foreground">Courier:</span> {tracking.courier_name} · {tracking.service_name}

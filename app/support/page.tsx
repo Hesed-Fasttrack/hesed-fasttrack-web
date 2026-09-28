@@ -7,13 +7,13 @@ import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 export const metadata = buildPageMetadata({
   path: "/support",
   title: "Support",
-  description: "Contact HESED FastTrack — customer service, sales lines, office addresses and common questions.",
+  description: "Contact HESED FastTrack: customer service, sales lines, office addresses and common questions.",
 });
 
 const FAQS = [
   {
     q: "How do I ship a package?",
-    a: "Sign in, get a quote with your route and parcel details, then compare courier prices. Pick a rate and book with 'Drop off at our office' — once we receive and verify your parcel, pay from your wallet and shipping begins.",
+    a: "Sign in, get a quote with your route and parcel details, then compare courier prices. Pick a rate and book with 'Drop off at our office'. Once we receive and verify your parcel, pay from your wallet and shipping begins.",
   },
   {
     q: "How do I pay for a shipment?",
@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: "Can I drop my parcel off instead of booking a pickup?",
-    a: "Yes — choose 'Drop off at our office' when booking. We verify your parcel at the office, then you pay from your wallet and shipping begins.",
+    a: "Yes. Choose 'Drop off at our office' when booking. We verify your parcel at the office, then you pay from your wallet and shipping begins.",
   },
   {
     q: "Can I cancel a booking?",
@@ -43,7 +43,7 @@ export default function SupportPage() {
       <Header />
       <main className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold text-foreground sm:text-4xl">Support</h1>
-        <p className="mt-3 max-w-2xl leading-relaxed text-foreground-muted">We're here to help — reach us by email, phone or in person at either of our Lagos locations.</p>
+        <p className="mt-3 max-w-2xl leading-relaxed text-foreground-muted">We're here to help. Reach us by email, phone or in person at either of our Lagos locations.</p>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           <div className="rounded-2xl border border-line bg-canvas p-6">
@@ -79,7 +79,7 @@ export default function SupportPage() {
             <a href={SITE.whatsapp.href} target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-brand hover:underline">
               {SITE.whatsapp.display}
             </a>
-            <p className="mt-2 text-sm text-foreground-muted">Message us directly — fastest during business hours.</p>
+            <p className="mt-2 text-sm text-foreground-muted">Message us directly. Fastest during business hours.</p>
           </div>
 
           <div className="rounded-2xl border border-line bg-canvas p-6 md:col-span-2">

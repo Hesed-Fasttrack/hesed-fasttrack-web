@@ -13,7 +13,7 @@ export const metadata = buildPageMetadata({
 const IN_APP_STEPS = ["Open the HESED FastTrack app and sign in.", "Go to the Profile tab.", "Scroll to the Danger zone and tap 'Delete account'.", "Confirm with your password. Deletion is immediate and permanent."] as const;
 
 const REMOVED_DATA = [
-  "Your profile — name, email, phone number and photo.",
+  "Your profile: name, email, phone number and photo.",
   "Saved sender and receiver addresses.",
   "Wallet, transaction history and withdrawal records (subject to records we must keep by law).",
   "Identity verification documents.",
@@ -26,7 +26,7 @@ export default function DeleteAccountPage() {
       <Header />
       <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold text-foreground sm:text-4xl">Delete your account</h1>
-        <p className="mt-4 leading-relaxed text-foreground-muted">You can permanently delete your HESED FastTrack account and its data at any time. Withdraw any wallet balance first — it cannot be recovered after deletion.</p>
+        <p className="mt-4 leading-relaxed text-foreground-muted">You can permanently delete your HESED FastTrack account and its data at any time. Withdraw any wallet balance first. It cannot be recovered after deletion.</p>
 
         <div className="mt-8 flex gap-3 rounded-2xl border border-amber/30 bg-amber/5 p-5">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber" />

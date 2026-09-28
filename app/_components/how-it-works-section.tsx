@@ -5,7 +5,7 @@ const STEPS = [
   {
     icon: PackageSearch,
     title: "Get a quote",
-    description: "Tell us where it's going and what you're sending — compare courier rates instantly.",
+    description: "Tell us where it's going and what you're sending. Compare courier rates instantly.",
   },
   {
     icon: CalendarCheck,
@@ -15,7 +15,7 @@ const STEPS = [
   {
     icon: Wallet,
     title: "Pay from your wallet",
-    description: "Fund your wallet once by bank transfer and every booking settles instantly — no card fees.",
+    description: "Fund your wallet once by bank transfer and every booking settles instantly. No card fees.",
   },
   {
     icon: MapPin,

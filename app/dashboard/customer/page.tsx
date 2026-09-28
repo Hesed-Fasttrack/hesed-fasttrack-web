@@ -40,7 +40,7 @@ export default function CustomerOverviewPage() {
       <SurveyPromptCard />
       <PageHeader
         title={`Hello${profile?.first_name ? `, ${profile.first_name}` : ""}`}
-        description="Ship, pay and track — all from here."
+        description="Ship, pay and track, all from here."
         action={
           <Button asChild>
             <Link href="/dashboard/customer/book">
@@ -54,7 +54,7 @@ export default function CustomerOverviewPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="rounded-2xl bg-brand p-6 text-white">
           <p className="text-sm font-medium text-[#E4D8F2]">Wallet balance</p>
-          <p className="mt-2 text-3xl font-bold">{wallet ? formatNaira(wallet.available_minor) : "—"}</p>
+          <p className="mt-2 text-3xl font-bold">{wallet ? formatNaira(wallet.available_minor) : "-"}</p>
           <Button size="sm" className="mt-4 bg-white text-brand hover:bg-white/90" asChild>
             <Link href="/dashboard/customer/wallet">Fund wallet</Link>
           </Button>
@@ -87,7 +87,7 @@ export default function CustomerOverviewPage() {
         ) : shipments.length === 0 ? (
           <div className="flex flex-col items-center gap-3 px-5 py-14 text-center">
             <Package className="h-8 w-8 text-foreground-subtle" />
-            <p className="text-sm text-muted-foreground">No shipments yet — book your first one in minutes.</p>
+            <p className="text-sm text-muted-foreground">No shipments yet. Book your first one in minutes.</p>
             <Button size="sm" asChild>
               <Link href="/dashboard/customer/book">Get a quote</Link>
             </Button>

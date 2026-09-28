@@ -87,9 +87,9 @@ export default function AdminUserDetailPage() {
           <p className="text-sm font-semibold text-foreground">Profile</p>
           <div className="mt-2 divide-y divide-line">
             <InfoRow label="Status" value={<StatusBadge label={accountStatus.label} className={accountStatus.className} />} />
-            <InfoRow label="Phone" value={user.phone_no ?? "—"} />
+            <InfoRow label="Phone" value={user.phone_no ?? "-"} />
             <InfoRow label="Email verified" value={user.has_validated_email ? "Yes" : "No"} />
-            <InfoRow label="Location" value={[user.city, user.state, user.country].filter(Boolean).join(", ") || "—"} />
+            <InfoRow label="Location" value={[user.city, user.state, user.country].filter(Boolean).join(", ") || "-"} />
             <InfoRow label="Last login" value={user.lastLogin ? formatDateTime(user.lastLogin) : "Never"} />
             <InfoRow label="Joined" value={formatDateTime(user.createdAt)} />
           </div>
@@ -144,7 +144,7 @@ export default function AdminUserDetailPage() {
                     {formatNaira(transaction.amount_minor)}
                   </TableCell>
                   <TableCell className="font-mono text-xs">{transaction.reference}</TableCell>
-                  <TableCell className="max-w-56 truncate">{transaction.narration ?? "—"}</TableCell>
+                  <TableCell className="max-w-56 truncate">{transaction.narration ?? "-"}</TableCell>
                   <TableCell>{formatDateTime(transaction.createdAt)}</TableCell>
                 </TableRow>
               ))

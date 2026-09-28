@@ -6,7 +6,7 @@ const REASONS = [
   {
     icon: Clock4,
     title: "Fast, reliable timelines",
-    description: "Realistic delivery estimates on every quote — and tracking that tells you exactly where your parcel is.",
+    description: "Realistic delivery estimates on every quote, and tracking that tells you exactly where your parcel is.",
   },
   {
     icon: Banknote,

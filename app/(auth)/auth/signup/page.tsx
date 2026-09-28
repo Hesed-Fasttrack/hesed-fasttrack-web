@@ -30,7 +30,7 @@ export default function SignUpPage() {
   const { mutate: signup, isPending } = useSubmitData<Record<string, unknown>, APIResponse<unknown>>({
     url: API_ENDPOINTS.auth.signup,
     skipAuth: true,
-    onSuccessMessage: "Account created — check your email for a code",
+    onSuccessMessage: "Account created. Check your email for a code",
     onSuccess: () => router.push(`/auth/verify-email?email=${encodeURIComponent(getValues("email"))}`),
   });
 

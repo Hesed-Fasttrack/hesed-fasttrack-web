@@ -10,7 +10,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
       "Account information: your name, email address, phone number and password when you create an account.",
       "Shipment information: sender and receiver names, addresses, phone numbers and parcel contents you provide when requesting quotes or booking shipments.",
       "Identity verification (KYC): a government-issued ID (NIN, driver's licence or international passport), the document number, a photo of the document and a proof of address, required before payments can be made on the platform.",
-      "Wallet and payment information: your wallet transaction history and the bank account details you provide for withdrawals. Card and bank transfer payments are processed by our payment provider — we never store your card details.",
+      "Wallet and payment information: your wallet transaction history and the bank account details you provide for withdrawals. Card and bank transfer payments are processed by our payment provider. We never store your card details.",
       "Device and usage information: device identifiers, push notification tokens and app usage data used to operate and improve the service.",
     ],
   },
@@ -19,7 +19,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
     bullets: [
       "To provide quotes, book shipments, process payments and deliver parcels.",
       "To verify your identity as required by our courier and payment partners and applicable regulations.",
-      "To send you service messages — booking confirmations, delivery status updates and wallet notifications — by push notification and email.",
+      "To send you service messages (booking confirmations, delivery status updates and wallet notifications) by push notification and email.",
       "To respond to support requests and resolve disputes.",
       "To prevent fraud, enforce our terms and comply with legal obligations.",
     ],
@@ -43,7 +43,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
     heading: "Your rights",
     bullets: [
       "Access and update your profile information at any time from the app.",
-      "Delete your account — and with it your personal data — from the app's settings or by following the steps on our Delete Account page.",
+      "Delete your account, and with it your personal data, from the app's settings or by following the steps on our Delete Account page.",
       "Withdraw consent to non-essential communications at any time.",
       "Contact us to request a copy or correction of the data we hold about you.",
     ],

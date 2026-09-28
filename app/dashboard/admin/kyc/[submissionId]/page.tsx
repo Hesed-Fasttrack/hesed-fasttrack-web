@@ -42,11 +42,11 @@ export default function AdminKycDetailPage() {
       <PageHeader
         backHref="/dashboard/admin/kyc"
         title={displayName(submission.user)}
-        description={`${IDENTITY_LABELS[submission.identity_type]} · ${submission.identity_number} — submitted ${formatDateTime(submission.submittedAt)}`}
+        description={`${IDENTITY_LABELS[submission.identity_type]} · ${submission.identity_number} · submitted ${formatDateTime(submission.submittedAt)}`}
         action={<StatusBadge label={overall.label} className={overall.className} />}
       />
 
-      <p className="mb-4 text-sm text-muted-foreground">Approval needs both documents. One rejection settles the submission — the customer resubmits only the rejected document.</p>
+      <p className="mb-4 text-sm text-muted-foreground">Approval needs both documents. One rejection settles the submission. The customer resubmits only the rejected document.</p>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <KycDocumentCard submissionId={submission.id} document="identity" title="Identity document" imageUrl={submission.identity_document_url} status={submission.identity_status} rejectionReason={submission.identity_rejection_reason} />

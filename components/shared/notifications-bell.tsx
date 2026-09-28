@@ -74,7 +74,7 @@ export const NotificationsBell = function () {
         </div>
 
         {notifications.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-muted-foreground">Nothing yet — booking updates land here.</p>
+          <p className="px-4 py-8 text-center text-sm text-muted-foreground">Nothing yet. Booking updates land here.</p>
         ) : (
           <ul className="max-h-96 divide-y divide-line overflow-y-auto">
             {notifications.map(notification => (

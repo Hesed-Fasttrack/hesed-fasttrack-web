@@ -46,7 +46,7 @@ export const WithdrawDialog = function ({ open, onClose }: Props) {
 
   const { mutate: requestWithdrawal, isPending: isWithdrawing } = useSubmitData<{ bank_code: string; account_number: string; amount_minor: number }, unknown>({
     url: API_ENDPOINTS.customer.wallet.withdrawals,
-    onSuccessMessage: "Withdrawal requested — we'll process it shortly",
+    onSuccessMessage: "Withdrawal requested. We'll process it shortly",
     additionalQueryKeys: [[API_ENDPOINTS.customer.wallet.balance], [API_ENDPOINTS.customer.wallet.transactions], [API_ENDPOINTS.customer.wallet.withdrawals]],
     onSuccess: () => {
       setAmount("");

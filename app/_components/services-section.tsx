@@ -16,7 +16,7 @@ const SERVICES = [
   },
   {
     title: "Door-to-door delivery",
-    description: "Book a courier pickup or drop your parcel at our office — we verify, ship and deliver straight to the receiver.",
+    description: "Book a courier pickup or drop your parcel at our office. We verify, ship and deliver straight to the receiver.",
     image: "/images/handover.jpg",
     alt: "A parcel being handed to a customer",
   },
@@ -26,7 +26,7 @@ export const ServicesSection = function () {
   return (
     <section id="services" className="bg-canvas py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading eyebrow="What we do" title="Every route your parcel needs" description="From a single document to commercial cargo, HESED FastTrack moves it — domestically and across borders." />
+        <SectionHeading eyebrow="What we do" title="Every route your parcel needs" description="From a single document to commercial cargo, HESED FastTrack moves it, domestically and across borders." />
 
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {SERVICES.map(service => (

@@ -59,7 +59,7 @@ export const WalletAdjustDialog = function ({ userId, open, onClose }: Props) {
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Adjust wallet"
-      description="Manual ledger entry — every adjustment is audited and notifies the customer."
+      description="Manual ledger entry. Every adjustment is audited and notifies the customer."
       isSubmitting={isPending}
       dialogFooter={
         <>
@@ -78,8 +78,8 @@ export const WalletAdjustDialog = function ({ userId, open, onClose }: Props) {
           value={direction}
           onValueChange={value => setValue("direction", value as "CREDIT" | "DEBIT")}
           options={[
-            { label: "Credit — add funds", value: "CREDIT" },
-            { label: "Debit — remove funds", value: "DEBIT" },
+            { label: "Credit (add funds)", value: "CREDIT" },
+            { label: "Debit (remove funds)", value: "DEBIT" },
           ]}
         />
 
