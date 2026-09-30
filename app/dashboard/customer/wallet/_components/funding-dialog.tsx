@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
 import type { Wallet } from "@/types/customer";
 import { Copy, Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 interface Props {
   wallet: Wallet | undefined;
@@ -19,9 +20,16 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
 
   const { mutate: createAccount, isPending } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.customer.wallet.fundingAccount,
-    onSuccessMessage: "Funding account ready",
+    silent: true,
     additionalQueryKeys: [[API_ENDPOINTS.customer.wallet.balance]],
   });
+
+  // On every open: creates the account on first use and swaps in a fresh one
+  // when the payment gateway changed — the server decides, not the client.
+  useEffect(() => {
+    if (open) createAccount({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const { mutate: syncFunding, isPending: isSyncing } = useSubmitData<Record<string, never>, { data: { credited: number } }>({
     url: API_ENDPOINTS.customer.wallet.sync,
