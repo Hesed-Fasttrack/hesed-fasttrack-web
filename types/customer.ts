@@ -16,6 +16,12 @@ export interface Address {
   createdAt: string;
 }
 
+export interface FundingAccount {
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+}
+
 export interface Wallet {
   id: string;
   available_minor: number;
@@ -24,6 +30,7 @@ export interface Wallet {
   dva_account_number: string | null;
   dva_account_name: string | null;
   dva_bank_name: string | null;
+  dva_accounts?: FundingAccount[] | null;
 }
 
 export interface CustomerTransaction {

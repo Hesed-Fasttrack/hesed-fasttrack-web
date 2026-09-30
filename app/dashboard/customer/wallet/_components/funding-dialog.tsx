@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
-import type { Wallet } from "@/types/customer";
+import type { FundingAccount, Wallet } from "@/types/customer";
 import { Copy, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -42,11 +42,18 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
     },
   });
 
-  const handleCopy = function () {
-    if (!wallet?.dva_account_number) return;
-    navigator.clipboard.writeText(wallet.dva_account_number);
+  const handleCopy = function (accountNumber: string) {
+    navigator.clipboard.writeText(accountNumber);
     showToast("success", "Account number copied");
   };
+
+  // Older wallets carry a single account; regenerated ones list every bank
+  // the gateway issued — all of them credit the same wallet.
+  const accounts: FundingAccount[] = wallet?.dva_accounts?.length
+    ? wallet.dva_accounts
+    : wallet?.dva_account_number
+      ? [{ bank_name: wallet.dva_bank_name ?? "", account_number: wallet.dva_account_number, account_name: wallet.dva_account_name ?? "" }]
+      : [];
 
   return (
     <AppDialog
@@ -54,7 +61,11 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Fund your wallet"
       description={
-        hasAccount ? "Transfer any amount to your personal account number below. It lands in your wallet automatically, usually within a minute." : "We'll create your personal funding account. Transfers to it credit your wallet automatically."
+        hasAccount
+          ? accounts.length > 1
+            ? "Transfer any amount to whichever account you prefer. They all land in your wallet automatically, usually within a minute."
+            : "Transfer any amount to your personal account number below. It lands in your wallet automatically, usually within a minute."
+          : "We'll create your personal funding account. Transfers to it credit your wallet automatically."
       }
       dialogFooter={
         <Button variant="outline" onClick={onClose}>
@@ -64,15 +75,19 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
     >
       {hasAccount ? (
         <div className="space-y-3">
-          <div className="rounded-xl border border-line bg-canvas p-4">
-            <p className="text-xs text-muted-foreground">{wallet?.dva_bank_name}</p>
-            <div className="mt-1 flex items-center justify-between gap-2">
-              <p className="text-2xl font-bold tracking-wide text-foreground">{wallet?.dva_account_number}</p>
-              <Button size="icon" variant="outline" onClick={handleCopy} aria-label="Copy account number">
-                <Copy />
-              </Button>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">{wallet?.dva_account_name}</p>
+          <div className="divide-y divide-line rounded-xl border border-line bg-canvas">
+            {accounts.map(account => (
+              <div key={account.account_number} className="p-4">
+                <p className="text-xs text-muted-foreground">{account.bank_name}</p>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <p className="text-2xl font-bold tracking-wide text-foreground">{account.account_number}</p>
+                  <Button size="icon" variant="outline" onClick={() => handleCopy(account.account_number)} aria-label="Copy account number">
+                    <Copy />
+                  </Button>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">{account.account_name}</p>
+              </div>
+            ))}
           </div>
           <Button variant="outline" className="w-full" onClick={() => syncFunding({})} disabled={isSyncing}>
             {isSyncing && <Loader2 className="animate-spin" />}
