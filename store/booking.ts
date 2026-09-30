@@ -9,6 +9,8 @@ interface BookingState {
   fulfilmentType: FulfilmentType | null;
   purpose: ShipmentPurpose | null;
   packageType: PackageType | null;
+  thirdPartySender: boolean;
+  senderIdFile: File | null;
   parcels: ShipmentParcel[];
   quote: CourierQuote | null;
   setStep: (step: BookingState["step"]) => void;
@@ -17,6 +19,8 @@ interface BookingState {
   setFulfilmentType: (fulfilmentType: FulfilmentType) => void;
   setPurpose: (purpose: ShipmentPurpose) => void;
   setPackageType: (packageType: PackageType) => void;
+  setThirdPartySender: (thirdPartySender: boolean) => void;
+  setSenderIdFile: (file: File | null) => void;
   upsertParcel: (index: number | null, parcel: ShipmentParcel) => void;
   removeParcel: (index: number) => void;
   setQuote: (quote: CourierQuote) => void;
@@ -30,6 +34,8 @@ const initialState = {
   fulfilmentType: null,
   purpose: null,
   packageType: null,
+  thirdPartySender: false,
+  senderIdFile: null,
   parcels: [],
   quote: null,
 };
@@ -43,6 +49,8 @@ export const useBookingStore = create<BookingState>(set => ({
   setFulfilmentType: fulfilmentType => set({ fulfilmentType }),
   setPurpose: purpose => set({ purpose }),
   setPackageType: packageType => set({ packageType }),
+  setThirdPartySender: thirdPartySender => set(thirdPartySender ? { thirdPartySender } : { thirdPartySender, senderIdFile: null }),
+  setSenderIdFile: file => set({ senderIdFile: file }),
 
   upsertParcel: (index, parcel) =>
     set(state => ({

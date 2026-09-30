@@ -96,6 +96,20 @@ export default function AdminShipmentDetailPage() {
           <div className="mt-2 divide-y divide-line">
             <InfoRow label="From" value={`${shipment.origin.contact_name} · ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}, ${shipment.origin.country}`} />
             <InfoRow label="To" value={`${shipment.destination.contact_name} · ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}, ${shipment.destination.country}`} />
+            {shipment.third_party_sender && (
+              <InfoRow
+                label="Sender ID"
+                value={
+                  shipment.sender_id_document_url ? (
+                    <a href={shipment.sender_id_document_url} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">
+                      View document (third-party sender)
+                    </a>
+                  ) : (
+                    "Third-party sender, no document on file"
+                  )
+                }
+              />
+            )}
             <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
             <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "-"} />
             <InfoRow label="Pickup date" value={shipment.pickup_date ? formatDate(shipment.pickup_date) : "Drop-off"} />

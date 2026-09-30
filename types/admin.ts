@@ -73,6 +73,8 @@ export interface AdminShipment {
   payment_status: ShipmentPaymentStatus;
   fulfilment_type: "PICKUP" | "DROP_OFF";
   purpose: string;
+  third_party_sender: boolean;
+  sender_id_document_url: string | null;
   courier_name: string;
   service_name: string;
   amount_minor: number;

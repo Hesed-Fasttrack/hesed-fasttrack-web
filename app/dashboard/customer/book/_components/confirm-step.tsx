@@ -33,7 +33,7 @@ const SummaryRow = function ({ label, value }: { label: string; value: string })
 
 export const ConfirmStep = function () {
   const router = useRouter();
-  const { senderAddress, receiverAddress, fulfilmentType, purpose, packageType, parcels, quote, setStep, reset } = useBookingStore();
+  const { senderAddress, receiverAddress, fulfilmentType, purpose, packageType, thirdPartySender, senderIdFile, parcels, quote, setStep, reset } = useBookingStore();
   const [pickupKey, setPickupKey] = useState(PICKUP_OPTIONS[0].key);
 
   const isDropOff = fulfilmentType === "DROP_OFF";
@@ -46,7 +46,7 @@ export const ConfirmStep = function () {
   const balance = walletData?.data?.available_minor ?? 0;
   const hasEnoughBalance = balance >= (quote?.amount_minor ?? 0);
 
-  const { mutate: bookShipment, isPending: isBooking } = useSubmitData<Record<string, unknown>, unknown>({
+  const { mutate: bookShipment, isPending: isBooking } = useSubmitData<Record<string, unknown> | FormData, unknown>({
     url: API_ENDPOINTS.customer.shipments.create,
     onSuccessMessage: "Shipment booked",
     additionalQueryKeys: [[API_ENDPOINTS.customer.shipments.list()], [API_ENDPOINTS.customer.wallet.balance]],
@@ -63,7 +63,7 @@ export const ConfirmStep = function () {
 
   const handleBook = function () {
     const pickup = PICKUP_OPTIONS.find(option => option.key === pickupKey);
-    bookShipment({
+    const payload = {
       courier_code: quote.courier_code,
       service_code: quote.service_code,
       sender_address_id: senderAddress.id,
@@ -71,9 +71,20 @@ export const ConfirmStep = function () {
       purpose,
       package_type: packageType ?? "PACKAGE",
       fulfilment_type: fulfilmentType,
+      third_party_sender: thirdPartySender,
       parcels,
       pickup_date: isDropOff ? undefined : pickup?.date.toISOString(),
-    });
+    };
+
+    // The sender's ID travels as multipart with the JSON in a payload field.
+    if (thirdPartySender && senderIdFile) {
+      const formData = new FormData();
+      formData.append("payload", JSON.stringify(payload));
+      formData.append("sender_id_document", senderIdFile);
+      return bookShipment(formData);
+    }
+
+    bookShipment(payload);
   };
 
   const isGated = !isDropOff && (!isKycVerified || !hasEnoughBalance);

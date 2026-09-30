@@ -27,7 +27,26 @@ const FULFILMENT_OPTIONS: { value: FulfilmentType; label: string; description: s
 const formatAddress = (address: Address) => `${address.contact_name} · ${address.line1}, ${address.city}, ${address.state}`;
 
 export const DetailsStep = function () {
-  const { senderAddress, receiverAddress, fulfilmentType, purpose, packageType, parcels, setSenderAddress, setReceiverAddress, setFulfilmentType, setPurpose, setPackageType, upsertParcel, removeParcel, setStep } = useBookingStore();
+  const {
+    senderAddress,
+    receiverAddress,
+    fulfilmentType,
+    purpose,
+    packageType,
+    thirdPartySender,
+    senderIdFile,
+    parcels,
+    setSenderAddress,
+    setReceiverAddress,
+    setFulfilmentType,
+    setPurpose,
+    setPackageType,
+    setThirdPartySender,
+    setSenderIdFile,
+    upsertParcel,
+    removeParcel,
+    setStep,
+  } = useBookingStore();
   const [editingParcel, setEditingParcel] = useState<number | null | "new">(null);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
 
@@ -43,6 +62,7 @@ export const DetailsStep = function () {
   const handleContinue = function () {
     if (!senderAddress || !receiverAddress) return showToast("warning", "Choose both a sender and a receiver address");
     if (senderAddress.id === receiverAddress.id) return showToast("warning", "Sender and receiver can't be the same address");
+    if (thirdPartySender && !senderIdFile) return showToast("warning", "Upload a photo of the sender's ID");
     if (!fulfilmentType) return showToast("warning", "Choose pickup or drop-off");
     if (!packageType) return showToast("warning", "Are you shipping a package or a document?");
     if (!purpose) return showToast("warning", "What is this shipment for?");
@@ -77,6 +97,25 @@ export const DetailsStep = function () {
             options={addresses.map(address => ({ label: formatAddress(address), value: address.id }))}
           />
         </div>
+
+        <label className="mt-4 flex cursor-pointer items-center gap-2.5">
+          <input type="checkbox" checked={thirdPartySender} onChange={event => setThirdPartySender(event.target.checked)} className="h-4 w-4 accent-brand" />
+          <span className="text-sm font-medium text-foreground">Someone else is sending this shipment (not me)</span>
+        </label>
+
+        {thirdPartySender && (
+          <div className="mt-3 rounded-xl border border-line bg-canvas p-4">
+            <p className="text-sm font-medium text-foreground">Sender&apos;s ID document</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">NIN slip, driver&apos;s licence or passport photo. Couriers require the actual sender&apos;s government ID when the shipper is not the account holder.</p>
+            <input
+              type="file"
+              accept="image/png,image/jpeg"
+              onChange={event => setSenderIdFile(event.target.files?.[0] ?? null)}
+              className="mt-3 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-brand-muted file:px-3 file:py-2 file:text-sm file:font-medium file:text-brand hover:file:bg-brand-muted/80"
+            />
+            {senderIdFile && <p className="mt-2 text-xs text-foreground">Selected: {senderIdFile.name}</p>}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-line bg-white p-5">
