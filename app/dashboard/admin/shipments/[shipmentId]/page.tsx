@@ -13,7 +13,7 @@ import { displayName, type AdminShipment, type ShipmentEvent } from "@/types/adm
 import type { APIResponse } from "@/types/response";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EditShipmentDialog } from "./_components/edit-shipment-dialog";
 import { TransitionDialog } from "./_components/transition-dialog";
 
@@ -32,6 +32,7 @@ export default function AdminShipmentDetailPage() {
   const { shipmentId = "" } = useParams<{ shipmentId: string }>();
   const [isTransitionOpen, setIsTransitionOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const senderIdInputRef = useRef<HTMLInputElement>(null);
 
   const { data, isFetching } = useGetData<APIResponse<AdminShipment & { events: ShipmentEvent[] }>>({
     url: API_ENDPOINTS.admin.shipments.detail(shipmentId),
@@ -43,6 +44,22 @@ export default function AdminShipmentDetailPage() {
     onSuccessMessage: "Shipment dispatched to the courier",
     additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)]],
   });
+
+  const { mutate: attachSenderId, isPending: isAttachingSenderId } = useSubmitData<FormData, unknown>({
+    url: API_ENDPOINTS.admin.shipments.attachSenderId(shipmentId),
+    onSuccessMessage: "Sender ID attached",
+    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)]],
+  });
+
+  const handleSenderIdPick = function (event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("sender_id_document", file);
+    attachSenderId(formData);
+  };
 
   if (isFetching && !shipment) {
     return (
@@ -107,6 +124,20 @@ export default function AdminShipmentDetailPage() {
                   ) : (
                     "Third-party sender, no document on file"
                   )
+                }
+              />
+            )}
+            {!isTerminal && (
+              <InfoRow
+                label={shipment.sender_id_document_url ? "Update sender ID" : "Attach sender ID"}
+                value={
+                  <>
+                    <input ref={senderIdInputRef} type="file" accept="image/png,image/jpeg" className="hidden" onChange={handleSenderIdPick} />
+                    <Button size="sm" variant="outline" onClick={() => senderIdInputRef.current?.click()} disabled={isAttachingSenderId}>
+                      {isAttachingSenderId && <Loader2 className="animate-spin" />}
+                      {shipment.sender_id_document_url ? "Replace document" : "Upload ID photo"}
+                    </Button>
+                  </>
                 }
               />
             )}

@@ -150,6 +150,10 @@ export const ConfirmStep = function () {
               : `Your wallet holds ${formatNaira(balance)}. Fund it to book this shipment.`}
       </p>
 
+      <p className="text-center text-xs text-muted-foreground">
+        Delivery dates are estimates, not guarantees. Your shipment may arrive earlier or later due to customs clearance, flight or shipping schedule changes, weather or other circumstances beyond our control.
+      </p>
+
       {!isDropOff && !isKycVerified ? (
         <Button size="lg" className="h-11 w-full" disabled={isFetchingKyc || isKycPending} asChild={!isKycPending}>
           {isKycPending ? "Verification in review" : <Link href="/dashboard/customer/kyc">Verify identity</Link>}

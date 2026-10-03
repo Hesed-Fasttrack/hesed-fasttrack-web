@@ -37,7 +37,7 @@ export default function AdminActivitiesPage() {
       <PageHeader title="Activity" description="Everything your admins have done, newest first." />
 
       <div className="overflow-hidden rounded-2xl border border-line bg-white">
-        <Table>
+        <Table className="min-w-[720px]">
           <TableHeader>
             <TableRow>
               <TableHead>Admin</TableHead>
@@ -61,7 +61,7 @@ export default function AdminActivitiesPage() {
                   <TableCell>
                     <StatusBadge label={ACTION_LABELS[activity.action] ?? activity.action} className="bg-brand-muted text-brand" />
                   </TableCell>
-                  <TableCell className="max-w-md">{activity.summary}</TableCell>
+                  <TableCell className="max-w-md whitespace-normal break-words">{activity.summary}</TableCell>
                   <TableCell className="whitespace-nowrap">{formatDateTime(activity.createdAt)}</TableCell>
                 </TableRow>
               ))

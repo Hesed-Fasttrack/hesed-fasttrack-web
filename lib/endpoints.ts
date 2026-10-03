@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
       detail: (shipmentId: string) => `/admin/shipments/${shipmentId}`,
       transition: (shipmentId: string) => `/admin/shipments/${shipmentId}/transition`,
       edit: (shipmentId: string) => `/admin/shipments/${shipmentId}`,
+      attachSenderId: (shipmentId: string) => `/admin/shipments/${shipmentId}/sender-id`,
       retryCourierPurchase: (shipmentId: string) => `/admin/shipments/${shipmentId}/courier-purchase`,
     },
 
