@@ -2,18 +2,23 @@
 
 import { FormInput } from "@/components/form/form-input";
 import { AppText } from "@/components/shared/app-text";
+import { AppInput } from "@/components/shared/app-input";
 import { Button } from "@/components/ui/button";
+import { showToast } from "@/lib/show-toast";
 import { loginSchema, type LoginFormValues } from "@/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLogin } from "./_hooks/use-login";
 
 export default function SignInPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const [otpEmail, setOtpEmail] = useState<string | null>(null);
+  const [otpCode, setOtpCode] = useState("");
 
   const {
     control,
@@ -22,7 +27,48 @@ export default function SignInPage() {
     reset,
   } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
 
-  const { login, isLoggingIn } = useLogin({ callbackUrl, onSuccess: () => reset() });
+  const { login, isLoggingIn, verifyOtp, isVerifyingOtp } = useLogin({
+    callbackUrl,
+    onSuccess: () => reset(),
+    onOtpRequired: email => {
+      setOtpEmail(email);
+      setOtpCode("");
+      showToast("success", "We sent a sign-in code to your email");
+    },
+  });
+
+  const handleVerifyOtp = function (event: React.FormEvent) {
+    event.preventDefault();
+    if (!otpEmail) return;
+    if (otpCode.trim().length < 6) return showToast("warning", "Enter the 6-digit code from your email");
+    verifyOtp({ email: otpEmail, code: otpCode.trim() });
+  };
+
+  if (otpEmail) {
+    return (
+      <div className="rounded-2xl border border-line bg-white p-8">
+        <AppText type="h2" className="text-center">
+          Check your email
+        </AppText>
+        <AppText type="subtitle" className="mt-1 text-center text-sm">
+          Admin sign-ins need a second step. Enter the code we sent to {otpEmail}.
+        </AppText>
+
+        <form onSubmit={handleVerifyOtp} className="mt-8 space-y-5">
+          <AppInput label="Sign-in code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="123456" value={otpCode} onChange={event => setOtpCode(event.target.value.replace(/\D/g, ""))} />
+
+          <Button type="submit" className="h-11 w-full" disabled={isVerifyingOtp}>
+            {isVerifyingOtp && <Loader2 className="animate-spin" />}
+            Verify and sign in
+          </Button>
+        </form>
+
+        <button type="button" onClick={() => setOtpEmail(null)} className="mt-6 block w-full text-center text-sm font-medium text-brand hover:underline">
+          Back to sign in
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl border border-line bg-white p-8">

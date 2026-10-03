@@ -2,6 +2,7 @@ export const API_ENDPOINTS = {
   auth: {
     signup: "/auth/create-user",
     signin: "/auth/login",
+    verifyLoginOtp: "/auth/verify-login-otp",
     refresh: "/auth/token",
     sendEmailOtp: "/auth/send-email-otp",
     verifyEmailOtp: "/auth/verify-email-otp",
