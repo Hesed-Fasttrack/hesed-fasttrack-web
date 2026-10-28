@@ -1,67 +1,66 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { useGetProfile } from "@/hooks/use-get-profile";
-import { clearAuthCookies } from "@/lib/authService";
-import { LogOut, Menu } from "lucide-react";
-import { useState } from "react";
+import { Menu, Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   title: string;
   renderSidebar: (onNavigate: () => void) => React.ReactNode;
   actions?: React.ReactNode;
+  searchPlaceholder?: string;
+  onSearch?: (query: string) => void;
 }
 
-export const DashboardTopbar = function ({ title, renderSidebar, actions }: Props) {
-  const { profile } = useGetProfile();
+export const DashboardTopbar = function ({ title, renderSidebar, actions, searchPlaceholder, onSearch }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  const initials = `${profile?.first_name?.[0] ?? ""}${profile?.last_name?.[0] ?? ""}`.toUpperCase() || "·";
-  const fullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(" ");
+  useEffect(() => {
+    const handleKeyDown = function (event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
 
-  const handleSignOut = function () {
-    clearAuthCookies();
-    window.location.href = "/auth/signin";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleSubmit = function (event: React.FormEvent) {
+    event.preventDefault();
+    const cleaned = query.trim();
+    if (!cleaned || !onSearch) return;
+    onSearch(cleaned);
+    setQuery("");
+    searchRef.current?.blur();
   };
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-line bg-white px-4 sm:px-6">
-      <div className="flex items-center gap-3">
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-          <SheetTrigger className="rounded-md p-2 text-foreground-muted hover:bg-muted lg:hidden" aria-label="Open navigation">
-            <Menu className="h-5 w-5" />
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
-            <SheetTitle className="sr-only">Navigation</SheetTitle>
-            {renderSidebar(() => setIsMenuOpen(false))}
-          </SheetContent>
-        </Sheet>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-      </div>
+    <header className="sticky top-0 z-40 flex h-17 items-center gap-3 border-b border-line bg-canvas/90 px-4 backdrop-blur-md sm:px-8">
+      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+        <SheetTrigger className="-ml-1 flex size-10 items-center justify-center rounded-xl text-foreground-muted hover:bg-surface-muted lg:hidden" aria-label="Open navigation">
+          <Menu className="size-5" />
+        </SheetTrigger>
+        <SheetContent side="left" className="w-63 p-0">
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+          {renderSidebar(() => setIsMenuOpen(false))}
+        </SheetContent>
+      </Sheet>
 
-      <div className="flex items-center gap-2">
+      <p className="truncate text-sm font-semibold text-foreground">{title}</p>
+
+      <div className="ml-auto flex items-center gap-2.5">
+        {onSearch && (
+          <form onSubmit={handleSubmit} className="hidden h-10 w-60 items-center gap-2.5 rounded-xl border border-line bg-white px-3 transition-colors focus-within:border-brand focus-within:ring-3 focus-within:ring-brand-muted md:flex xl:w-85">
+            <Search className="size-4 shrink-0 text-foreground-subtle" />
+            <input ref={searchRef} value={query} onChange={event => setQuery(event.target.value)} placeholder={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-[13.5px] text-foreground outline-none placeholder:text-foreground-subtle" />
+            <kbd className="hidden rounded-md border border-line bg-canvas px-1.5 py-0.5 text-[11px] font-semibold text-foreground-muted xl:inline">Ctrl K</kbd>
+          </form>
+        )}
         {actions}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <Avatar>
-              <AvatarImage src={profile?.profile_pic ?? undefined} alt={fullName} />
-              <AvatarFallback className="bg-brand-muted text-sm font-semibold text-brand">{initials}</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>
-              <p className="text-sm font-semibold">{fullName || "Account"}</p>
-              <p className="text-xs font-normal text-muted-foreground">{profile?.email}</p>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-              <LogOut />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
     </header>
   );

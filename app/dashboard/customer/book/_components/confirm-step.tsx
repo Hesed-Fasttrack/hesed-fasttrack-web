@@ -25,7 +25,7 @@ const PICKUP_OPTIONS = [1, 2, 3].map(offset => ({
 const SummaryRow = function ({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4 py-2.5">
-      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className="text-sm text-foreground-muted">{label}</span>
       <span className="text-right text-sm font-medium text-foreground">{value}</span>
     </div>
   );
@@ -90,14 +90,14 @@ export const ConfirmStep = function () {
   const isGated = !isDropOff && (!isKycVerified || !hasEnoughBalance);
 
   return (
-    <div className="max-w-2xl space-y-4">
-      <Button variant="ghost" size="sm" onClick={() => setStep("rates")}>
+    <div className="max-w-3xl space-y-5">
+      <Button variant="ghost" size="sm" className="-ml-2 rounded-lg" onClick={() => setStep("rates")}>
         <ArrowLeft />
         Back to rates
       </Button>
 
-      <div className="rounded-2xl border border-line bg-white p-5">
-        <p className="text-sm font-semibold text-foreground">Summary</p>
+      <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+        <p className="text-[15px] font-bold tracking-tight text-foreground">Summary</p>
         <div className="mt-2 divide-y divide-line">
           <SummaryRow label="From" value={`${senderAddress.contact_name} · ${senderAddress.line1}, ${senderAddress.city}`} />
           <SummaryRow label="To" value={`${receiverAddress.contact_name} · ${receiverAddress.line1}, ${receiverAddress.city}`} />
@@ -108,28 +108,28 @@ export const ConfirmStep = function () {
       </div>
 
       {isDropOff ? (
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-sm font-semibold text-foreground">Drop-off location</p>
+        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+          <p className="text-[15px] font-bold tracking-tight text-foreground">Drop-off location</p>
           <p className="mt-2 text-sm text-foreground">{OFFICE_ADDRESS.name}</p>
-          <p className="mt-0.5 text-sm text-muted-foreground">{OFFICE_ADDRESS.lines}</p>
-          <p className="mt-2 text-xs text-muted-foreground">No payment now. You pay from your wallet after we verify your parcel at the office.</p>
+          <p className="mt-0.5 text-sm text-foreground-muted">{OFFICE_ADDRESS.lines}</p>
+          <p className="mt-2 text-xs text-foreground-muted">No payment now. You pay from your wallet after we verify your parcel at the office.</p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-sm font-semibold text-foreground">Pickup day</p>
+        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+          <p className="text-[15px] font-bold tracking-tight text-foreground">Pickup day</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {PICKUP_OPTIONS.map(option => (
               <button
                 key={option.key}
                 type="button"
                 onClick={() => setPickupKey(option.key)}
-                className={cn("rounded-full border px-4 py-2 text-sm font-medium transition-colors", pickupKey === option.key ? "border-brand bg-brand-muted text-brand" : "border-line text-muted-foreground hover:bg-muted")}
+                className={cn("rounded-full border px-4 py-2 text-sm font-medium transition-colors", pickupKey === option.key ? "border-brand bg-brand-muted text-brand" : "border-line text-foreground-muted hover:bg-muted")}
               >
                 {option.label}
               </button>
             ))}
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">When the courier collects your parcel. Delivery takes {etaText} from pickup.</p>
+          <p className="mt-2 text-xs text-foreground-muted">When the courier collects your parcel. Delivery takes {etaText} from pickup.</p>
         </div>
       )}
 
@@ -138,7 +138,7 @@ export const ConfirmStep = function () {
         <p className="text-2xl font-bold text-brand">{formatNaira(quote.amount_minor)}</p>
       </div>
 
-      <p className={cn("text-center text-sm", isGated ? "text-danger" : "text-muted-foreground")}>
+      <p className={cn("text-center text-sm", isGated ? "text-danger" : "text-foreground-muted")}>
         {isDropOff
           ? "No payment now. You pay after we verify your parcel."
           : !isKycVerified
@@ -150,20 +150,20 @@ export const ConfirmStep = function () {
               : `Your wallet holds ${formatNaira(balance)}. Fund it to book this shipment.`}
       </p>
 
-      <p className="text-center text-xs text-muted-foreground">
+      <p className="text-center text-xs text-foreground-muted">
         Delivery dates are estimates, not guarantees. Your shipment may arrive earlier or later due to customs clearance, flight or shipping schedule changes, weather or other circumstances beyond our control.
       </p>
 
       {!isDropOff && !isKycVerified ? (
-        <Button size="lg" className="h-11 w-full" disabled={isFetchingKyc || isKycPending} asChild={!isKycPending}>
+        <Button size="lg" className="h-11 w-full rounded-xl" disabled={isFetchingKyc || isKycPending} asChild={!isKycPending}>
           {isKycPending ? "Verification in review" : <Link href="/dashboard/customer/kyc">Verify identity</Link>}
         </Button>
       ) : !isDropOff && !hasEnoughBalance ? (
-        <Button size="lg" className="h-11 w-full" asChild>
+        <Button size="lg" className="h-11 w-full rounded-xl" asChild>
           <Link href="/dashboard/customer/wallet">Fund wallet</Link>
         </Button>
       ) : (
-        <Button size="lg" className="h-11 w-full" onClick={handleBook} disabled={isBooking}>
+        <Button size="lg" className="h-11 w-full rounded-xl" onClick={handleBook} disabled={isBooking}>
           {isBooking && <Loader2 className="animate-spin" />}
           Book shipment
         </Button>

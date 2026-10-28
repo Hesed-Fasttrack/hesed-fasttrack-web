@@ -4,6 +4,7 @@ import { FormInput } from "@/components/form/form-input";
 import { AppDialog } from "@/components/shared/app-dialog";
 import { AppInput } from "@/components/shared/app-input";
 import { PageHeader } from "@/components/shared/page-header";
+import { SectionCard } from "@/components/shared/section-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +14,7 @@ import { clearAuthCookies } from "@/lib/authService";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, TriangleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -90,40 +91,45 @@ export default function CustomerSettingsPage() {
     <div>
       <PageHeader title="Settings" description="Your account, security and data." />
 
-      <div className="grid max-w-4xl gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-line bg-white p-6">
-          <p className="text-sm font-semibold text-foreground">Profile</p>
-          <form onSubmit={profileForm.handleSubmit(data => updateProfile({ ...data, last_name: data.last_name || undefined, phone_no: data.phone_no || undefined }))} className="mt-4 space-y-4">
+      <div className="grid max-w-5xl gap-5 lg:grid-cols-2">
+        <SectionCard title="Profile" description={profile?.email ? `Signed in as ${profile.email}` : "Your name and phone number"}>
+          <form onSubmit={profileForm.handleSubmit(data => updateProfile({ ...data, last_name: data.last_name || undefined, phone_no: data.phone_no || undefined }))} className="space-y-4 p-5 sm:p-5.5">
             <FormInput<ProfileFormValues> control={profileForm.control} name="first_name" errors={profileForm.formState.errors} label="First name" />
             <FormInput<ProfileFormValues> control={profileForm.control} name="last_name" errors={profileForm.formState.errors} label="Last name" />
             <FormInput<ProfileFormValues> control={profileForm.control} name="phone_no" errors={profileForm.formState.errors} label="Phone" type="tel" />
-            <Button type="submit" disabled={isSavingProfile}>
+            <Button type="submit" className="h-10 rounded-xl px-5" disabled={isSavingProfile}>
               {isSavingProfile && <Loader2 className="animate-spin" />}
               Save changes
             </Button>
           </form>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-2xl border border-line bg-white p-6">
-          <p className="text-sm font-semibold text-foreground">Change password</p>
-          <form onSubmit={passwordForm.handleSubmit(data => updatePassword({ current_password: data.current_password, new_password: data.new_password }))} className="mt-4 space-y-4">
+        <SectionCard title="Change password" description="Use at least 8 characters with a letter, a number and a symbol">
+          <form onSubmit={passwordForm.handleSubmit(data => updatePassword({ current_password: data.current_password, new_password: data.new_password }))} className="space-y-4 p-5 sm:p-5.5">
             <FormInput<PasswordFormValues> control={passwordForm.control} name="current_password" errors={passwordForm.formState.errors} label="Current password" type="password" icon={Lock} />
             <FormInput<PasswordFormValues> control={passwordForm.control} name="new_password" errors={passwordForm.formState.errors} label="New password" type="password" icon={Lock} />
             <FormInput<PasswordFormValues> control={passwordForm.control} name="confirm_password" errors={passwordForm.formState.errors} label="Confirm new password" type="password" icon={Lock} />
-            <Button type="submit" disabled={isSavingPassword}>
+            <Button type="submit" className="h-10 rounded-xl px-5" disabled={isSavingPassword}>
               {isSavingPassword && <Loader2 className="animate-spin" />}
               Change password
             </Button>
           </form>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-2xl border border-danger/30 bg-white p-6 lg:col-span-2">
-          <p className="text-sm font-semibold text-danger">Danger zone</p>
-          <p className="mt-1 text-sm text-muted-foreground">Deleting your account is permanent. Withdraw any wallet balance first.</p>
-          <Button variant="destructive" className="mt-4" onClick={() => setIsDeleteOpen(true)}>
+        <section className="flex flex-col gap-4 rounded-2xl border border-danger/30 bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-5.5 lg:col-span-2">
+          <div className="flex items-start gap-3">
+            <span className="flex size-9.5 shrink-0 items-center justify-center rounded-[10px] bg-danger/10 text-danger">
+              <TriangleAlert className="size-4.5" />
+            </span>
+            <div>
+              <p className="text-[15px] font-bold tracking-tight text-danger">Danger zone</p>
+              <p className="mt-0.5 text-[12.5px] text-foreground-muted">Deleting your account is permanent. Withdraw any wallet balance first.</p>
+            </div>
+          </div>
+          <Button variant="destructive" className="h-10 shrink-0 rounded-xl px-5" onClick={() => setIsDeleteOpen(true)}>
             Delete account
           </Button>
-        </div>
+        </section>
       </div>
 
       <AppDialog

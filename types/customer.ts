@@ -230,3 +230,12 @@ export interface PublicTracking {
   delivered_at: string | null;
   events: { id: string; to_status: ShipmentStatus; note: string | null; createdAt: string }[];
 }
+
+export interface CustomerDashboardSummary {
+  on_the_move: number;
+  awaiting_drop_off: number;
+  awaiting_pickup: number;
+  delivered_this_year: number;
+  spent_this_month_minor: number;
+  open_shipments: CustomerShipment[];
+}

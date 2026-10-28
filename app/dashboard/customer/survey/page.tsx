@@ -88,10 +88,10 @@ export default function SurveyPage() {
   if (alreadySubmitted || isDone) {
     return (
       <div className="mx-auto flex max-w-2xl flex-col items-center rounded-2xl border border-line bg-white px-6 py-16 text-center">
-        <CheckCircle2 className="h-12 w-12 text-success" />
+        <span className="flex size-14 items-center justify-center rounded-2xl bg-emerald/10"><CheckCircle2 className="size-7 text-emerald" /></span>
         <h2 className="mt-4 text-xl font-bold text-foreground">Thank you for your feedback!</h2>
-        <p className="mt-2 max-w-sm text-sm text-muted-foreground">Your answers help us make HESED FastTrack better for everyone. We read every single response.</p>
-        <Button asChild className="mt-6">
+        <p className="mt-2 max-w-sm text-sm text-foreground-muted">Your answers help us make HESED FastTrack better for everyone. We read every single response.</p>
+        <Button asChild className="mt-6 h-10 rounded-xl px-5">
           <Link href="/dashboard/customer">Back to dashboard</Link>
         </Button>
       </div>
@@ -104,26 +104,26 @@ export default function SurveyPage() {
 
       <div className="space-y-5">
         {RATING_QUESTIONS.map(entry => (
-          <div key={entry.key} className="rounded-2xl border border-line bg-white p-5">
-            <p className="mb-3 text-sm font-semibold text-foreground">{entry.question}</p>
+          <div key={entry.key} className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+            <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">{entry.question}</p>
             <ScaleRow count={5} value={ratings[entry.key]} onSelect={value => setRatings(current => ({ ...current, [entry.key]: value }))} low={entry.low} high={entry.high} />
           </div>
         ))}
 
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="mb-3 text-sm font-semibold text-foreground">How likely are you to recommend HESED FastTrack to a friend or business partner?</p>
+        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+          <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">How likely are you to recommend HESED FastTrack to a friend or business partner?</p>
           <ScaleRow count={11} value={nps} onSelect={setNps} low="Not at all likely" high="Extremely likely" />
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="mb-3 text-sm font-semibold text-foreground">How often do you ship?</p>
+        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+          <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">How often do you ship?</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {SURVEY_FREQUENCIES.map(option => (
               <button
                 key={option.value}
                 type="button"
                 onClick={() => setFrequency(option.value)}
-                className={cn("rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors", frequency === option.value ? "border-brand bg-brand-muted text-foreground" : "border-line text-foreground hover:bg-muted")}
+                className={cn("rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors", frequency === option.value ? "border-brand bg-brand-muted/40 text-foreground" : "border-line text-foreground hover:border-line-strong")}
               >
                 {option.label}
               </button>
@@ -131,12 +131,12 @@ export default function SurveyPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="mb-3 text-sm font-semibold text-foreground">What could we do better? (optional)</p>
+        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+          <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">What could we do better? (optional)</p>
           <Textarea placeholder="Tell us anything: pricing, speed, the app, support…" value={improvements} onChange={event => setImprovements(event.target.value)} maxLength={1000} rows={4} />
         </div>
 
-        <Button size="lg" className="w-full sm:w-auto sm:px-10" onClick={handleSubmit} disabled={isPending}>
+        <Button className="h-11 w-full rounded-xl sm:w-auto sm:px-10" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="animate-spin" />}
           Submit feedback
         </Button>

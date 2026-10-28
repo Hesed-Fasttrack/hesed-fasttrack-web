@@ -6,5 +6,7 @@ interface Props {
 }
 
 export const StatusBadge = function ({ label, className }: Props) {
-  return <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap", className)}>{label}</span>;
+  return (
+    <span className={cn("inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold whitespace-nowrap before:size-1.5 before:shrink-0 before:rounded-full before:bg-current", className)}>{label}</span>
+  );
 };

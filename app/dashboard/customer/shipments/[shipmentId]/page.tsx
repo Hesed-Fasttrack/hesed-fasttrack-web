@@ -2,6 +2,7 @@
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { PageHeader } from "@/components/shared/page-header";
+import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,19 +12,20 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatDate, formatDateTime, formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import { PAYMENT_STATUS, SHIPMENT_STATUS } from "@/lib/statuses";
-import type { CustomerKycSubmission, CustomerShipment, CustomerShipmentEvent, Wallet } from "@/types/customer";
+import { cn } from "@/lib/utils";
+import type { CustomerKycSubmission, CustomerShipment, CustomerShipmentEvent, ShipmentAddressSnapshot, Wallet } from "@/types/customer";
 import { SHIPMENT_PURPOSES } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Copy, Loader2 } from "lucide-react";
+import { ArrowRight, Box, Copy, Loader2, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex justify-between gap-4 py-2.5">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-right text-sm font-medium text-foreground">{value}</span>
+    <div className="flex justify-between gap-4 py-2.5 text-[13px]">
+      <span className="shrink-0 text-foreground-muted">{label}</span>
+      <span className="min-w-0 text-right font-medium break-words text-foreground">{value}</span>
     </div>
   );
 };
@@ -37,10 +39,23 @@ const CopyButton = function ({ label, value }: { label: string; value: string })
         navigator.clipboard.writeText(value);
         showToast("success", `${label} copied`);
       }}
-      className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-6 items-center justify-center rounded-md transition-colors"
+      className="flex size-6 items-center justify-center rounded-md text-foreground-subtle transition-colors hover:bg-surface-muted hover:text-foreground"
     >
       <Copy className="size-3.5" />
     </button>
+  );
+};
+
+const AddressBlock = function ({ label, address, align = "left" }: { label: string; address: ShipmentAddressSnapshot; align?: "left" | "right" }) {
+  return (
+    <div className={cn("min-w-0", align === "right" && "sm:text-right")}>
+      <p className="text-xs text-foreground-muted">{label}</p>
+      <p className="truncate text-xl font-bold tracking-tight text-foreground">{address.city}</p>
+      <p className="mt-1 text-[12.5px] text-foreground-muted">{address.contact_name}</p>
+      <p className="text-[12.5px] text-foreground-muted">
+        {address.line1}, {address.state}
+      </p>
+    </div>
   );
 };
 
@@ -78,9 +93,9 @@ export default function CustomerShipmentDetailPage() {
 
   if (isFetching && !shipment) {
     return (
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Skeleton className="h-72 rounded-2xl" />
-        <Skeleton className="h-72 rounded-2xl" />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        <Skeleton className="h-96 rounded-2xl" />
+        <Skeleton className="h-96 rounded-2xl" />
       </div>
     );
   }
@@ -101,108 +116,135 @@ export default function CustomerShipmentDetailPage() {
         description={`Booked ${formatDateTime(shipment.createdAt)}`}
         action={
           canCancel ? (
-            <Button variant="destructive" onClick={() => setIsConfirmingCancel(true)}>
+            <Button variant="destructive" className="h-10 w-full rounded-xl px-4 sm:w-auto" onClick={() => setIsConfirmingCancel(true)}>
               Cancel shipment
             </Button>
           ) : undefined
         }
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <StatusBadge label={status.label} className={status.className} />
-        <StatusBadge label={paymentStatus.label} className={paymentStatus.className} />
-        <StatusBadge label={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off" : "Courier pickup"} className="bg-muted text-muted-foreground" />
-        <span className="ml-auto text-2xl font-bold text-brand">{formatNaira(shipment.amount_minor)}</span>
-      </div>
-
       {isAwaitingPayment && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-brand/30 bg-brand-muted px-5 py-4">
-          <p className="text-sm text-foreground">
-            We've received and verified your parcel.{" "}
-            {isKycVerified
-              ? hasEnoughBalance
-                ? "Complete payment to start shipping."
-                : `Your wallet holds ${formatNaira(walletData?.data?.available_minor ?? 0)}. Fund it to pay for this shipment.`
-              : "Verify your identity once to pay for shipments."}
-          </p>
+        <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-brand/25 bg-brand-muted/60 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div className="flex items-start gap-3">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-brand">
+              <PackageCheck className="size-4.5" />
+            </span>
+            <p className="text-[13px] text-foreground">
+              We&apos;ve received and verified your parcel.{" "}
+              {isKycVerified
+                ? hasEnoughBalance
+                  ? "Complete payment to start shipping."
+                  : `Your wallet holds ${formatNaira(walletData?.data?.available_minor ?? 0)}. Fund it to pay for this shipment.`
+                : "Verify your identity once to pay for shipments."}
+            </p>
+          </div>
           {!isKycVerified ? (
-            <Button asChild>
+            <Button asChild className="h-10 shrink-0 rounded-xl px-4">
               <Link href="/dashboard/customer/kyc">Verify identity</Link>
             </Button>
           ) : hasEnoughBalance ? (
-            <Button onClick={() => payShipment({})} disabled={isPaying}>
+            <Button className="h-10 shrink-0 rounded-xl px-4" onClick={() => payShipment({})} disabled={isPaying}>
               {isPaying && <Loader2 className="animate-spin" />}
               Pay {formatNaira(shipment.amount_minor)}
             </Button>
           ) : (
-            <Button onClick={() => router.push("/dashboard/customer/wallet")}>Fund wallet</Button>
+            <Button className="h-10 shrink-0 rounded-xl px-4" onClick={() => router.push("/dashboard/customer/wallet")}>
+              Fund wallet
+            </Button>
           )}
         </div>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-sm font-semibold text-foreground">Details</p>
-          <div className="mt-2 divide-y divide-line">
-            <InfoRow
-              label="Reference"
-              value={
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="font-mono">{shipment.reference}</span>
-                  <CopyButton label="Reference" value={shipment.reference} />
-                </span>
-              }
-            />
-            <InfoRow label="From" value={`${shipment.origin.contact_name} · ${shipment.origin.line1}, ${shipment.origin.city}, ${shipment.origin.state}`} />
-            <InfoRow label="To" value={`${shipment.destination.contact_name} · ${shipment.destination.line1}, ${shipment.destination.city}, ${shipment.destination.state}`} />
-            <InfoRow label="Courier" value={`${shipment.courier_name} · ${shipment.service_name}`} />
-            <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days}–${shipment.eta_max_days} business days` : "-"} />
-            {shipment.courier_tracking_number && (
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        <div className="flex min-w-0 flex-col gap-5">
+          <SectionCard title="Route" description={`${shipment.courier_name} · ${shipment.service_name}`}>
+            <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-5 sm:p-5.5">
+              <AddressBlock label="From" address={shipment.origin} />
+              <span className="hidden size-8 items-center justify-center rounded-full bg-brand-muted text-brand sm:flex">
+                <ArrowRight className="size-4" />
+              </span>
+              <AddressBlock label="To" address={shipment.destination} align="right" />
+            </div>
+            <div className="divide-y divide-line border-t border-line px-5 sm:px-5.5">
               <InfoRow
-                label="Tracking number"
+                label="Reference"
                 value={
                   <span className="inline-flex items-center gap-1.5">
-                    <span className="font-mono">{shipment.courier_tracking_number}</span>
-                    <CopyButton label="Tracking number" value={shipment.courier_tracking_number} />
+                    <span className="font-mono">{shipment.reference}</span>
+                    <CopyButton label="Reference" value={shipment.reference} />
                   </span>
                 }
               />
-            )}
-            <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "-"} />
-            <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
-          </div>
+              {shipment.courier_tracking_number && (
+                <InfoRow
+                  label="Tracking number"
+                  value={
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="font-mono">{shipment.courier_tracking_number}</span>
+                      <CopyButton label="Tracking number" value={shipment.courier_tracking_number} />
+                    </span>
+                  }
+                />
+              )}
+              <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days} to ${shipment.eta_max_days} business days` : "-"} />
+              <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "-"} />
+              <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
+            </div>
+          </SectionCard>
 
-          <p className="mt-6 text-sm font-semibold text-foreground">Parcels</p>
-          <ul className="mt-2 space-y-2">
-            {shipment.parcels.map((parcel, index) => (
-              <li key={index} className="rounded-lg bg-canvas px-3 py-2 text-sm text-foreground">
-                {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm · {parcel.items.map(item => `${item.quantity}× ${item.name}`).join(", ")}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-sm font-semibold text-foreground">Tracking</p>
-          <ol className="mt-4 space-y-4">
-            {events.map((event, index) => {
-              const eventStatus = SHIPMENT_STATUS[event.to_status];
-              const isLatest = index === events.length - 1;
-              return (
-                <li key={event.id} className="flex gap-3">
-                  <div className="flex flex-col items-center">
-                    <div className={`mt-1 h-2.5 w-2.5 rounded-full ${isLatest ? "bg-brand" : "bg-line-strong"}`} />
-                    {index < events.length - 1 && <div className="w-px flex-1 bg-line" />}
-                  </div>
-                  <div className="pb-1">
-                    <p className="text-sm font-semibold text-foreground">{eventStatus?.label ?? event.to_status}</p>
-                    {event.note && <p className="mt-0.5 text-sm text-muted-foreground">{event.note}</p>}
-                    <p className="mt-0.5 text-xs text-muted-foreground">{formatDateTime(event.createdAt)}</p>
+          <SectionCard title="Parcels" description={`${shipment.parcels.length} ${shipment.parcels.length === 1 ? "box" : "boxes"}`}>
+            <ul className="divide-y divide-line">
+              {shipment.parcels.map((parcel, index) => (
+                <li key={index} className="flex gap-3 px-5 py-3.5 sm:px-5.5">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-surface-muted text-foreground-muted">
+                    <Box className="size-4" />
+                  </span>
+                  <div className="min-w-0 text-[13px]">
+                    <p className="font-semibold text-foreground tabular-nums">
+                      {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm
+                    </p>
+                    <p className="text-foreground-muted">{parcel.items.map(item => `${item.quantity}× ${item.name}`).join(", ")}</p>
                   </div>
                 </li>
-              );
-            })}
-          </ol>
+              ))}
+            </ul>
+          </SectionCard>
+        </div>
+
+        <div className="flex min-w-0 flex-col gap-5">
+          <section className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+            <p className="text-[13px] font-medium text-foreground-muted">Shipment total</p>
+            <p className="mt-1.5 text-[28px] font-extrabold tracking-tight text-foreground tabular-nums">{formatNaira(shipment.amount_minor)}</p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              <StatusBadge label={status.label} className={status.className} />
+              <StatusBadge label={paymentStatus.label} className={paymentStatus.className} />
+              <StatusBadge label={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off" : "Courier pickup"} className="bg-surface-muted text-foreground-muted" />
+            </div>
+          </section>
+
+          <SectionCard title="Tracking" description="Every update on this shipment">
+            {events.length === 0 ? (
+              <p className="p-5 text-[13px] text-foreground-muted sm:p-5.5">No updates yet. We&apos;ll post each step here.</p>
+            ) : (
+              <ol className="px-5 py-1.5 sm:px-5.5">
+                {events.map((event, index) => {
+                  const eventStatus = SHIPMENT_STATUS[event.to_status];
+                  const isLatest = index === events.length - 1;
+                  return (
+                    <li key={event.id} className="relative flex gap-3 py-3">
+                      {!isLatest && <span aria-hidden className="absolute top-7 -bottom-1 left-1.25 w-px bg-line" />}
+                      <span className={cn("mt-1 size-2.75 shrink-0 rounded-full", isLatest ? "bg-brand ring-4 ring-brand-muted" : "bg-line-strong")} />
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-semibold text-foreground">{eventStatus?.label ?? event.to_status}</p>
+                        {event.note && <p className="mt-0.5 text-[13px] break-words text-foreground-muted">{event.note}</p>}
+                        <p className="mt-0.5 text-xs text-foreground-subtle">{formatDateTime(event.createdAt)}</p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </SectionCard>
         </div>
       </div>
 

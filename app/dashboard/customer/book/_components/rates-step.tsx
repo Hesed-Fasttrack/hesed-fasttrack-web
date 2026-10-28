@@ -33,8 +33,8 @@ export const RatesStep = function () {
   }, []);
 
   return (
-    <div className="max-w-2xl space-y-4">
-      <Button variant="ghost" size="sm" onClick={() => setStep("details")}>
+    <div className="max-w-3xl space-y-5">
+      <Button variant="ghost" size="sm" className="-ml-2 rounded-lg" onClick={() => setStep("details")}>
         <ArrowLeft />
         Back to details
       </Button>
@@ -46,10 +46,10 @@ export const RatesStep = function () {
           ))}
         </div>
       ) : quotes.length === 0 ? (
-        <div className="rounded-2xl border border-line bg-white p-10 text-center">
-          <PackageSearch className="mx-auto h-8 w-8 text-muted-foreground" />
+        <div className="rounded-2xl border border-line bg-white px-5 py-12 text-center">
+          <PackageSearch className="mx-auto h-8 w-8 text-foreground-muted" />
           <p className="mt-3 text-sm font-semibold text-foreground">No rates for this route</p>
-          <p className="mt-1 text-sm text-muted-foreground">Check the addresses. A valid destination postal code unlocks express options.</p>
+          <p className="mt-1 text-sm text-foreground-muted">Check the addresses. A valid destination postal code unlocks express options.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -61,22 +61,22 @@ export const RatesStep = function () {
                 key={`${option.courier_code}-${option.service_code}`}
                 type="button"
                 onClick={() => setQuote(option)}
-                className={cn("flex w-full items-center justify-between gap-4 rounded-2xl border p-5 text-left transition-colors", isSelected ? "border-brand bg-brand-muted" : "border-line bg-white hover:bg-muted")}
+                className={cn("flex w-full items-center justify-between gap-4 rounded-2xl border p-5 text-left transition-colors", isSelected ? "border-brand bg-brand-muted/40" : "border-line bg-white hover:border-line-strong")}
               >
                 <div>
                   <p className="text-sm font-semibold text-foreground">
                     {option.courier_name} · {option.service_name}
                   </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{etaText}</p>
+                  <p className="mt-0.5 text-xs text-foreground-muted">{etaText}</p>
                 </div>
-                <p className="text-lg font-bold text-brand">{formatNaira(option.amount_minor)}</p>
+                <p className="shrink-0 text-lg font-bold text-brand tabular-nums">{formatNaira(option.amount_minor)}</p>
               </button>
             );
           })}
         </div>
       )}
 
-      <Button size="lg" className="h-11 w-full sm:w-auto sm:px-8" disabled={!quote} onClick={() => setStep("confirm")}>
+      <Button size="lg" className="h-11 w-full rounded-xl sm:w-auto sm:px-8" disabled={!quote} onClick={() => setStep("confirm")}>
         Continue
       </Button>
     </div>

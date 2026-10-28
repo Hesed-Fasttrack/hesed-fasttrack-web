@@ -2,7 +2,9 @@
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { PageHeader } from "@/components/shared/page-header";
+import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { TableCard } from "@/components/shared/table-card";
 import { TableEmptyRow, TableSkeletonRows } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,15 +17,16 @@ import { ACCOUNT_STATUS, KYC_STATUS } from "@/lib/statuses";
 import { cn } from "@/lib/utils";
 import { displayName, type AdminUserDetail, type PaginatedResponse, type WalletTransaction } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
+import { ReceiptText } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { WalletAdjustDialog } from "./_components/wallet-adjust-dialog";
 
 const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex justify-between gap-4 py-2.5">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-right text-sm font-medium text-foreground">{value}</span>
+    <div className="flex items-center justify-between gap-4 py-2.5 text-[13px]">
+      <span className="shrink-0 text-foreground-muted">{label}</span>
+      <span className="min-w-0 text-right font-medium break-words text-foreground">{value}</span>
     </div>
   );
 };
@@ -54,10 +57,9 @@ export default function AdminUserDetailPage() {
 
   if (isFetching && !user) {
     return (
-      <div className="grid gap-4 lg:grid-cols-2">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-56 rounded-2xl" />
-        ))}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        <Skeleton className="h-80 rounded-2xl" />
+        <Skeleton className="h-80 rounded-2xl" />
       </div>
     );
   }
@@ -75,56 +77,55 @@ export default function AdminUserDetailPage() {
         description={user.email}
         action={
           user.account_status !== "DEACTIVATED" ? (
-            <Button variant={isSuspended ? "default" : "destructive"} onClick={() => setIsConfirmingStatus(true)}>
+            <Button variant={isSuspended ? "default" : "destructive"} className="h-10 w-full rounded-xl px-4 sm:w-auto" onClick={() => setIsConfirmingStatus(true)}>
               {isSuspended ? "Reinstate account" : "Suspend account"}
             </Button>
           ) : undefined
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-sm font-semibold text-foreground">Profile</p>
-          <div className="mt-2 divide-y divide-line">
-            <InfoRow label="Status" value={<StatusBadge label={accountStatus.label} className={accountStatus.className} />} />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        <SectionCard title="Profile" action={<StatusBadge label={accountStatus.label} className={accountStatus.className} />}>
+          <div className="divide-y divide-line px-5 sm:px-5.5">
             <InfoRow label="Phone" value={user.phone_no ?? "-"} />
             <InfoRow label="Email verified" value={user.has_validated_email ? "Yes" : "No"} />
             <InfoRow label="Location" value={[user.city, user.state, user.country].filter(Boolean).join(", ") || "-"} />
             <InfoRow label="Last login" value={user.lastLogin ? formatDateTime(user.lastLogin) : "Never"} />
             <InfoRow label="Joined" value={formatDateTime(user.createdAt)} />
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-foreground">Wallet</p>
-            <Button variant="outline" size="sm" onClick={() => setIsAdjustOpen(true)}>
-              Adjust
-            </Button>
-          </div>
-          <p className="mt-3 text-3xl font-bold text-brand">{formatNaira(user.wallet?.available_minor ?? 0)}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Available balance</p>
+        <div className="flex min-w-0 flex-col gap-5">
+          <section className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[13px] font-medium text-foreground-muted">Wallet balance</p>
+              <Button variant="outline" size="sm" className="rounded-lg" onClick={() => setIsAdjustOpen(true)}>
+                Adjust
+              </Button>
+            </div>
+            <p className="mt-1.5 text-[28px] font-extrabold tracking-tight text-foreground tabular-nums">{formatNaira(user.wallet?.available_minor ?? 0)}</p>
+            <p className="mt-0.5 text-[12.5px] text-foreground-muted">Available balance</p>
+          </section>
 
-          <p className="mt-6 text-sm font-semibold text-foreground">KYC</p>
-          <div className="mt-2 divide-y divide-line">
-            <InfoRow label="Status" value={kycStatus ? <StatusBadge label={kycStatus.label} className={kycStatus.className} /> : "Not submitted"} />
-            {user.kyc && (
-              <>
+          <SectionCard title="KYC" action={kycStatus ? <StatusBadge label={kycStatus.label} className={kycStatus.className} /> : undefined}>
+            {user.kyc ? (
+              <div className="divide-y divide-line px-5 sm:px-5.5">
                 <InfoRow label="Identity" value={`${user.kyc.identity_type} · ${user.kyc.identity_number}`} />
                 <InfoRow label="Submitted" value={formatDateTime(user.kyc.submittedAt)} />
-              </>
+              </div>
+            ) : (
+              <p className="p-5 text-[13px] text-foreground-muted sm:p-5.5">Not submitted</p>
             )}
-          </div>
+          </SectionCard>
         </div>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
-        <p className="border-b border-line px-5 py-4 text-sm font-semibold text-foreground">Wallet transactions</p>
+      <TableCard title="Wallet transactions" className="mt-5">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Type</TableHead>
-              <TableHead>Amount</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
               <TableHead>Reference</TableHead>
               <TableHead>Narration</TableHead>
               <TableHead>Date</TableHead>
@@ -134,24 +135,24 @@ export default function AdminUserDetailPage() {
             {isFetchingTransactions && transactions.length === 0 ? (
               <TableSkeletonRows columns={5} />
             ) : transactions.length === 0 ? (
-              <TableEmptyRow columns={5} message="No transactions yet." />
+              <TableEmptyRow columns={5} icon={ReceiptText} message="No transactions yet." />
             ) : (
               transactions.map(transaction => (
                 <TableRow key={transaction.id}>
                   <TableCell className="font-medium capitalize">{transaction.type.toLowerCase().replaceAll("_", " ")}</TableCell>
-                  <TableCell className={cn("font-semibold", transaction.amount_minor > 0 ? "text-emerald" : "text-danger")}>
+                  <TableCell className={cn("text-right font-semibold tabular-nums", transaction.amount_minor > 0 ? "text-emerald" : "text-danger")}>
                     {transaction.amount_minor > 0 ? "+" : ""}
                     {formatNaira(transaction.amount_minor)}
                   </TableCell>
-                  <TableCell className="font-mono text-xs">{transaction.reference}</TableCell>
-                  <TableCell className="max-w-56 truncate">{transaction.narration ?? "-"}</TableCell>
-                  <TableCell>{formatDateTime(transaction.createdAt)}</TableCell>
+                  <TableCell className="font-mono text-[12.5px]">{transaction.reference}</TableCell>
+                  <TableCell className="max-w-56 truncate text-foreground-muted">{transaction.narration ?? "-"}</TableCell>
+                  <TableCell className="text-foreground-muted">{formatDateTime(transaction.createdAt)}</TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
-      </div>
+      </TableCard>
 
       <ConfirmDialog
         open={isConfirmingStatus}

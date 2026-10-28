@@ -18,7 +18,8 @@ export const API_ENDPOINTS = {
   },
 
   admin: {
-    stats: "/admin/stats",
+    stats: (range: string) => `/admin/stats?range=${range}`,
+    queues: "/admin/queues",
 
     users: {
       list: (query = "") => `/admin/users${query}`,
@@ -66,6 +67,9 @@ export const API_ENDPOINTS = {
   },
 
   customer: {
+    dashboard: {
+      summary: "/customer/dashboard/summary",
+    },
     addresses: {
       list: "/customer/addresses",
       create: "/customer/addresses",

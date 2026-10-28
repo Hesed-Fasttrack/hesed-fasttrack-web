@@ -1,118 +1,100 @@
 "use client";
 
 import { PageHeader } from "@/components/shared/page-header";
-import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { formatDate, formatNaira } from "@/lib/format";
-import { SHIPMENT_STATUS } from "@/lib/statuses";
 import type { PaginatedResponse } from "@/types/admin";
-import type { CustomerShipment, Wallet } from "@/types/customer";
+import type { CustomerDashboardSummary, CustomerShipment, Wallet } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { MapPin, Package, PackagePlus, Wallet as WalletIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calculator, PackagePlus } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ActiveShipmentCard } from "./_components/active-shipment-card";
+import { OfficeCard, TrackCard, VerificationNote } from "./_components/overview-side-cards";
+import { RecentShipmentsCard } from "./_components/recent-shipments-card";
+import { SummaryStats } from "./_components/summary-stats";
 import { SurveyPromptCard } from "./_components/survey-prompt-card";
+import { WalletCard } from "./_components/wallet-card";
 
-const QUICK_ACTIONS = [
-  { label: "Book a shipment", href: "/dashboard/customer/book", icon: PackagePlus },
-  { label: "Fund wallet", href: "/dashboard/customer/wallet", icon: WalletIcon },
-  { label: "Saved addresses", href: "/dashboard/customer/addresses", icon: MapPin },
-] as const;
+const greetingFor = function (hour: number) {
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+};
+
+const describe = function (summary: CustomerDashboardSummary | undefined) {
+  if (!summary) return "Ship, pay and track, all from here.";
+  const moving = summary.on_the_move;
+  const waiting = summary.awaiting_drop_off + summary.awaiting_pickup;
+  if (moving === 0 && waiting === 0) return "Nothing in progress. Get a quote and book your next shipment in minutes.";
+  const parts = [moving > 0 && `${moving} ${moving === 1 ? "shipment is" : "shipments are"} on the move`, waiting > 0 && `${waiting} waiting to be handed over`].filter(Boolean);
+  return `${parts.join(" and ")}.`.replace(/^./, letter => letter.toUpperCase());
+};
 
 export default function CustomerOverviewPage() {
-  const router = useRouter();
   const { profile } = useGetProfile();
+  const [now, setNow] = useState<Date | null>(null);
+
+  // The greeting depends on the viewer's clock, which only exists after hydration.
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
+
+  const { data: summaryData, isFetching: isFetchingSummary } = useGetData<APIResponse<CustomerDashboardSummary>>({ url: API_ENDPOINTS.customer.dashboard.summary, staleTime: 60 * 1000 });
+  const summary = summaryData?.data;
 
   const { data: walletData } = useGetData<APIResponse<Wallet>>({ url: API_ENDPOINTS.customer.wallet.balance });
-  const wallet = walletData?.data;
 
   const { data: shipmentsData, isFetching: isFetchingShipments } = useGetData<PaginatedResponse<CustomerShipment>>({
     url: API_ENDPOINTS.customer.shipments.list("?page=1&limit=5"),
   });
-  const shipments = shipmentsData?.data ?? [];
+
+  const greeting = now ? greetingFor(now.getHours()) : "Hello";
 
   return (
     <div>
       <SurveyPromptCard />
       <PageHeader
-        title={`Hello${profile?.first_name ? `, ${profile.first_name}` : ""}`}
-        description="Ship, pay and track, all from here."
+        eyebrow={now ? format(now, "EEEE, d MMMM") : undefined}
+        title={`${greeting}${profile?.first_name ? `, ${profile.first_name}` : ""}`}
+        description={describe(summary)}
         action={
-          <Button asChild>
-            <Link href="/dashboard/customer/book">
-              <PackagePlus />
-              Book a shipment
-            </Link>
-          </Button>
+          <div className="flex w-full gap-2.5 sm:w-auto">
+            <Button asChild variant="outline" className="h-10 flex-1 rounded-xl px-4 sm:flex-none">
+              <Link href="/dashboard/customer/quick-quote">
+                <Calculator />
+                Quick quote
+              </Link>
+            </Button>
+            <Button asChild className="h-10 flex-1 rounded-xl px-4 sm:flex-none">
+              <Link href="/dashboard/customer/book">
+                <PackagePlus />
+                Book a shipment
+              </Link>
+            </Button>
+          </div>
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl bg-brand p-6 text-white">
-          <p className="text-sm font-medium text-[#E4D8F2]">Wallet balance</p>
-          <p className="mt-2 text-3xl font-bold">{wallet ? formatNaira(wallet.available_minor) : "-"}</p>
-          <Button size="sm" className="mt-4 bg-white text-brand hover:bg-white/90" asChild>
-            <Link href="/dashboard/customer/wallet">Fund wallet</Link>
-          </Button>
-        </div>
-
-        {QUICK_ACTIONS.map(action => (
-          <Link key={action.href} href={action.href} className="hidden items-center gap-4 rounded-2xl border border-line bg-white p-6 transition-colors hover:border-brand lg:flex">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-muted">
-              <action.icon className="h-5 w-5 text-brand" />
-            </div>
-            <p className="text-sm font-semibold text-foreground">{action.label}</p>
-          </Link>
-        )).slice(0, 2)}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        <ActiveShipmentCard shipments={summary?.open_shipments ?? []} isLoading={isFetchingSummary} />
+        <WalletCard wallet={walletData?.data} />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-white">
-        <div className="flex items-center justify-between border-b border-line px-5 py-4">
-          <p className="text-sm font-semibold text-foreground">Recent shipments</p>
-          <Link href="/dashboard/customer/shipments" className="text-sm font-medium text-brand hover:underline">
-            View all
-          </Link>
-        </div>
+      <div className="mt-5">
+        <SummaryStats summary={summary} />
+      </div>
 
-        {isFetchingShipments && shipments.length === 0 ? (
-          <div className="space-y-3 p-5">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton key={index} className="h-14 rounded-xl" />
-            ))}
-          </div>
-        ) : shipments.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 px-5 py-14 text-center">
-            <Package className="h-8 w-8 text-foreground-subtle" />
-            <p className="text-sm text-muted-foreground">No shipments yet. Book your first one in minutes.</p>
-            <Button size="sm" asChild>
-              <Link href="/dashboard/customer/book">Get a quote</Link>
-            </Button>
-          </div>
-        ) : (
-          <ul className="divide-y divide-line">
-            {shipments.map(shipment => {
-              const status = SHIPMENT_STATUS[shipment.status];
-              return (
-                <li key={shipment.id} className="flex cursor-pointer flex-wrap items-center justify-between gap-3 px-5 py-4 hover:bg-canvas" onClick={() => router.push(`/dashboard/customer/shipments/${shipment.id}`)}>
-                  <div>
-                    <p className="font-mono text-xs font-semibold text-foreground">{shipment.reference}</p>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {shipment.origin.city} → {shipment.destination.city} · {formatDate(shipment.createdAt)}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-foreground">{formatNaira(shipment.amount_minor)}</span>
-                    <StatusBadge label={status.label} className={status.className} />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+        <RecentShipmentsCard shipments={shipmentsData?.data ?? []} isLoading={isFetchingShipments} />
+        <div className="flex flex-col gap-5">
+          <TrackCard />
+          <OfficeCard />
+          <VerificationNote />
+        </div>
       </div>
     </div>
   );

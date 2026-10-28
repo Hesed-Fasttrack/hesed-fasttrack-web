@@ -8,12 +8,22 @@ export interface PaginatedResponse<TItem> {
   totalPages: number;
 }
 
+export type StatsRange = "today" | "7d" | "30d" | "year";
+
 export interface AdminStats {
-  customers: { total: number; new_this_month: number };
-  shipments: { total: number; by_status: Partial<Record<ShipmentStatus, number>> };
-  revenue: { lifetime_minor: number; this_month_minor: number };
-  wallets: { total_balance_minor: number };
-  kyc: { pending_review: number };
+  range: StatsRange;
+  revenue: { current_minor: number; previous_minor: number };
+  shipments: { current: number; previous: number; total: number; by_status: Partial<Record<ShipmentStatus, number>> };
+  customers: { total: number; new_in_range: number };
+  wallets: { total_balance_minor: number; funded_count: number };
+  daily: { date: string; count: number }[];
+}
+
+export interface AdminQueues {
+  drop_offs: { count: number; oldest_at: string | null };
+  kyc: { count: number; oldest_at: string | null };
+  courier_failures: { count: number; latest: { id: string; reference: string } | null };
+  withdrawals: { count: number; total_minor: number } | null;
 }
 
 export interface AdminUserRow {

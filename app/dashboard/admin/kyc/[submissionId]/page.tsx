@@ -9,6 +9,7 @@ import { formatDateTime } from "@/lib/format";
 import { KYC_STATUS } from "@/lib/statuses";
 import { displayName, type KycSubmission } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
+import { Info } from "lucide-react";
 import { useParams } from "next/navigation";
 import { KycDocumentCard } from "./_components/kyc-document-card";
 
@@ -26,7 +27,7 @@ export default function AdminKycDetailPage() {
 
   if (isFetching && !submission) {
     return (
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         <Skeleton className="h-96 rounded-2xl" />
         <Skeleton className="h-96 rounded-2xl" />
       </div>
@@ -46,9 +47,12 @@ export default function AdminKycDetailPage() {
         action={<StatusBadge label={overall.label} className={overall.className} />}
       />
 
-      <p className="mb-4 text-sm text-muted-foreground">Approval needs both documents. One rejection settles the submission. The customer resubmits only the rejected document.</p>
+      <div className="mb-5 flex gap-2.5 rounded-xl border border-line bg-white px-4 py-3 text-[13px] text-foreground-muted">
+        <Info className="mt-0.5 size-4 shrink-0 text-brand" />
+        <p>Approval needs both documents. One rejection settles the submission. The customer resubmits only the rejected document.</p>
+      </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         <KycDocumentCard submissionId={submission.id} document="identity" title="Identity document" imageUrl={submission.identity_document_url} status={submission.identity_status} rejectionReason={submission.identity_rejection_reason} />
         <KycDocumentCard submissionId={submission.id} document="address" title="Proof of address" imageUrl={submission.address_proof_url} status={submission.address_status} rejectionReason={submission.address_rejection_reason} />
       </div>

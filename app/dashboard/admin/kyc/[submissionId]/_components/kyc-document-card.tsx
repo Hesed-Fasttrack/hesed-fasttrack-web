@@ -1,6 +1,7 @@
 "use client";
 
 import { AppDialog } from "@/components/shared/app-dialog";
+import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,7 +9,7 @@ import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
 import { KYC_STATUS, type KycStatus } from "@/lib/statuses";
-import { Loader2 } from "lucide-react";
+import { Loader2, TriangleAlert } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -43,29 +44,31 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
   };
 
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <StatusBadge label={presentation.label} className={presentation.className} />
+    <SectionCard title={title} action={<StatusBadge label={presentation.label} className={presentation.className} />}>
+      <div className="p-5 sm:p-5.5">
+        <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative block h-56 overflow-hidden rounded-xl border border-line bg-canvas sm:h-72">
+          <Image src={imageUrl} alt={title} fill unoptimized className="object-contain" />
+        </a>
+
+        {rejectionReason && (
+          <div className="mt-3 flex gap-2.5 rounded-xl bg-danger/10 px-3.5 py-3 text-[13px] text-danger">
+            <TriangleAlert className="mt-0.5 size-4 shrink-0" />
+            <p className="min-w-0 break-words">{rejectionReason}</p>
+          </div>
+        )}
+
+        {status === "PENDING" && (
+          <div className="mt-4 grid grid-cols-2 gap-2.5">
+            <Button className="h-10 rounded-xl" disabled={isPending} onClick={() => review({ [document]: { decision: "APPROVE" } })}>
+              {isPending && <Loader2 className="animate-spin" />}
+              Approve
+            </Button>
+            <Button variant="destructive" className="h-10 rounded-xl" disabled={isPending} onClick={() => setIsRejectOpen(true)}>
+              Reject
+            </Button>
+          </div>
+        )}
       </div>
-
-      <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="relative mt-4 block h-64 overflow-hidden rounded-xl border border-line bg-canvas">
-        <Image src={imageUrl} alt={title} fill unoptimized className="object-contain" />
-      </a>
-
-      {rejectionReason && <p className="mt-3 rounded-lg bg-danger/5 px-3 py-2 text-sm text-danger">{rejectionReason}</p>}
-
-      {status === "PENDING" && (
-        <div className="mt-4 flex gap-2">
-          <Button className="flex-1" disabled={isPending} onClick={() => review({ [document]: { decision: "APPROVE" } })}>
-            {isPending && <Loader2 className="animate-spin" />}
-            Approve
-          </Button>
-          <Button variant="destructive" className="flex-1" disabled={isPending} onClick={() => setIsRejectOpen(true)}>
-            Reject
-          </Button>
-        </div>
-      )}
 
       <AppDialog
         isOpen={isRejectOpen}
@@ -87,6 +90,6 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
       >
         <Textarea placeholder="e.g. The photo is blurry. Retake it with all corners visible." value={reason} onChange={event => setReason(event.target.value)} maxLength={300} />
       </AppDialog>
-    </div>
+    </SectionCard>
   );
 };

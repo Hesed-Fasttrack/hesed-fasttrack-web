@@ -59,9 +59,9 @@ export const NotificationsBell = function () {
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger className="relative rounded-full p-2 text-foreground-muted outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring" aria-label="Notifications">
-        <Bell className="h-5 w-5" />
-        {unread > 0 && <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white">{unread > 9 ? "9+" : unread}</span>}
+      <DropdownMenuTrigger className="relative flex size-10 items-center justify-center rounded-xl border border-line bg-white text-foreground-muted outline-none transition-colors hover:border-line-strong hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring" aria-label="Notifications">
+        <Bell className="size-4.5" />
+        {unread > 0 && <span className="absolute -right-1.5 -top-1.5 flex h-4.5 min-w-4.5 ring-2 ring-white items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white">{unread > 9 ? "9+" : unread}</span>}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">

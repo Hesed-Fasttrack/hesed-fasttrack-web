@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
+import { cn } from "@/lib/utils";
 import type { Address } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { MapPin, Plus } from "lucide-react";
@@ -38,18 +39,18 @@ export default function CustomerAddressesPage() {
     additionalQueryKeys: [[API_ENDPOINTS.customer.addresses.list]],
   });
 
+  const openCreate = function () {
+    setEditing(null);
+    setIsFormOpen(true);
+  };
+
   return (
     <div>
       <PageHeader
         title="Addresses"
         description="Saved sender and receiver details for faster booking."
         action={
-          <Button
-            onClick={() => {
-              setEditing(null);
-              setIsFormOpen(true);
-            }}
-          >
+          <Button className="h-10 rounded-xl px-4" onClick={openCreate}>
             <Plus />
             Add address
           </Button>
@@ -57,53 +58,49 @@ export default function CustomerAddressesPage() {
       />
 
       {isFetching && addresses.length === 0 ? (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="h-40 rounded-2xl" />
+            <Skeleton key={index} className="h-48 rounded-2xl" />
           ))}
         </div>
       ) : addresses.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong bg-white px-5 py-16 text-center">
-          <MapPin className="h-8 w-8 text-foreground-subtle" />
-          <p className="text-sm text-muted-foreground">No saved addresses yet. Add the places you ship from and to.</p>
-          <Button
-            size="sm"
-            onClick={() => {
-              setEditing(null);
-              setIsFormOpen(true);
-            }}
-          >
+          <span className="flex size-12 items-center justify-center rounded-2xl bg-brand-muted">
+            <MapPin className="size-5.5 text-brand" />
+          </span>
+          <p className="max-w-sm text-sm text-foreground-muted">No saved addresses yet. Add the places you ship from and to.</p>
+          <Button className="h-10 rounded-xl px-5" onClick={openCreate}>
             Add your first address
           </Button>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {addresses.map(address => (
-            <div key={address.id} className="rounded-2xl border border-line bg-white p-5">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {address.label || address.contact_name}
-                    {address.is_default && (
-                      <span className="ml-2 inline-block align-middle">
-                        <StatusBadge label="Default" className="bg-brand-muted text-brand" />
-                      </span>
-                    )}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
+            <div key={address.id} className={cn("flex flex-col overflow-hidden rounded-2xl border bg-white", address.is_default ? "border-brand/40" : "border-line")}>
+              <div className="flex items-start gap-3 px-5 pt-5 sm:px-5.5 sm:pt-5.5">
+                <span className="flex size-9.5 shrink-0 items-center justify-center rounded-[10px] bg-brand-muted">
+                  <MapPin className="size-4.5 text-brand" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="truncate text-[15px] font-bold tracking-tight text-foreground">{address.label || address.contact_name}</p>
+                    {address.is_default && <StatusBadge label="Default" className="bg-brand-muted text-brand" />}
+                  </div>
+                  <p className="mt-0.5 truncate text-[12.5px] text-foreground-muted">
                     {address.contact_name} · {address.contact_phone}
                   </p>
                 </div>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">
+              <p className="flex-1 px-5 pt-3.5 pb-5 text-[13.5px] leading-relaxed text-foreground sm:px-5.5 sm:pb-5.5">
                 {address.line1}
                 {address.line2 ? `, ${address.line2}` : ""}, {address.city}, {address.state}, {address.country}
                 {address.postal_code ? ` · ${address.postal_code}` : ""}
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2 border-t border-line bg-canvas px-5 py-3 sm:px-5.5">
                 <Button
                   size="sm"
                   variant="outline"
+                  className="rounded-lg bg-white"
                   onClick={() => {
                     setEditing(address);
                     setIsFormOpen(true);
@@ -112,11 +109,11 @@ export default function CustomerAddressesPage() {
                   Edit
                 </Button>
                 {!address.is_default && (
-                  <Button size="sm" variant="outline" onClick={() => setDefault({ id: address.id })}>
+                  <Button size="sm" variant="outline" className="rounded-lg bg-white" onClick={() => setDefault({ id: address.id })}>
                     Make default
                   </Button>
                 )}
-                <Button size="sm" variant="destructive" onClick={() => setDeleting(address)}>
+                <Button size="sm" variant="ghost" className="ml-auto rounded-lg text-danger hover:bg-danger/10 hover:text-danger" onClick={() => setDeleting(address)}>
                   Delete
                 </Button>
               </div>

@@ -1,4 +1,3 @@
-import { AppText } from "@/components/shared/app-text";
 import type { LucideIcon } from "lucide-react";
 
 interface Props {
@@ -10,17 +9,15 @@ interface Props {
 
 export const StatCard = function ({ label, value, hint, icon: Icon }: Props) {
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-muted">
-          <Icon className="h-4.5 w-4.5 text-brand" />
-        </div>
+    <section className="min-w-0 rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+      <div className="flex items-center justify-between gap-2 text-[13px] font-medium text-foreground-muted">
+        <span className="truncate">{label}</span>
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-[9px] bg-brand-muted text-brand">
+          <Icon className="size-3.75" />
+        </span>
       </div>
-      <AppText type="h2" className="mt-3">
-        {value}
-      </AppText>
-      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
-    </div>
+      <p className="mt-2.5 truncate text-[22px] font-extrabold tracking-tight text-foreground tabular-nums sm:text-[26px]">{value}</p>
+      {hint && <p className="mt-1 text-[12.5px] text-foreground-muted">{hint}</p>}
+    </section>
   );
 };

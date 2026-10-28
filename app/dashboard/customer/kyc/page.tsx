@@ -19,9 +19,9 @@ export default function CustomerKycPage() {
       <PageHeader title="Identity verification" description="Verify once to pay for shipments and withdraw from your wallet." />
 
       {isFetching && !data ? (
-        <Skeleton className="h-72 max-w-xl rounded-2xl" />
+        <Skeleton className="h-72 max-w-2xl rounded-2xl" />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {submission && <KycStatusBanner submission={submission} />}
           {showForm && <KycForm submission={submission} />}
         </div>

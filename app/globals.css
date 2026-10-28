@@ -50,6 +50,7 @@
   /* HESED brand — mirrors the mobile palette (constants/colors.ts) */
   --color-brand: #6d2fa4;
   --color-brand-dark: #55217f;
+  --color-brand-ink: #3d1760;
   --color-brand-muted: #f0e9f8;
   --color-canvas: #fafafb;
   --color-surface-muted: #f3f3f6;

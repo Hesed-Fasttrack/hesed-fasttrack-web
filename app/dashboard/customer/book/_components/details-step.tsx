@@ -71,16 +71,16 @@ export const DetailsStep = function () {
   };
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <div className="rounded-2xl border border-line bg-white p-5">
+    <div className="max-w-3xl space-y-5">
+      <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-foreground">Route</p>
+          <p className="text-[15px] font-bold tracking-tight text-foreground">Route</p>
           <Button variant="outline" size="sm" onClick={() => setIsAddingAddress(true)}>
             <Plus />
             New address
           </Button>
         </div>
-        {addresses.length === 0 && <p className="mt-2 text-sm text-muted-foreground">No saved addresses yet. Create one right here with the button above.</p>}
+        {addresses.length === 0 && <p className="mt-2 text-sm text-foreground-muted">No saved addresses yet. Create one right here with the button above.</p>}
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <AppSimpleSelect
             label="Sender"
@@ -106,20 +106,20 @@ export const DetailsStep = function () {
         {thirdPartySender && (
           <div className="mt-3 rounded-xl border border-line bg-canvas p-4">
             <p className="text-sm font-medium text-foreground">Sender&apos;s ID document</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">NIN slip, driver&apos;s licence or passport photo. Couriers require the actual sender&apos;s government ID when the shipper is not the account holder.</p>
+            <p className="mt-0.5 text-xs text-foreground-muted">NIN slip, driver&apos;s licence or passport photo. Couriers require the actual sender&apos;s government ID when the shipper is not the account holder.</p>
             <input
               type="file"
               accept="image/png,image/jpeg"
               onChange={event => setSenderIdFile(event.target.files?.[0] ?? null)}
-              className="mt-3 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-brand-muted file:px-3 file:py-2 file:text-sm file:font-medium file:text-brand hover:file:bg-brand-muted/80"
+              className="mt-3 block w-full text-sm text-foreground-muted file:mr-3 file:rounded-lg file:border-0 file:bg-brand-muted file:px-3 file:py-2 file:text-sm file:font-medium file:text-brand hover:file:bg-brand-muted/80"
             />
             {senderIdFile && <p className="mt-2 text-xs text-foreground">Selected: {senderIdFile.name}</p>}
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl border border-line bg-white p-5">
-        <p className="text-sm font-semibold text-foreground">Pickup or drop-off</p>
+      <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+        <p className="text-[15px] font-bold tracking-tight text-foreground">Pickup or drop-off</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {FULFILMENT_OPTIONS.map(option => (
             <button
@@ -129,27 +129,27 @@ export const DetailsStep = function () {
               onClick={() => setFulfilmentType(option.value)}
               className={cn(
                 "flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
-                fulfilmentType === option.value ? "border-brand bg-brand-muted" : "border-line hover:bg-muted",
+                fulfilmentType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:border-line-strong",
                 option.comingSoon && "cursor-not-allowed opacity-60 hover:bg-transparent",
               )}
             >
-              <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg", fulfilmentType === option.value ? "bg-white" : "bg-brand-muted")}>
+              <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px]", fulfilmentType === option.value ? "bg-white" : "bg-brand-muted")}>
                 <option.icon className="h-5 w-5 text-brand" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-semibold text-foreground">{option.label}</p>
-                  {option.comingSoon && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Coming soon</span>}
+                  {option.comingSoon && <span className="rounded-full bg-amber/10 px-2 py-0.5 text-[11px] font-semibold text-amber">Coming soon</span>}
                 </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">{option.description}</p>
+                <p className="mt-0.5 text-xs text-foreground-muted">{option.description}</p>
               </div>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="rounded-2xl border border-line bg-white p-5">
-        <p className="text-sm font-semibold text-foreground">What are you shipping?</p>
+      <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+        <p className="text-[15px] font-bold tracking-tight text-foreground">What are you shipping?</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {PACKAGE_TYPES.map(option => {
             const Icon = PACKAGE_TYPE_ICONS[option.value];
@@ -158,9 +158,9 @@ export const DetailsStep = function () {
                 key={option.value}
                 type="button"
                 onClick={() => setPackageType(option.value)}
-                className={cn("flex items-center gap-3 rounded-xl border p-4 text-left transition-colors", packageType === option.value ? "border-brand bg-brand-muted" : "border-line hover:bg-muted")}
+                className={cn("flex items-center gap-3 rounded-xl border p-4 text-left transition-colors", packageType === option.value ? "border-brand bg-brand-muted/40" : "border-line hover:border-line-strong")}
               >
-                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg", packageType === option.value ? "bg-white" : "bg-brand-muted")}>
+                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px]", packageType === option.value ? "bg-white" : "bg-brand-muted")}>
                   <Icon className="h-5 w-5 text-brand" />
                 </div>
                 <p className="text-sm font-semibold text-foreground">{option.label}</p>
@@ -170,14 +170,14 @@ export const DetailsStep = function () {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-line bg-white p-5">
-        <p className="text-sm font-semibold text-foreground">Purpose of shipment</p>
+      <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
+        <p className="text-[15px] font-bold tracking-tight text-foreground">Purpose of shipment</p>
         <AppSimpleSelect containerClassName="mt-3 sm:w-96" placeholder="What are you shipping this as?" value={purpose ?? ""} onValueChange={value => setPurpose(value as ShipmentPurpose)} options={BOOKABLE_PURPOSES} />
       </div>
 
-      <div className="rounded-2xl border border-line bg-white p-5">
+      <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-foreground">Parcels</p>
+          <p className="text-[15px] font-bold tracking-tight text-foreground">Parcels</p>
           <Button variant="outline" size="sm" onClick={() => setEditingParcel("new")}>
             <Plus />
             Add parcel
@@ -185,7 +185,7 @@ export const DetailsStep = function () {
         </div>
 
         {parcels.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">Add your first parcel with its box size and what's inside.</p>
+          <p className="mt-3 text-sm text-foreground-muted">Add your first parcel with its box size and what&apos;s inside.</p>
         ) : (
           <ul className="mt-3 divide-y divide-line rounded-xl border border-line">
             {parcels.map((parcel, index) => (
@@ -194,7 +194,7 @@ export const DetailsStep = function () {
                   <p className="text-sm font-medium text-foreground">
                     {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">
+                  <p className="truncate text-xs text-foreground-muted">
                     {parcel.items.map(item => `${item.quantity}× ${item.name}`).join(", ")} · {formatNaira(parcel.items.reduce((sum, item) => sum + item.value_minor, 0))}
                   </p>
                 </div>
@@ -212,7 +212,7 @@ export const DetailsStep = function () {
         )}
       </div>
 
-      <Button size="lg" className="h-11 w-full sm:w-auto sm:px-8" onClick={handleContinue}>
+      <Button size="lg" className="h-11 w-full rounded-xl sm:w-auto sm:px-8" onClick={handleContinue}>
         Compare rates
       </Button>
 

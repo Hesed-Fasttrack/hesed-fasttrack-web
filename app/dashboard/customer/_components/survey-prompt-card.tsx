@@ -35,7 +35,7 @@ export const SurveyPromptCard = function () {
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted">
         <MessageSquareHeart className="h-5 w-5 text-brand" />
       </div>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-48 flex-1">
         <p className="text-sm font-semibold text-foreground">How are we doing?</p>
         <p className="text-xs text-muted-foreground">Take our 2-minute survey. Your feedback shapes what we build next.</p>
       </div>
