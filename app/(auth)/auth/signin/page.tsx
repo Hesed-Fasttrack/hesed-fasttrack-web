@@ -1,17 +1,18 @@
 "use client";
 
 import { FormInput } from "@/components/form/form-input";
-import { AppText } from "@/components/shared/app-text";
-import { AppInput } from "@/components/shared/app-input";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/lib/show-toast";
 import { loginSchema, type LoginFormValues } from "@/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Lock, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Lock, LogIn, Mail, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { AuthHeading } from "../../_components/auth-heading";
+import { CodeInput } from "../../_components/code-input";
+import { ResendCode } from "../../_components/resend-code";
 import { useLogin } from "./_hooks/use-login";
 
 export default function SignInPage() {
@@ -23,6 +24,7 @@ export default function SignInPage() {
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
     reset,
   } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
@@ -46,61 +48,55 @@ export default function SignInPage() {
 
   if (otpEmail) {
     return (
-      <div className="rounded-2xl border border-line bg-white p-8">
-        <AppText type="h2" className="text-center">
-          Check your email
-        </AppText>
-        <AppText type="subtitle" className="mt-1 text-center text-sm">
-          Admin sign-ins need a second step. Enter the code we sent to {otpEmail}.
-        </AppText>
+      <div>
+        <button type="button" onClick={() => setOtpEmail(null)} className="mb-6 inline-flex items-center gap-1.5 text-[13px] font-semibold text-foreground-muted transition-colors hover:text-foreground">
+          <ArrowLeft className="size-3.5" />
+          Use a different account
+        </button>
 
-        <form onSubmit={handleVerifyOtp} className="mt-8 space-y-5">
-          <AppInput label="Sign-in code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="123456" value={otpCode} onChange={event => setOtpCode(event.target.value.replace(/\D/g, ""))} />
+        <AuthHeading
+          icon={ShieldCheck}
+          title="Enter your sign-in code"
+          description={
+            <>
+              For your security we sent a 6-digit code to <b>{otpEmail}</b>.
+            </>
+          }
+        />
 
-          <Button type="submit" className="h-11 w-full" disabled={isVerifyingOtp}>
+        <form onSubmit={handleVerifyOtp} className="mt-6.5">
+          <CodeInput value={otpCode} onChange={setOtpCode} autoFocus />
+          <ResendCode onResend={() => login(getValues())} isResending={isLoggingIn} />
+
+          <Button type="submit" className="mt-5.5 h-11 w-full rounded-xl" disabled={isVerifyingOtp}>
             {isVerifyingOtp && <Loader2 className="animate-spin" />}
             Verify and sign in
           </Button>
         </form>
-
-        <button type="button" onClick={() => setOtpEmail(null)} className="mt-6 block w-full text-center text-sm font-medium text-brand hover:underline">
-          Back to sign in
-        </button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-white p-8">
-      <AppText type="h2" className="text-center">
-        Good to see you again
-      </AppText>
-      <AppText type="subtitle" className="mt-1 text-center text-sm">
-        Sign in to ship, pay and track from one place.
-      </AppText>
+    <div>
+      <AuthHeading icon={LogIn} eyebrow="Welcome back" title="Sign in to your account" description="Pick up where you left off: your shipments, wallet and quotes." />
 
-      <form onSubmit={handleSubmit(data => login(data))} className="mt-8 space-y-5">
-        <FormInput<LoginFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" />
-        <FormInput<LoginFormValues> control={control} name="password" errors={errors} label="Password" type="password" icon={Lock} placeholder="Your password" autoComplete="current-password" />
+      <form onSubmit={handleSubmit(data => login(data))} className="mt-6.5 space-y-3.5">
+        <FormInput<LoginFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" className="rounded-xl" />
 
-        <div className="flex justify-end">
-          <Link href="/auth/forgot-password" className="text-sm font-medium text-brand hover:underline">
+        <div className="relative">
+          <FormInput<LoginFormValues> control={control} name="password" errors={errors} label="Password" type="password" icon={Lock} placeholder="Your password" autoComplete="current-password" className="rounded-xl" />
+          <Link href="/auth/forgot-password" className="absolute top-0 right-0 text-[12.5px] font-semibold text-brand hover:underline">
             Forgot password?
           </Link>
         </div>
 
-        <Button type="submit" className="h-11 w-full" disabled={isLoggingIn}>
-          {isLoggingIn && <Loader2 className="animate-spin" />}
+        <Button type="submit" className="mt-2 h-11 w-full rounded-xl" disabled={isLoggingIn}>
+          {isLoggingIn ? <Loader2 className="animate-spin" /> : null}
           Sign in
+          {!isLoggingIn && <ArrowRight />}
         </Button>
       </form>
-
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        New to HESED FastTrack?{" "}
-        <Link href="/auth/signup" className="font-medium text-brand hover:underline">
-          Create an account
-        </Link>
-      </p>
     </div>
   );
 }

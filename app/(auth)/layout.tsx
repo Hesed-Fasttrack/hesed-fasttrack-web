@@ -1,7 +1,7 @@
 import { buildPageMetadata } from "@/app/_lib/metadata";
-import Image from "next/image";
-import Link from "next/link";
 import { Suspense } from "react";
+import { AuthBrandPanel } from "./_components/auth-brand-panel";
+import { AuthBand, AuthFooter, AuthSwitchLink, AuthTopline } from "./_components/auth-chrome";
 
 export const metadata = buildPageMetadata({
   path: "/auth",
@@ -11,13 +11,17 @@ export const metadata = buildPageMetadata({
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-canvas px-4 py-12">
-      <Link href="/" className="mb-8">
-        <Image src="/images/logo.png" alt="HESED FastTrack" width={180} height={48} className="h-11 w-auto" priority />
-      </Link>
-      <main className="w-full max-w-md">
-        <Suspense fallback={null}>{children}</Suspense>
-      </main>
+    <div className="min-h-dvh bg-canvas lg:grid lg:grid-cols-[1fr_1.08fr]">
+      <AuthBrandPanel />
+      <div className="flex min-h-dvh flex-col">
+        <AuthBand />
+        <AuthTopline />
+        <main className="mx-auto flex w-full max-w-100 flex-1 flex-col justify-center px-5 py-8">
+          <Suspense fallback={null}>{children}</Suspense>
+          <AuthSwitchLink />
+        </main>
+        <AuthFooter />
+      </div>
     </div>
   );
 }

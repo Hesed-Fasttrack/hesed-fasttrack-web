@@ -1,17 +1,16 @@
 "use client";
 
 import { FormInput } from "@/components/form/form-input";
-import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { forgotPasswordSchema, type ForgotPasswordFormValues } from "@/schemas/auth";
 import type { APIResponse } from "@/types/response";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Mail } from "lucide-react";
-import Link from "next/link";
+import { KeyRound, Loader2, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { AuthHeading } from "../../_components/auth-heading";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -31,29 +30,17 @@ export default function ForgotPasswordPage() {
   });
 
   return (
-    <div className="rounded-2xl border border-line bg-white p-8">
-      <AppText type="h2" className="text-center">
-        Forgot your password?
-      </AppText>
-      <AppText type="subtitle" className="mt-1 text-center text-sm">
-        Enter your email and we'll send you a reset code.
-      </AppText>
+    <div>
+      <AuthHeading icon={KeyRound} title="Forgot your password?" description="Enter the email on your account and we'll send you a 6-digit code to reset it." />
 
-      <form onSubmit={handleSubmit(data => sendCode(data))} className="mt-8 space-y-5">
-        <FormInput<ForgotPasswordFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" />
+      <form onSubmit={handleSubmit(data => sendCode(data))} className="mt-6.5 space-y-3.5">
+        <FormInput<ForgotPasswordFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" className="rounded-xl" />
 
-        <Button type="submit" className="h-11 w-full" disabled={isPending}>
+        <Button type="submit" className="mt-2 h-11 w-full rounded-xl" disabled={isPending}>
           {isPending && <Loader2 className="animate-spin" />}
           Send reset code
         </Button>
       </form>
-
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Remembered it?{" "}
-        <Link href="/auth/signin" className="font-medium text-brand hover:underline">
-          Back to sign in
-        </Link>
-      </p>
     </div>
   );
 }

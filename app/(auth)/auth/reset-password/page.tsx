@@ -1,17 +1,20 @@
 "use client";
 
 import { FormInput } from "@/components/form/form-input";
-import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { resetPasswordSchema, type ResetPasswordFormValues } from "@/schemas/auth";
 import type { APIResponse } from "@/types/response";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyRound, Loader2, Lock } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { AuthHeading } from "../../_components/auth-heading";
+import { CodeInput } from "../../_components/code-input";
+import { PasswordRules } from "../../_components/password-rules";
+import { ResendCode } from "../../_components/resend-code";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -23,7 +26,8 @@ export default function ResetPasswordPage() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ResetPasswordFormValues>({ resolver: zodResolver(resetPasswordSchema) });
+  } = useForm<ResetPasswordFormValues>({ resolver: zodResolver(resetPasswordSchema), defaultValues: { code: "" } });
+  const password = useWatch({ control, name: "password" }) ?? "";
 
   const { mutate: resetPassword, isPending: isResetting } = useSubmitData<{ token: string; password: string }, APIResponse<unknown>>({
     url: data => API_ENDPOINTS.auth.resetPassword(data.token),
@@ -41,31 +45,46 @@ export default function ResetPasswordPage() {
     onSuccess: response => resetPassword({ token: response.data.resetToken, password: pendingPassword.current }),
   });
 
+  const { mutate: resendCode, isPending: isResending } = useSubmitData<{ email: string }, APIResponse<unknown>>({
+    url: API_ENDPOINTS.auth.forgotPassword,
+    skipAuth: true,
+    onSuccessMessage: "A new code is on its way",
+  });
+
   const isPending = isVerifying || isResetting;
 
   return (
-    <div className="rounded-2xl border border-line bg-white p-8">
-      <AppText type="h2" className="text-center">
-        Reset your password
-      </AppText>
-      <AppText type="subtitle" className="mt-1 text-center text-sm">
-        Enter the code we sent to {email || "your email"} and choose a new password.
-      </AppText>
+    <div>
+      <AuthHeading
+        title="Set a new password"
+        description={
+          <>
+            Enter the code we sent to <b>{email || "your email"}</b>, then choose a new password.
+          </>
+        }
+      />
 
       <form
         onSubmit={handleSubmit(data => {
           pendingPassword.current = data.password;
           verifyCode({ email, code: data.code });
         })}
-        className="mt-8 space-y-5"
+        className="mt-6.5"
       >
-        <FormInput<ResetPasswordFormValues> control={control} name="code" errors={errors} label="Reset code" icon={KeyRound} placeholder="123456" inputMode="numeric" maxLength={6} autoComplete="one-time-code" />
-        <FormInput<ResetPasswordFormValues> control={control} name="password" errors={errors} label="New password" type="password" icon={Lock} placeholder="At least 8 characters" autoComplete="new-password" />
-        <FormInput<ResetPasswordFormValues> control={control} name="confirm_password" errors={errors} label="Confirm new password" type="password" icon={Lock} placeholder="Repeat your new password" autoComplete="new-password" />
+        <Controller control={control} name="code" render={({ field }) => <CodeInput value={field.value} onChange={field.onChange} error={errors.code?.message} autoFocus />} />
+        <ResendCode onResend={() => email && resendCode({ email })} isResending={isResending} changeHref="/auth/forgot-password" />
 
-        <Button type="submit" className="h-11 w-full" disabled={isPending}>
+        <div className="mt-5.5 space-y-3.5">
+          <div>
+            <FormInput<ResetPasswordFormValues> control={control} name="password" errors={errors} label="New password" type="password" icon={Lock} placeholder="At least 8 characters" autoComplete="new-password" className="rounded-xl" />
+            <PasswordRules value={password} />
+          </div>
+          <FormInput<ResetPasswordFormValues> control={control} name="confirm_password" errors={errors} label="Confirm new password" type="password" icon={Lock} placeholder="Type it again" autoComplete="new-password" className="rounded-xl" />
+        </div>
+
+        <Button type="submit" className="mt-5.5 h-11 w-full rounded-xl" disabled={isPending}>
           {isPending && <Loader2 className="animate-spin" />}
-          Reset password
+          Update password
         </Button>
       </form>
     </div>
