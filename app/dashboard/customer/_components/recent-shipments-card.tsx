@@ -3,6 +3,7 @@
 import { RouteText } from "@/components/shared/route-text";
 import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { EmptyState } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNaira } from "@/lib/format";
@@ -41,15 +42,16 @@ export const RecentShipmentsCard = function ({
           ))}
         </div>
       ) : shipments.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 px-5 py-14 text-center">
-          <Package className="size-8 text-foreground-subtle" />
-          <p className="text-sm text-foreground-muted">
-            No shipments yet. Book your first one in minutes.
-          </p>
-          <Button size="sm" asChild>
-            <Link href="/dashboard/customer/quick-quote">Get a quote</Link>
-          </Button>
-        </div>
+        <EmptyState
+          icon={Package}
+          title="No shipments yet"
+          message="Your bookings show up here. Get a quote to see prices for your route."
+          action={
+            <Button asChild variant="outline" className="h-10 rounded-xl px-5">
+              <Link href="/dashboard/customer/quick-quote">Get a quote</Link>
+            </Button>
+          }
+        />
       ) : (
         <>
           <div className="hidden overflow-x-auto md:block">

@@ -1,11 +1,13 @@
 "use client";
 
 import { SectionCard } from "@/components/shared/section-card";
+import { EmptyState } from "@/components/shared/table-helpers";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { AdminActivity, PaginatedResponse } from "@/types/admin";
 import { formatDistanceToNowStrict } from "date-fns";
+import { History } from "lucide-react";
 
 export const TeamActivityCard = function () {
   const { data, isFetching } = useGetData<PaginatedResponse<AdminActivity>>({ url: API_ENDPOINTS.admin.activities.list("?page=1&limit=4") });
@@ -20,7 +22,7 @@ export const TeamActivityCard = function () {
           ))}
         </div>
       ) : activities.length === 0 ? (
-        <p className="px-5 py-10 text-center text-sm text-foreground-muted">No admin actions recorded yet.</p>
+        <EmptyState icon={History} title="No activity yet" message="Admin actions on shipments, KYC and wallets show up here." compact />
       ) : (
         <ol className="px-5 py-1.5 sm:px-5.5">
           {activities.map((activity, index) => {

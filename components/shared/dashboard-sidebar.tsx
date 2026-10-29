@@ -5,10 +5,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { clearAuthCookies } from "@/lib/authService";
 import { cn } from "@/lib/utils";
-import { ChevronsUpDown, LogOut, type LucideIcon } from "lucide-react";
+import { ChevronsUpDown, LifeBuoy, LogOut, Settings, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+const MENU_ITEM = "cursor-pointer gap-2.5 rounded-lg px-2 py-2 text-[13.5px] font-medium text-foreground focus:bg-canvas";
 
 export interface DashboardNavItem {
   label: string;
@@ -94,14 +96,33 @@ export const DashboardSidebar = function ({ groups, homeHref, header, countTone 
             </div>
             <ChevronsUpDown className="size-4 shrink-0 text-foreground-subtle" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="top" align="start" className="w-(--radix-dropdown-menu-trigger-width) min-w-56">
-            <DropdownMenuLabel>
-              <p className="text-sm font-semibold">{fullName || "Account"}</p>
-              <p className="text-xs font-normal text-muted-foreground">{profile?.email}</p>
+          <DropdownMenuContent side="top" align="start" sideOffset={8} className="w-(--radix-dropdown-menu-trigger-width) min-w-60 rounded-2xl border border-line bg-white p-1.5 shadow-[0_18px_40px_rgba(17,17,20,0.12)] ring-0">
+            <DropdownMenuLabel className="flex items-center gap-2.5 px-2 py-2">
+              <Avatar className="size-9">
+                <AvatarImage src={profile?.profile_pic ?? undefined} alt={fullName} />
+                <AvatarFallback className="bg-brand-muted text-xs font-bold text-brand-dark">{initials}</AvatarFallback>
+              </Avatar>
+              <span className="min-w-0">
+                <span className="block truncate text-[13.5px] font-bold text-foreground">{fullName || "Account"}</span>
+                <span className="block truncate text-xs font-normal text-foreground-muted">{profile?.email}</span>
+              </span>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-              <LogOut />
+            <DropdownMenuSeparator className="mx-1 my-1.5 bg-line" />
+            <DropdownMenuItem asChild className={MENU_ITEM}>
+              <Link href={`${homeHref}/settings`} onClick={onNavigate}>
+                <Settings className="size-4 text-foreground-muted" />
+                Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className={MENU_ITEM}>
+              <Link href="/support" target="_blank">
+                <LifeBuoy className="size-4 text-foreground-muted" />
+                Help and support
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="mx-1 my-1.5 bg-line" />
+            <DropdownMenuItem onClick={handleSignOut} className={cn(MENU_ITEM, "text-danger focus:bg-danger/8 focus:text-danger")}>
+              <LogOut className="size-4 text-danger" />
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

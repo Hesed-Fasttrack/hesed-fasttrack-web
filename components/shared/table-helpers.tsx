@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Inbox, type LucideIcon } from "lucide-react";
 
 export const TableSkeletonRows = function ({ rows = 5, columns }: { rows?: number; columns: number }) {
@@ -19,23 +20,32 @@ export const TableSkeletonRows = function ({ rows = 5, columns }: { rows?: numbe
   );
 };
 
-export const EmptyState = function ({ message, icon: Icon = Inbox, action }: { message: string; icon?: LucideIcon; action?: React.ReactNode }) {
+interface EmptyStateProps {
+  title?: string;
+  message: string;
+  icon?: LucideIcon;
+  action?: React.ReactNode;
+  compact?: boolean;
+}
+
+export const EmptyState = function ({ title, message, icon: Icon = Inbox, action, compact }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center gap-3 px-5 py-14 text-center">
-      <span className="flex size-11 items-center justify-center rounded-2xl bg-surface-muted">
-        <Icon className="size-5 text-foreground-subtle" />
+    <div className={cn("flex flex-col items-center px-6 text-center whitespace-normal", compact ? "py-9" : "py-14")}>
+      <span className={cn("flex items-center justify-center rounded-2xl bg-brand-muted", compact ? "size-10" : "size-12")}>
+        <Icon className={cn("text-brand", compact ? "size-4.5" : "size-5.5")} />
       </span>
-      <p className="max-w-sm text-sm whitespace-normal text-foreground-muted">{message}</p>
-      {action}
+      {title && <p className="mt-4 text-[15px] font-bold tracking-tight text-foreground">{title}</p>}
+      <p className={cn("max-w-sm text-[13.5px] leading-relaxed text-foreground-muted", title ? "mt-1" : "mt-3.5")}>{message}</p>
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 };
 
-export const TableEmptyRow = function ({ columns, message, icon }: { columns: number; message: string; icon?: LucideIcon }) {
+export const TableEmptyRow = function ({ columns, ...props }: EmptyStateProps & { columns: number }) {
   return (
     <TableRow className="hover:bg-transparent">
       <TableCell colSpan={columns} className="p-0">
-        <EmptyState message={message} icon={icon} />
+        <EmptyState {...props} />
       </TableCell>
     </TableRow>
   );

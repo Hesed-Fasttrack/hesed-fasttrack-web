@@ -80,7 +80,7 @@ function TrackShipmentPageContent() {
 
       {notFound && (
         <div className="mt-5 max-w-2xl rounded-2xl border border-line bg-white">
-          <EmptyState icon={PackageSearch} message="No shipment matches that tracking number. Check for typos. References look like HFT-ABC12345-DEF67." />
+          <EmptyState icon={PackageSearch} title="No shipment found" message="Nothing matches that tracking number. Check for typos. References look like HFT-ABC12345-DEF67." />
         </div>
       )}
 

@@ -135,7 +135,7 @@ export default function AdminUserDetailPage() {
             {isFetchingTransactions && transactions.length === 0 ? (
               <TableSkeletonRows columns={5} />
             ) : transactions.length === 0 ? (
-              <TableEmptyRow columns={5} icon={ReceiptText} message="No transactions yet." />
+              <TableEmptyRow columns={5} icon={ReceiptText} title="No transactions yet" message="Wallet funding, payments and refunds show up here." compact />
             ) : (
               transactions.map(transaction => (
                 <TableRow key={transaction.id}>

@@ -30,7 +30,7 @@ export const ResendCode = function ({ onResend, isResending, changeHref, changeL
     <div className="mt-3.5 flex items-center justify-between gap-3 text-[13px] text-foreground-muted">
       {secondsLeft > 0 ? (
         <span>
-          Didn&apos;t get it? Resend in <b className="font-semibold text-foreground tabular-nums">0:{String(secondsLeft).padStart(2, "0")}</b>
+          Didn&apos;t get it? Resend in <b className="font-semibold text-foreground tabular-nums">{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, "0")}</b>
         </span>
       ) : (
         <button type="button" onClick={handleResend} disabled={isResending} className="font-semibold text-brand hover:underline disabled:opacity-50">

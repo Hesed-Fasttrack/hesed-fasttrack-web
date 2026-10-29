@@ -11,7 +11,7 @@ export const metadata = buildPageMetadata({
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh bg-canvas lg:grid lg:grid-cols-[1fr_1.08fr]">
+    <div className="min-h-dvh bg-canvas lg:grid lg:grid-cols-[clamp(440px,42vw,600px)_1fr]">
       <AuthBrandPanel />
       <div className="flex min-h-dvh flex-col">
         <AuthBand />

@@ -142,7 +142,8 @@ export default function AdminWithdrawalsPage() {
               <TableEmptyRow
                 columns={COLUMNS}
                 icon={Banknote}
-                message="Nothing in this queue."
+                title="Queue is clear"
+                message="No withdrawals match this view right now."
               />
             ) : (
               withdrawals.map((withdrawal) => {

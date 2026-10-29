@@ -112,7 +112,7 @@ export default function CustomerWalletPage() {
                   {isLoadingTransactions ? (
                     <TableSkeletonRows columns={4} />
                   ) : transactions.length === 0 ? (
-                    <TableEmptyRow columns={4} icon={ArrowLeftRight} message="No transactions yet. Fund your wallet to get started." />
+                    <TableEmptyRow columns={4} icon={ArrowLeftRight} title="No transactions yet" message="Fund your wallet by bank transfer to get started." />
                   ) : (
                     transactions.map(transaction => (
                       <TableRow key={transaction.id}>
@@ -133,7 +133,7 @@ export default function CustomerWalletPage() {
               {isLoadingTransactions ? (
                 <ListSkeleton />
               ) : transactions.length === 0 ? (
-                <EmptyState icon={ArrowLeftRight} message="No transactions yet. Fund your wallet to get started." />
+                <EmptyState icon={ArrowLeftRight} title="No transactions yet" message="Fund your wallet by bank transfer to get started." />
               ) : (
                 <ul className="divide-y divide-line">
                   {transactions.map(transaction => (
@@ -171,7 +171,7 @@ export default function CustomerWalletPage() {
                   {isLoadingWithdrawals ? (
                     <TableSkeletonRows columns={4} />
                   ) : withdrawals.length === 0 ? (
-                    <TableEmptyRow columns={4} icon={Banknote} message="No withdrawals yet." />
+                    <TableEmptyRow columns={4} icon={Banknote} title="No withdrawals yet" message="Money you send to your bank account shows up here." />
                   ) : (
                     withdrawals.map(withdrawal => {
                       const presentation = WITHDRAWAL_STATUS[withdrawal.status];
@@ -200,7 +200,7 @@ export default function CustomerWalletPage() {
               {isLoadingWithdrawals ? (
                 <ListSkeleton />
               ) : withdrawals.length === 0 ? (
-                <EmptyState icon={Banknote} message="No withdrawals yet." />
+                <EmptyState icon={Banknote} title="No withdrawals yet" message="Money you send to your bank account shows up here." />
               ) : (
                 <ul className="divide-y divide-line">
                   {withdrawals.map(withdrawal => {

@@ -7,9 +7,10 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { signupSchema, type SignupFormValues } from "@/schemas/auth";
 import type { APIResponse } from "@/types/response";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Loader2, Lock, Mail, Phone, UserRound } from "lucide-react";
+import { ArrowRight, Check, Loader2, Lock, Mail, Phone, UserRound } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { AuthHeading } from "../../_components/auth-heading";
 import { PasswordRules } from "../../_components/password-rules";
 
@@ -52,17 +53,40 @@ export default function SignUpPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6.5 space-y-3.5">
         <FormInput<SignupFormValues> control={control} name="full_name" errors={errors} label="Full name" icon={UserRound} placeholder="Ada Obi" autoComplete="name" className="rounded-xl" />
-        <div className="grid gap-3.5 sm:grid-cols-2 sm:gap-3">
-          <FormInput<SignupFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" className="rounded-xl" />
-          <FormInput<SignupFormValues> control={control} name="phone_no" errors={errors} label="Phone (optional)" type="tel" icon={Phone} placeholder="0801 234 5678" autoComplete="tel" className="rounded-xl" />
-        </div>
+        <FormInput<SignupFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" className="rounded-xl" />
+        <FormInput<SignupFormValues> control={control} name="phone_no" errors={errors} label="Phone (optional)" type="tel" icon={Phone} placeholder="0801 234 5678" autoComplete="tel" className="rounded-xl" />
         <div>
           <FormInput<SignupFormValues> control={control} name="password" errors={errors} label="Password" type="password" icon={Lock} placeholder="At least 8 characters" autoComplete="new-password" className="rounded-xl" />
           <PasswordRules value={password} />
         </div>
         <FormInput<SignupFormValues> control={control} name="confirm_password" errors={errors} label="Confirm password" type="password" icon={Lock} placeholder="Type it again" autoComplete="new-password" className="rounded-xl" />
 
-        <FormInput<SignupFormValues> control={control} name="accepted_terms" errors={errors} type="checkbox" label="I agree to the Terms & Conditions and Privacy Policy" />
+        <Controller
+          control={control}
+          name="accepted_terms"
+          render={({ field }) => (
+            <div>
+              <label className="flex cursor-pointer items-start gap-2.5 text-[13px] leading-relaxed text-foreground-muted">
+                <input type="checkbox" checked={!!field.value} onChange={event => field.onChange(event.target.checked)} className="peer sr-only" />
+                <span className="mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-[5px] border-2 border-line-strong text-white transition-colors peer-checked:border-brand peer-checked:bg-brand peer-focus-visible:ring-3 peer-focus-visible:ring-brand-muted">
+                  <Check className="size-3" strokeWidth={3} />
+                </span>
+                <span>
+                  I agree to the{" "}
+                  <Link href="/terms-and-conditions" target="_blank" className="font-semibold text-brand hover:underline">
+                    Terms and Conditions
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy-policy" target="_blank" className="font-semibold text-brand hover:underline">
+                    Privacy Policy
+                  </Link>
+                  .
+                </span>
+              </label>
+              {errors.accepted_terms && <p className="mt-1.5 text-xs text-danger">{errors.accepted_terms.message}</p>}
+            </div>
+          )}
+        />
 
         <Button type="submit" className="mt-2 h-11 w-full rounded-xl" disabled={isPending}>
           {isPending ? <Loader2 className="animate-spin" /> : null}

@@ -48,13 +48,13 @@ export const AppDialog = function ({ isOpen, onOpenChange, children, title, desc
           if (isSubmitting) e.preventDefault();
         }}
       >
-        <DialogHeader className={cn("shrink-0 flex-row items-start gap-3.5 px-5.5 py-4.5 sm:px-6", children && "border-b border-line")}>
+        <DialogHeader className={cn("shrink-0 flex-row gap-3.5 px-5.5 py-4.5 sm:px-6", description ? "items-start" : "items-center", children && "border-b border-line")}>
           {Icon && (
             <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", TONES[tone])}>
               <Icon className="size-4.5" />
             </span>
           )}
-          <div className="min-w-0 flex-1 pt-0.5">
+          <div className={cn("min-w-0 flex-1", description && "pt-0.5")}>
             <DialogTitle className="text-[17px] leading-snug font-bold tracking-tight text-foreground">{title}</DialogTitle>
             {description && <DialogDescription className="mt-1 text-[13px] leading-relaxed text-foreground-muted">{description}</DialogDescription>}
           </div>

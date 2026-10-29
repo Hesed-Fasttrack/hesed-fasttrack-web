@@ -3,6 +3,7 @@
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { EmptyState } from "@/components/shared/table-helpers";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
@@ -64,14 +65,18 @@ export default function CustomerAddressesPage() {
           ))}
         </div>
       ) : addresses.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong bg-white px-5 py-16 text-center">
-          <span className="flex size-12 items-center justify-center rounded-2xl bg-brand-muted">
-            <MapPin className="size-5.5 text-brand" />
-          </span>
-          <p className="max-w-sm text-sm text-foreground-muted">No saved addresses yet. Add the places you ship from and to.</p>
-          <Button className="h-10 rounded-xl px-5" onClick={openCreate}>
-            Add your first address
-          </Button>
+        <div className="rounded-2xl border border-line bg-white">
+          <EmptyState
+            icon={MapPin}
+            title="No saved addresses yet"
+            message="Add the places you ship from and to, and booking takes a few taps."
+            action={
+              <Button className="h-10 rounded-xl px-5" onClick={openCreate}>
+                <Plus />
+                Add your first address
+              </Button>
+            }
+          />
         </div>
       ) : (
         <div className="grid gap-5 md:grid-cols-2">

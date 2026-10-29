@@ -101,7 +101,8 @@ export default function AdminSurveysPage() {
         ) : responses.length === 0 ? (
           <EmptyState
             icon={MessageSquareHeart}
-            message="No survey responses yet. Customers see the survey prompt on their dashboard until they take it."
+            title="No responses yet"
+            message="Customers see the survey prompt on their dashboard until they take it."
           />
         ) : (
           <ul className="divide-y divide-line">

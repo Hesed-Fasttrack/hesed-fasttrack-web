@@ -84,7 +84,8 @@ export default function AdminActivitiesPage() {
               <TableEmptyRow
                 columns={COLUMNS}
                 icon={History}
-                message="No admin activity recorded yet."
+                title="No activity yet"
+                message="Every admin action is recorded here as it happens."
               />
             ) : (
               activities.map((activity) => (

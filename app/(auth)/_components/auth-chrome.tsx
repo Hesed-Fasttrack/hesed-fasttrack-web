@@ -65,7 +65,8 @@ export const AuthSwitchLink = function () {
 
 export const AuthFooter = function () {
   return (
-    <footer className="flex flex-col items-center gap-1.5 px-5 pt-6 pb-6 text-[11.5px] text-foreground-muted sm:flex-row sm:justify-between sm:px-10 lg:px-14">
+    <footer className="flex flex-col items-center gap-1.5 px-5 pt-6 pb-6 text-center text-[11.5px] text-foreground-muted sm:flex-row sm:justify-between sm:px-10 lg:flex-col lg:px-14 xl:flex-row">
+
       <span>
         By continuing you agree to our{" "}
         <Link href="/terms-and-conditions" className="font-semibold hover:text-foreground">

@@ -92,7 +92,7 @@ function AdminShipmentsPageContent() {
             {isFetching && shipments.length === 0 ? (
               <TableSkeletonRows columns={COLUMNS} />
             ) : shipments.length === 0 ? (
-              <TableEmptyRow columns={COLUMNS} icon={Package} message="No shipments match this view." />
+              <TableEmptyRow columns={COLUMNS} icon={Package} title="No shipments here" message="Nothing matches this view. Try another status or search." />
             ) : (
               shipments.map(shipment => {
                 const shipmentStatus = SHIPMENT_STATUS[shipment.status];

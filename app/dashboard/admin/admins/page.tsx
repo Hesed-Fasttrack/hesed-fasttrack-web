@@ -166,7 +166,8 @@ export default function AdminManagementPage() {
               <TableEmptyRow
                 columns={COLUMNS}
                 icon={UserRoundCog}
-                message="No admins yet. Add the first one."
+                title="No admins yet"
+                message="Add the first one and share their sign-in details securely."
               />
             ) : (
               admins.map((admin) => {

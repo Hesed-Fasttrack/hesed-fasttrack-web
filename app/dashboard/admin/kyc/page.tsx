@@ -112,7 +112,8 @@ export default function AdminKycPage() {
               <TableEmptyRow
                 columns={COLUMNS}
                 icon={IdCard}
-                message="Nothing in this queue."
+                title="Queue is clear"
+                message="No identity documents match this view right now."
               />
             ) : (
               submissions.map((submission) => {

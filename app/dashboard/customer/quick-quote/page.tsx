@@ -125,9 +125,9 @@ export default function QuickQuotePage() {
               ))}
             </div>
           ) : !quotes ? (
-            <EmptyState icon={Calculator} message="Your quotes appear here. Prices are estimates until you book with real parcel details." />
+            <EmptyState icon={Calculator} title="Your quotes appear here" message="Prices are estimates until you book with real parcel details." />
           ) : quotes.length === 0 ? (
-            <EmptyState icon={Calculator} message="No rates for this route. A valid destination postal code unlocks express options at booking." />
+            <EmptyState icon={Calculator} title="No rates for this route" message="A valid destination postal code unlocks express options at booking." />
           ) : (
             <div className="space-y-3 p-5 sm:p-5.5">
               {quotes.map(quote => {

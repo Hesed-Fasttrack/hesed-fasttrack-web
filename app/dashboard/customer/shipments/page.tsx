@@ -22,7 +22,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const COLUMNS = 6;
-const EMPTY_MESSAGE = "No shipments in this view. Book one to get started.";
+const EMPTY_TITLE = "No shipments here";
+const EMPTY_MESSAGE = "Nothing in this view yet. Book a shipment to get started.";
 
 export default function CustomerShipmentsPage() {
   const router = useRouter();
@@ -84,7 +85,7 @@ export default function CustomerShipmentsPage() {
               {isLoading ? (
                 <TableSkeletonRows columns={COLUMNS} />
               ) : shipments.length === 0 ? (
-                <TableEmptyRow columns={COLUMNS} icon={Package} message={EMPTY_MESSAGE} />
+                <TableEmptyRow columns={COLUMNS} icon={Package} title={EMPTY_TITLE} message={EMPTY_MESSAGE} />
               ) : (
                 shipments.map(shipment => {
                   const shipmentStatus = SHIPMENT_STATUS[shipment.status];
@@ -122,7 +123,7 @@ export default function CustomerShipmentsPage() {
               ))}
             </div>
           ) : shipments.length === 0 ? (
-            <EmptyState icon={Package} message={EMPTY_MESSAGE} />
+            <EmptyState icon={Package} title={EMPTY_TITLE} message={EMPTY_MESSAGE} />
           ) : (
             <ul className="divide-y divide-line">
               {shipments.map(shipment => {

@@ -9,7 +9,6 @@ interface PanelCopy {
   title: string;
   description: string;
   points?: { icon: LucideIcon; label: string }[];
-  stackPoints?: boolean;
   showShipment?: boolean;
 }
 
@@ -33,7 +32,6 @@ const PANELS: Record<string, PanelCopy> = {
       { icon: Landmark, label: "Your own account number for funding" },
       { icon: Bell, label: "Updates at every handover" },
     ],
-    stackPoints: true,
   },
   "/auth/verify-email": {
     title: "One last step.",
@@ -62,31 +60,49 @@ export const BrandMark = function () {
 
 const ShipmentPreview = function () {
   return (
-    <div className="relative mt-7 w-full max-w-100 rounded-2xl bg-white text-foreground shadow-[0_18px_40px_rgba(0,0,0,0.25)]">
-      <div className="flex items-center justify-between px-4 pt-3">
+    <div className="relative mt-8 w-full rounded-2xl bg-white p-4.5 text-foreground shadow-[0_18px_40px_rgba(0,0,0,0.25)]">
+      <div className="flex items-center justify-between">
         <span className="font-mono text-[11.5px] text-foreground-muted">HFT-7K2M9Q</span>
         <span className="inline-flex h-5.5 items-center gap-1.5 rounded-full bg-royal/10 px-2 text-[11px] font-bold text-royal">
           <span className="size-1.25 rounded-full bg-current" />
           In transit
         </span>
       </div>
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2.5 px-4 pt-3 pb-2.5">
-        <div>
-          <p className="text-lg font-extrabold tracking-tight">Lagos</p>
+
+      <div className="mt-3.5 flex items-center gap-4">
+        <div className="shrink-0">
+          <p className="text-lg leading-tight font-extrabold tracking-tight">Lagos</p>
           <p className="text-[11px] text-foreground-muted">Ikeja, NG</p>
         </div>
-        <div className="relative w-20 border-t-2 border-dashed border-line-strong">
-          <span className="absolute top-1/2 left-[60%] flex size-6.5 -translate-x-1/2 -translate-y-[55%] items-center justify-center rounded-full bg-brand text-white ring-3 ring-white">
+        <div className="relative flex flex-1 items-center justify-center">
+          <span className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-line-strong" />
+          <span className="relative flex size-7 items-center justify-center rounded-full bg-brand text-white ring-4 ring-white">
             <Plane className="size-3.5" />
           </span>
         </div>
-        <div className="text-right">
-          <p className="text-lg font-extrabold tracking-tight">London</p>
+        <div className="shrink-0 text-right">
+          <p className="text-lg leading-tight font-extrabold tracking-tight">London</p>
           <p className="text-[11px] text-foreground-muted">ETA Fri 31 Oct</p>
         </div>
       </div>
-      <div className="mx-4 mb-3.5 h-1 rounded-full bg-line">
-        <div className="h-full w-[55%] rounded-full bg-brand" />
+
+      <div className="relative mt-4.5">
+        <span className="absolute inset-x-0 top-1.5 h-0.75 rounded-full bg-line" />
+        <span className="absolute top-1.5 left-0 h-0.75 w-1/2 rounded-full bg-brand" />
+        <ol className="relative grid grid-cols-3 text-[10.5px] font-bold">
+          <li className="flex flex-col items-start gap-1.5">
+            <span className="size-3.75 rounded-full border-3 border-brand bg-brand" />
+            Booked
+          </li>
+          <li className="flex flex-col items-center gap-1.5">
+            <span className="size-3.75 rounded-full border-3 border-brand bg-white shadow-[0_0_0_4px_var(--color-brand-muted)]" />
+            In transit
+          </li>
+          <li className="flex flex-col items-end gap-1.5 text-foreground-muted">
+            <span className="size-3.75 rounded-full border-3 border-line-strong bg-white" />
+            Delivered
+          </li>
+        </ol>
       </div>
     </div>
   );
@@ -105,12 +121,12 @@ export const AuthBrandPanel = function () {
 
         <BrandMark />
 
-        <div className="relative mt-auto">
-          <h2 className="text-[34px] leading-[1.12] font-extrabold tracking-tight whitespace-pre-line">{copy.title}</h2>
-          <p className="mt-3 max-w-100 text-[15px] leading-relaxed text-[#cdbbe2]">{copy.description}</p>
+        <div className="relative my-auto w-full max-w-110 py-10">
+          <h2 className="text-[34px] leading-[1.12] font-extrabold tracking-tight whitespace-pre-line xl:text-[38px]">{copy.title}</h2>
+          <p className="mt-3.5 text-[15px] leading-relaxed text-[#cdbbe2]">{copy.description}</p>
           {copy.showShipment && <ShipmentPreview />}
           {copy.points && (
-            <ul className={copy.stackPoints ? "mt-7 flex flex-col gap-3.5" : "mt-6.5 flex flex-wrap gap-x-5.5 gap-y-3"}>
+            <ul className="mt-7 flex flex-col gap-3.5">
               {copy.points.map(({ icon: Icon, label }) => (
                 <li key={label} className="flex items-center gap-2 text-[13px] font-semibold">
                   <Icon className="size-3.5 text-[#cdbbe2]" />
@@ -121,7 +137,7 @@ export const AuthBrandPanel = function () {
           )}
         </div>
 
-        <div className="relative mt-6.5 flex justify-between border-t border-white/10 pt-4.5 text-xs text-[#cdbbe2]">
+        <div className="relative flex justify-between gap-4 border-t border-white/10 pt-4.5 text-xs text-[#cdbbe2]">
           <span>© {new Date().getFullYear()} {SITE.name}</span>
           <span>Support: {SITE.phones.customerService.number}</span>
         </div>

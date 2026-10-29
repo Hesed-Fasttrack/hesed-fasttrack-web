@@ -24,9 +24,12 @@ export const CodeInput = function ({ value, onChange, error, autoFocus }: Props)
     let clean = typed.replace(/\D/g, "");
     if (digits[index] && clean.length === 2) clean = clean.replace(digits[index], "") || clean[0];
     if (!clean) return;
-    const next = (value.slice(0, index) + clean).slice(0, LENGTH);
-    onChange(next);
-    focusAt(next.length);
+    const chars = [...digits];
+    clean.split("").forEach((char, offset) => {
+      if (index + offset < LENGTH) chars[index + offset] = char;
+    });
+    onChange(chars.join(""));
+    focusAt(index + clean.length);
   };
 
   const handleKeyDown = function (index: number, event: React.KeyboardEvent<HTMLInputElement>) {
@@ -57,7 +60,7 @@ export const CodeInput = function ({ value, onChange, error, autoFocus }: Props)
             aria-label={`Digit ${index + 1}`}
             aria-invalid={!!error}
             maxLength={LENGTH}
-            onFocus={() => focusAt(Math.min(index, value.length))}
+            onFocus={event => event.target.select()}
             onChange={event => fillFrom(index, event.target.value)}
             onKeyDown={event => handleKeyDown(index, event)}
             onPaste={event => {

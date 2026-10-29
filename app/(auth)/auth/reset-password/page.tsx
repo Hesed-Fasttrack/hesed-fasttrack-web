@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
   });
 
   const { mutate: resendCode, isPending: isResending } = useSubmitData<{ email: string }, APIResponse<unknown>>({
-    url: API_ENDPOINTS.auth.forgotPassword,
+    url: API_ENDPOINTS.auth.sendPasswordResetOtp,
     skipAuth: true,
     onSuccessMessage: "A new code is on its way",
   });

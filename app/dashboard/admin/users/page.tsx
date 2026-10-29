@@ -121,7 +121,8 @@ export default function AdminUsersPage() {
               <TableEmptyRow
                 columns={COLUMNS}
                 icon={Users}
-                message="No users match this view."
+                title="No customers here"
+                message="Nothing matches this view. Try another status or search."
               />
             ) : (
               users.map((user) => {

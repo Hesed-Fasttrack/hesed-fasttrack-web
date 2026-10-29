@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
   } = useForm<ForgotPasswordFormValues>({ resolver: zodResolver(forgotPasswordSchema) });
 
   const { mutate: sendCode, isPending } = useSubmitData<ForgotPasswordFormValues, APIResponse<unknown>>({
-    url: API_ENDPOINTS.auth.forgotPassword,
+    url: API_ENDPOINTS.auth.sendPasswordResetOtp,
     skipAuth: true,
     onSuccessMessage: "If that account exists, a reset code is on its way",
     onSuccess: () => router.push(`/auth/reset-password?email=${encodeURIComponent(getValues("email"))}`),

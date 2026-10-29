@@ -3,12 +3,14 @@
 import { RouteText } from "@/components/shared/route-text";
 import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { EmptyState } from "@/components/shared/table-helpers";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatNaira } from "@/lib/format";
 import { PAYMENT_STATUS, SHIPMENT_STATUS } from "@/lib/statuses";
 import { displayName, type AdminShipment, type PaginatedResponse } from "@/types/admin";
+import { Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const initialsOf = (shipment: AdminShipment) => `${shipment.user?.first_name?.[0] ?? ""}${shipment.user?.last_name?.[0] ?? ""}`.toUpperCase() || "·";
@@ -27,7 +29,7 @@ export const LatestShipmentsCard = function () {
           ))}
         </div>
       ) : shipments.length === 0 ? (
-        <p className="px-5 py-14 text-center text-sm text-foreground-muted">No shipments booked yet.</p>
+        <EmptyState icon={Package} title="No shipments yet" message="New bookings land here the moment customers place them." />
       ) : (
         <ul className="divide-y divide-line">
           {shipments.map(shipment => {
