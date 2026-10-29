@@ -42,3 +42,6 @@ next-env.d.ts
 
 # private working agreement
 CLAUDE.md
+
+# local design mockups, never pushed
+/design/
