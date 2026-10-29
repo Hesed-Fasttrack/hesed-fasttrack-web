@@ -12,6 +12,7 @@ import type { SnapshotAddress } from "@/types/admin";
 import type { CityOption, CountryOption, StateOption } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { useEffect, useState } from "react";
+import { MapPin } from "lucide-react";
 
 const EMPTY_FIELDS = { contact_name: "", contact_phone: "", line1: "", line2: "", city: "", state: "", postal_code: "" };
 
@@ -88,6 +89,7 @@ export const SnapshotAddressDialog = function ({ open, title, address, onSave, o
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title={title}
+      icon={MapPin} size="lg"
       description="Correct the address to match the shipping label. Saving the shipment re-derives the price on the new route."
       dialogFooter={
         <>

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { NEXT_SHIPMENT_STATUSES, SHIPMENT_STATUS } from "@/lib/statuses";
-import { Loader2 } from "lucide-react";
+import { Loader2, Truck } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
@@ -37,6 +37,7 @@ export const TransitionDialog = function ({ shipmentId, currentStatus, open, onC
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Update shipment status"
+      icon={Truck}
       description="The status machine validates the move, records the event, refunds cancelled paid shipments and notifies the customer."
       isSubmitting={isPending}
       dialogFooter={

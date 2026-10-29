@@ -224,6 +224,7 @@ export default function AdminManagementPage() {
         isOpen={isCreateOpen}
         onOpenChange={(isOpen) => !isOpen && setIsCreateOpen(false)}
         title="Add an admin"
+        icon={UserRoundCog}
         description="The account is verified from birth. Share the email and password with them securely. They can change the password after signing in."
         isSubmitting={isCreating}
         dialogFooter={

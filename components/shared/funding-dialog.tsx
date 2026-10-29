@@ -6,7 +6,7 @@ import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
 import type { FundingAccount, Wallet } from "@/types/customer";
-import { Copy, Loader2 } from "lucide-react";
+import { Copy, Loader2, Wallet as WalletIcon } from "lucide-react";
 import { useEffect } from "react";
 
 interface Props {
@@ -60,6 +60,7 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Fund your wallet"
+      icon={WalletIcon}
       description={
         hasAccount
           ? accounts.length > 1
@@ -75,27 +76,28 @@ export const FundingDialog = function ({ wallet, open, onClose }: Props) {
     >
       {hasAccount ? (
         <div className="space-y-3">
-          <div className="divide-y divide-line rounded-xl border border-line bg-canvas">
+          <div className="divide-y divide-white/10 overflow-hidden rounded-2xl bg-brand-ink text-white">
             {accounts.map(account => (
-              <div key={account.account_number} className="p-4">
-                <p className="text-xs text-muted-foreground">{account.bank_name}</p>
-                <div className="mt-1 flex items-center justify-between gap-2">
-                  <p className="text-2xl font-bold tracking-wide text-foreground">{account.account_number}</p>
-                  <Button size="icon" variant="outline" onClick={() => handleCopy(account.account_number)} aria-label="Copy account number">
+              <div key={account.account_number} className="px-4.5 py-4">
+                <p className="text-[12px] text-[#cdbbe2]">{account.bank_name}</p>
+                <div className="mt-1 flex items-center justify-between gap-3">
+                  <p className="text-[24px] font-extrabold tracking-[0.04em] tabular-nums">{account.account_number}</p>
+                  <Button size="sm" onClick={() => handleCopy(account.account_number)} className="shrink-0 rounded-lg border border-white/20 bg-white/12 text-white hover:bg-white/20">
                     <Copy />
+                    Copy
                   </Button>
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">{account.account_name}</p>
+                <p className="mt-0.5 text-[13px] text-[#cdbbe2]">{account.account_name}</p>
               </div>
             ))}
           </div>
-          <Button variant="outline" className="w-full" onClick={() => syncFunding({})} disabled={isSyncing}>
+          <Button variant="outline" className="h-10 w-full rounded-xl" onClick={() => syncFunding({})} disabled={isSyncing}>
             {isSyncing && <Loader2 className="animate-spin" />}
             I've sent the money, check for it
           </Button>
         </div>
       ) : (
-        <Button onClick={() => createAccount({})} disabled={isPending} className="w-full">
+        <Button onClick={() => createAccount({})} disabled={isPending} className="h-10 w-full rounded-xl">
           {isPending && <Loader2 className="animate-spin" />}
           Create my funding account
         </Button>

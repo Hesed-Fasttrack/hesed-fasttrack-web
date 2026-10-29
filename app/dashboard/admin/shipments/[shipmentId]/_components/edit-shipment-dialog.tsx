@@ -8,7 +8,7 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import type { AdminShipment, SnapshotAddress } from "@/types/admin";
-import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Plus, Trash2, PencilLine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SnapshotAddressDialog } from "./snapshot-address-dialog";
 
@@ -54,6 +54,7 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
         isOpen={open}
         onOpenChange={isOpen => !isOpen && onClose()}
         title="Edit shipment details"
+        icon={PencilLine} size="lg"
         description="Correct the addresses and parcels to match what arrived at the office. Saving re-derives the price the customer pays."
         isSubmitting={isPending}
         dialogFooter={
@@ -69,7 +70,7 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
         }
       >
         <div className="space-y-3">
-          <p className="text-sm font-semibold text-foreground">Route</p>
+          <p className="text-[11px] font-bold tracking-[0.08em] text-foreground-muted uppercase">Route</p>
           <ul className="divide-y divide-line rounded-xl border border-line">
             {(
               [
@@ -79,10 +80,10 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
             ).map(entry => (
               <li key={entry.key} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-[13.5px] font-semibold text-foreground">
                     {entry.label} · {entry.address?.contact_name}
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">{entry.address && `${entry.address.line1}, ${entry.address.city}, ${entry.address.state}, ${entry.address.country}`}</p>
+                  <p className="truncate text-xs text-foreground-muted">{entry.address && `${entry.address.line1}, ${entry.address.city}, ${entry.address.state}, ${entry.address.country}`}</p>
                 </div>
                 <Button size="icon-sm" variant="ghost" aria-label={`Edit ${entry.label.toLowerCase()} address`} onClick={() => setEditingAddress(entry.key)}>
                   <Pencil />
@@ -92,7 +93,7 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
           </ul>
 
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground-muted">
               Declared total: <span className="font-semibold text-foreground">{formatNaira(shipment.amount_minor)}</span>
             </p>
             <Button variant="outline" size="sm" onClick={() => setEditingParcel("new")}>
@@ -102,16 +103,16 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
           </div>
 
           {parcels.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-line-strong px-4 py-6 text-center text-sm text-muted-foreground">No parcels. Add what actually arrived.</p>
+            <p className="rounded-xl border border-dashed border-line-strong px-4 py-6 text-center text-sm text-foreground-muted">No parcels. Add what actually arrived.</p>
           ) : (
             <ul className="divide-y divide-line rounded-xl border border-line">
               {parcels.map((parcel, index) => (
                 <li key={index} className="flex items-center justify-between gap-3 px-4 py-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-foreground">
+                    <p className="text-[13.5px] font-semibold text-foreground">
                       {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm
                     </p>
-                    <p className="truncate text-xs text-muted-foreground">{parcel.items.map(item => `${item.quantity}× ${item.name} (${item.weight_kg}kg)`).join(", ")}</p>
+                    <p className="truncate text-xs text-foreground-muted">{parcel.items.map(item => `${item.quantity}× ${item.name} (${item.weight_kg}kg)`).join(", ")}</p>
                   </div>
                   <div className="flex gap-1">
                     <Button size="icon-sm" variant="ghost" aria-label="Edit parcel" onClick={() => setEditingParcel(index)}>

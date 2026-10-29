@@ -3,7 +3,6 @@
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -11,9 +10,11 @@ import { showToast } from "@/lib/show-toast";
 import { cn } from "@/lib/utils";
 import { SURVEY_FREQUENCIES, type SurveyFrequency } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { CheckCircle2, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Clock, Loader2, MessageSquareHeart, Send } from "lucide-react";
 import { useState } from "react";
+import { ScaleRow } from "./_components/scale-row";
+import { SurveyQuestion } from "./_components/survey-question";
+import { SurveyThanks } from "./_components/survey-thanks";
 
 const RATING_QUESTIONS = [
   { key: "satisfaction", question: "How satisfied are you with HESED FastTrack overall?", low: "Very dissatisfied", high: "Very satisfied" },
@@ -23,31 +24,8 @@ const RATING_QUESTIONS = [
 
 type RatingKey = (typeof RATING_QUESTIONS)[number]["key"];
 
-const ScaleRow = function ({ count, value, onSelect, low, high }: { count: number; value: number | null; onSelect: (value: number) => void; low: string; high: string }) {
-  return (
-    <div>
-      <div className="flex flex-wrap gap-2">
-        {Array.from({ length: count }).map((_, index) => {
-          const score = count === 11 ? index : index + 1;
-          return (
-            <button
-              key={score}
-              type="button"
-              onClick={() => onSelect(score)}
-              className={cn("flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-semibold transition-colors", value === score ? "border-brand bg-brand text-white" : "border-line text-foreground hover:bg-muted")}
-            >
-              {score}
-            </button>
-          );
-        })}
-      </div>
-      <div className="mt-1.5 flex justify-between text-xs text-muted-foreground">
-        <span>{low}</span>
-        <span>{high}</span>
-      </div>
-    </div>
-  );
-};
+const REQUIRED_COUNT = RATING_QUESTIONS.length + 2;
+const IMPROVEMENTS_LIMIT = 1000;
 
 export default function SurveyPage() {
   const [ratings, setRatings] = useState<Record<RatingKey, number | null>>({ satisfaction: null, booking_ease: null, delivery: null });
@@ -66,6 +44,9 @@ export default function SurveyPage() {
     onSuccess: () => setIsDone(true),
   });
 
+  const answered = Object.values(ratings).filter(value => value !== null).length + (nps !== null ? 1 : 0) + (frequency ? 1 : 0);
+  const isComplete = answered === REQUIRED_COUNT;
+
   const handleSubmit = function () {
     for (const entry of RATING_QUESTIONS) {
       if (ratings[entry.key] === null) return showToast("warning", `Please answer: ${entry.question}`);
@@ -79,68 +60,98 @@ export default function SurveyPage() {
   if (isFetching && alreadySubmitted === undefined) {
     return (
       <div className="mx-auto max-w-2xl space-y-4">
-        <Skeleton className="h-24 rounded-2xl" />
-        <Skeleton className="h-80 rounded-2xl" />
+        <Skeleton className="h-16 rounded-2xl" />
+        <Skeleton className="h-130 rounded-2xl" />
       </div>
     );
   }
 
-  if (alreadySubmitted || isDone) {
-    return (
-      <div className="mx-auto flex max-w-2xl flex-col items-center rounded-2xl border border-line bg-white px-6 py-16 text-center">
-        <span className="flex size-14 items-center justify-center rounded-2xl bg-emerald/10"><CheckCircle2 className="size-7 text-emerald" /></span>
-        <h2 className="mt-4 text-xl font-bold text-foreground">Thank you for your feedback!</h2>
-        <p className="mt-2 max-w-sm text-sm text-foreground-muted">Your answers help us make HESED FastTrack better for everyone. We read every single response.</p>
-        <Button asChild className="mt-6 h-10 rounded-xl px-5">
-          <Link href="/dashboard/customer">Back to dashboard</Link>
-        </Button>
-      </div>
-    );
-  }
+  if (alreadySubmitted || isDone) return <SurveyThanks />;
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader title="Help us serve you better" description="Two minutes, six questions. Your feedback goes straight to the team." />
+      <PageHeader eyebrow="Customer survey" title="Help us serve you better" description="Six quick questions. Your answers go straight to the HESED FastTrack team." />
 
-      <div className="space-y-5">
-        {RATING_QUESTIONS.map(entry => (
-          <div key={entry.key} className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
-            <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">{entry.question}</p>
-            <ScaleRow count={5} value={ratings[entry.key]} onSelect={value => setRatings(current => ({ ...current, [entry.key]: value }))} low={entry.low} high={entry.high} />
+      <section className="overflow-hidden rounded-2xl border border-line bg-white">
+        <div className="border-b border-line px-5 py-4.5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="flex size-9.5 shrink-0 items-center justify-center rounded-[10px] bg-brand-muted">
+              <MessageSquareHeart className="size-4.5 text-brand" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[15px] font-bold tracking-tight text-foreground">Your feedback</p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-foreground-muted">
+                <Clock className="size-3.5" />
+                About 2 minutes
+              </p>
+            </div>
+            <p className="shrink-0 text-[12.5px] font-semibold text-foreground-muted tabular-nums">
+              <span className="text-foreground">{answered}</span> of {REQUIRED_COUNT} answered
+            </p>
           </div>
-        ))}
-
-        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
-          <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">How likely are you to recommend HESED FastTrack to a friend or business partner?</p>
-          <ScaleRow count={11} value={nps} onSelect={setNps} low="Not at all likely" high="Extremely likely" />
-        </div>
-
-        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
-          <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">How often do you ship?</p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {SURVEY_FREQUENCIES.map(option => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setFrequency(option.value)}
-                className={cn("rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors", frequency === option.value ? "border-brand bg-brand-muted/40 text-foreground" : "border-line text-foreground hover:border-line-strong")}
-              >
-                {option.label}
-              </button>
-            ))}
+          <div className="mt-3.5 h-1.5 overflow-hidden rounded-full bg-line">
+            <div className="h-full rounded-full bg-brand transition-[width] duration-300" style={{ width: `${(answered / REQUIRED_COUNT) * 100}%` }} />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
-          <p className="mb-3.5 text-[15px] font-bold tracking-tight text-foreground">What could we do better? (optional)</p>
-          <Textarea placeholder="Tell us anything: pricing, speed, the app, support…" value={improvements} onChange={event => setImprovements(event.target.value)} maxLength={1000} rows={4} />
+        <div className="divide-y divide-line">
+          {RATING_QUESTIONS.map((entry, index) => (
+            <SurveyQuestion key={entry.key} number={index + 1} question={entry.question} isAnswered={ratings[entry.key] !== null}>
+              <ScaleRow count={5} value={ratings[entry.key]} onSelect={value => setRatings(current => ({ ...current, [entry.key]: value }))} low={entry.low} high={entry.high} />
+            </SurveyQuestion>
+          ))}
+
+          <SurveyQuestion number={4} question="How likely are you to recommend HESED FastTrack to a friend or business partner?" isAnswered={nps !== null}>
+            <ScaleRow count={11} value={nps} onSelect={setNps} low="Not at all likely" high="Extremely likely" />
+          </SurveyQuestion>
+
+          <SurveyQuestion number={5} question="How often do you ship?" isAnswered={!!frequency}>
+            <div role="radiogroup" className="grid gap-2 sm:grid-cols-2">
+              {SURVEY_FREQUENCIES.map(option => {
+                const isSelected = frequency === option.value;
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    onClick={() => setFrequency(option.value)}
+                    className={cn("flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left text-[13.5px] font-semibold transition-colors", isSelected ? "border-brand bg-brand-muted/50 text-foreground" : "border-line bg-white text-foreground hover:border-line-strong")}
+                  >
+                    <span className={cn("flex size-4.5 shrink-0 items-center justify-center rounded-full border-2", isSelected ? "border-brand" : "border-line-strong")}>
+                      {isSelected && <span className="size-2 rounded-full bg-brand" />}
+                    </span>
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </SurveyQuestion>
+
+          <SurveyQuestion number={6} question="What could we do better?" hint="Optional. Pricing, speed, the app, support: anything goes.">
+            <textarea
+              value={improvements}
+              onChange={event => setImprovements(event.target.value)}
+              maxLength={IMPROVEMENTS_LIMIT}
+              rows={4}
+              placeholder="Tell us what would make shipping with us better"
+              className="w-full resize-none rounded-xl border border-line bg-canvas px-3.5 py-3 text-[13.5px] text-foreground outline-none placeholder:text-foreground-subtle focus:border-brand focus:bg-white focus:ring-3 focus:ring-brand-muted"
+            />
+            <p className="mt-1.5 text-right text-[11.5px] text-foreground-muted tabular-nums">
+              {improvements.length} / {IMPROVEMENTS_LIMIT}
+            </p>
+          </SurveyQuestion>
         </div>
 
-        <Button className="h-11 w-full rounded-xl sm:w-auto sm:px-10" onClick={handleSubmit} disabled={isPending}>
-          {isPending && <Loader2 className="animate-spin" />}
-          Submit feedback
-        </Button>
-      </div>
+        <div className="flex flex-col gap-3 border-t border-line bg-canvas px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <p className="text-[12.5px] text-foreground-muted">{isComplete ? "All set. Thanks for taking the time." : `${REQUIRED_COUNT - answered} more to go. Question 6 is optional.`}</p>
+          <Button className="h-10 rounded-xl px-5" onClick={handleSubmit} disabled={isPending}>
+            {isPending ? <Loader2 className="animate-spin" /> : <Send />}
+            Submit feedback
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }

@@ -11,7 +11,7 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
 import type { Bank } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Loader2 } from "lucide-react";
+import { BadgeCheck, Landmark, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -71,6 +71,7 @@ export const WithdrawDialog = function ({ open, onClose }: Props) {
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Withdraw to bank"
+      icon={Landmark}
       description="Funds leave your wallet immediately and arrive once the transfer is processed."
       isSubmitting={isWithdrawing}
       dialogFooter={
@@ -92,7 +93,7 @@ export const WithdrawDialog = function ({ open, onClose }: Props) {
 
         <AppInput label="Account number" inputMode="numeric" maxLength={10} placeholder="0123456789" value={accountNumber} onChange={event => setAccountNumber(event.target.value.replace(/\D/g, ""))} />
 
-        {isResolving ? <p className="text-sm text-muted-foreground">Verifying account…</p> : accountName ? <p className="rounded-lg bg-emerald/10 px-3 py-2 text-sm font-medium text-emerald">{accountName}</p> : null}
+        {isResolving ? <p className="flex items-center gap-2 text-[13px] text-foreground-muted"><Loader2 className="size-3.5 animate-spin" />Verifying account…</p> : accountName ? <p className="flex items-center gap-2 rounded-xl bg-emerald/10 px-3.5 py-2.5 text-[13px] font-semibold text-emerald"><BadgeCheck className="size-4 shrink-0" />{accountName}</p> : null}
       </div>
     </AppDialog>
   );

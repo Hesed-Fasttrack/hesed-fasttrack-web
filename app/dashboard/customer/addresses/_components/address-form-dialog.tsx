@@ -11,7 +11,7 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { Address, CityOption, CountryOption, StateOption } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -122,6 +122,7 @@ export const AddressFormDialog = function ({ open, address, onClose, onCreated }
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title={isEditing ? "Edit address" : "New address"}
+      icon={MapPin} size="lg"
       isSubmitting={isPending}
       dialogFooter={
         <>
@@ -180,7 +181,7 @@ export const AddressFormDialog = function ({ open, address, onClose, onCreated }
             ) : (
               <FormInput<AddressFormValues> control={control} name="state" errors={errors} placeholder="State or region" />
             )}
-            {errors.state && states.length > 0 && <p className="text-destructive text-xs">{errors.state.message}</p>}
+            {errors.state && states.length > 0 && <p className="text-xs text-danger">{errors.state.message}</p>}
           </div>
         </div>
 
@@ -192,7 +193,7 @@ export const AddressFormDialog = function ({ open, address, onClose, onCreated }
             ) : (
               <FormInput<AddressFormValues> control={control} name="city" errors={errors} placeholder="City" />
             )}
-            {errors.city && cities.length > 0 && <p className="text-destructive text-xs">{errors.city.message}</p>}
+            {errors.city && cities.length > 0 && <p className="text-xs text-danger">{errors.city.message}</p>}
           </div>
 
           <FormInput<AddressFormValues> control={control} name="postal_code" errors={errors} label="Postal code" placeholder="Needed for express rates" />

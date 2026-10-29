@@ -10,7 +10,7 @@ import { formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import type { ShipmentItem, ShipmentParcel } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const EMPTY_ITEM = { name: "", category: "", value: "", quantity: "1", weight: "" };
@@ -99,6 +99,7 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title={parcel ? "Edit parcel" : "Add a parcel"}
+      icon={Package} size="lg"
       description="The box size and what's inside. Couriers charge on the larger of actual and volumetric weight."
       dialogFooter={
         <>
@@ -121,10 +122,10 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
             {items.map((item, index) => (
               <li key={`${item.name}-${index}`} className={`flex items-center justify-between gap-3 px-4 py-3 ${editingItem === index ? "bg-brand-muted/30" : ""}`}>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-foreground">
+                  <p className="truncate text-[13.5px] font-semibold text-foreground">
                     {item.quantity}× {item.name}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-foreground-muted">
                     {item.category} · {item.weight_kg}kg · {formatNaira(item.value_minor)}
                   </p>
                 </div>
@@ -142,15 +143,15 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
         )}
 
         <div className="space-y-3 rounded-xl border border-line bg-canvas p-4">
-          <p className="text-sm font-semibold text-foreground">{editingItem !== null ? "Edit item" : "Add an item"}</p>
+          <p className="text-[13.5px] font-bold tracking-tight text-foreground">{editingItem !== null ? "Edit item" : "Add an item"}</p>
           <div className="grid gap-3 sm:grid-cols-2">
             <AppInput label="Item" placeholder="Leather shoes" value={draft.name} onChange={event => setDraft({ ...draft, name: event.target.value })} />
             <div className="relative">
               <AppInput label="Category" placeholder="Footwear" value={draft.category} onChange={event => setDraft({ ...draft, category: event.target.value })} />
               {suggestions.length > 0 && (
-                <div className="absolute z-10 mt-1 w-full rounded-lg border border-line bg-white py-1 shadow-sm">
+                <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-xl border border-line bg-white py-1 shadow-[0_12px_30px_rgba(17,17,20,0.1)]">
                   {suggestions.map(category => (
-                    <button key={category} type="button" className="block w-full px-3 py-1.5 text-left text-sm hover:bg-muted" onClick={() => setDraft({ ...draft, category })}>
+                    <button key={category} type="button" className="block w-full px-3 py-2 text-left text-[13px] hover:bg-canvas" onClick={() => setDraft({ ...draft, category })}>
                       {category}
                     </button>
                   ))}
@@ -163,7 +164,7 @@ export const ParcelDialog = function ({ open, parcel, onSave, onClose }: Props) 
             <AppInput label="Quantity" type="number" min={1} value={draft.quantity} onChange={event => setDraft({ ...draft, quantity: event.target.value })} />
             <AppInput label="Total kg" type="number" min={0.1} step="0.1" value={draft.weight} onChange={event => setDraft({ ...draft, weight: event.target.value })} />
           </div>
-          <Button type="button" variant="outline" size="sm" onClick={handleAddItem}>
+          <Button type="button" variant="outline" size="sm" className="rounded-lg bg-white" onClick={handleAddItem}>
             {editingItem !== null ? "Update item" : "Add item"}
           </Button>
           {editingItem !== null && (

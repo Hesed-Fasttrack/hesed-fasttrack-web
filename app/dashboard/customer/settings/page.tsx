@@ -136,6 +136,7 @@ export default function CustomerSettingsPage() {
         isOpen={isDeleteOpen}
         onOpenChange={isOpen => !isOpen && setIsDeleteOpen(false)}
         title="Delete your account?"
+        icon={TriangleAlert} tone="danger"
         description="This permanently removes your profile, addresses, wallet history and documents. It cannot be undone."
         isSubmitting={isDeleting}
         dialogFooter={

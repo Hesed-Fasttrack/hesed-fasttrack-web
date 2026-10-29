@@ -2,7 +2,7 @@
 
 import { AppDialog } from "@/components/shared/app-dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { CircleHelp, Loader2, TriangleAlert, type LucideIcon } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -12,16 +12,21 @@ interface Props {
   cancelLabel?: string;
   isDestructive?: boolean;
   isLoading?: boolean;
+  icon?: LucideIcon;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
-export const ConfirmDialog = function ({ open, title, description, confirmLabel = "Confirm", cancelLabel = "Cancel", isDestructive, isLoading, onConfirm, onCancel }: Props) {
+export const ConfirmDialog = function ({ open, title, description, confirmLabel = "Confirm", cancelLabel = "Cancel", isDestructive, isLoading, icon, onConfirm, onCancel }: Props) {
   return (
     <AppDialog
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onCancel()}
       title={title}
+      description={description}
+      icon={icon ?? (isDestructive ? TriangleAlert : CircleHelp)}
+      tone={isDestructive ? "danger" : "brand"}
+      size="sm"
       isSubmitting={isLoading}
       dialogFooter={
         <>
@@ -34,8 +39,6 @@ export const ConfirmDialog = function ({ open, title, description, confirmLabel 
           </Button>
         </>
       }
-    >
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </AppDialog>
+    />
   );
 };

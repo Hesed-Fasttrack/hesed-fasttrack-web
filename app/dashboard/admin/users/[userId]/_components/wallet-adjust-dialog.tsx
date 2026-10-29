@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Scale } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -59,6 +59,7 @@ export const WalletAdjustDialog = function ({ userId, open, onClose }: Props) {
       isOpen={open}
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Adjust wallet"
+      icon={Scale}
       description="Manual ledger entry. Every adjustment is audited and notifies the customer."
       isSubmitting={isPending}
       dialogFooter={

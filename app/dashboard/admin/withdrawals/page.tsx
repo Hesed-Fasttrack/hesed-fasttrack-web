@@ -228,6 +228,7 @@ export default function AdminWithdrawalsPage() {
         isOpen={!!rejecting}
         onOpenChange={(isOpen) => !isOpen && setRejecting(null)}
         title="Reject this withdrawal?"
+        icon={Banknote} tone="danger"
         description="The amount is refunded to the customer's wallet and the reason is shown to them."
         isSubmitting={isPending}
         dialogFooter={

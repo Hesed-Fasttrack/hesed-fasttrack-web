@@ -74,6 +74,7 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
         isOpen={isRejectOpen}
         onOpenChange={isOpen => !isOpen && setIsRejectOpen(false)}
         title={`Reject ${title.toLowerCase()}`}
+        icon={TriangleAlert} tone="danger"
         description="The reason is shown to the customer so they can fix and resubmit."
         isSubmitting={isPending}
         dialogFooter={
