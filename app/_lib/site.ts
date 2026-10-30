@@ -9,8 +9,7 @@ export const SITE = {
   },
   whatsapp: { display: "+234 708 224 5801", href: "https://wa.me/2347082245801" },
   addresses: {
-    // operations: "Shop 5, NAHCO Export Car Park, Murtala Muhammed International Airport Road, Ikeja, Lagos, Nigeria",
-    operations: "No 17, Oremeji mafoluku oshodi Lagos state Nigeria",
+    operations: "Shop 5, NAHCO Export Car Park, Murtala Muhammed International Airport Road, Ikeja, Lagos, Nigeria",
     office: "14/16, Isolo Way, Beside UBA Bank, Lagos, Nigeria",
   },
   socials: [
