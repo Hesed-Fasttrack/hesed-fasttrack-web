@@ -10,7 +10,7 @@ import type { AdminQueues, AdminStats, StatsRange } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
 import { format } from "date-fns";
 import Cookies from "js-cookie";
-import { Package, TrendingUp, Users, Wallet } from "lucide-react";
+import { Landmark, Package, TrendingUp, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AttentionCard } from "./_components/attention-card";
@@ -51,7 +51,7 @@ export default function AdminOverviewPage() {
   if (!isSuperAdmin) return null;
 
   const active = RANGES.find(entry => entry.value === range) ?? RANGES[2];
-  const waiting = queues ? queues.drop_offs.count + queues.kyc.count + (queues.withdrawals?.count ?? 0) + queues.courier_failures.count : null;
+  const waiting = queues ? queues.drop_offs.count + queues.kyc.count + queues.payments.count + queues.courier_failures.count : null;
 
   return (
     <div>
@@ -85,7 +85,12 @@ export default function AdminOverviewPage() {
             <KpiCard label="Revenue" icon={TrendingUp} value={formatNaira(stats.revenue.current_minor)} comparison={{ current: stats.revenue.current_minor, previous: stats.revenue.previous_minor, caption: active.caption }} />
             <KpiCard label="Shipments booked" icon={Package} value={stats.shipments.current.toLocaleString()} comparison={{ current: stats.shipments.current, previous: stats.shipments.previous, caption: active.caption }} />
             <KpiCard label="Customers" icon={Users} value={stats.customers.total.toLocaleString()} hint={`${stats.customers.new_in_range.toLocaleString()} new ${active.period}`} />
-            <KpiCard label="Wallet float" icon={Wallet} value={formatNaira(stats.wallets.total_balance_minor)} hint={`Held across ${stats.wallets.funded_count.toLocaleString()} funded wallets`} />
+            <KpiCard
+              label="Payments to confirm"
+              icon={Landmark}
+              value={formatNaira(stats.payments.pending.amount_minor)}
+              hint={`${stats.payments.pending.count.toLocaleString()} awaiting review${stats.payments.refund_due.count ? ` · ${stats.payments.refund_due.count} refund${stats.payments.refund_due.count === 1 ? "" : "s"} due` : ""}`}
+            />
           </>
         )}
       </div>

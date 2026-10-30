@@ -10,7 +10,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
       "Account information: your name, email address, phone number and password when you create an account.",
       "Shipment information: sender and receiver names, addresses, phone numbers and parcel contents you provide when requesting quotes or booking shipments.",
       "Identity verification (KYC): a government-issued ID (NIN, driver's licence or international passport), the document number, a photo of the document and a proof of address, required before payments can be made on the platform.",
-      "Wallet and payment information: your wallet transaction history and the bank account details you provide for withdrawals. Card and bank transfer payments are processed by our payment provider. We never store your card details.",
+      "Payment information: the bank transfer receipts you upload and the name on the paying account, used to confirm your payments and arrange any refunds.",
       "Device and usage information: device identifiers, push notification tokens and app usage data used to operate and improve the service.",
     ],
   },
@@ -19,7 +19,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
     bullets: [
       "To provide quotes, book shipments, process payments and deliver parcels.",
       "To verify your identity as required by our courier and payment partners and applicable regulations.",
-      "To send you service messages (booking confirmations, delivery status updates and wallet notifications) by push notification and email.",
+      "To send you service messages (booking confirmations, payment confirmations and delivery status updates) by push notification and email.",
       "To respond to support requests and resolve disputes.",
       "To prevent fraud, enforce our terms and comply with legal obligations.",
     ],
@@ -28,7 +28,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
     heading: "Who we share it with",
     bullets: [
       "Courier partners, to the extent needed to move your shipment (names, addresses, phone numbers and customs information).",
-      "Payment providers, to process wallet funding, payments and withdrawals.",
+      "Our bank, to receive your payments and send any refunds.",
       "Regulators, customs authorities and law enforcement where the law requires it.",
       "We never sell your personal data to anyone.",
     ],

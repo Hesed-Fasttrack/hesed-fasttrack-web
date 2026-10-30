@@ -1,7 +1,7 @@
 export type ShipmentStatus = "PENDING_PICKUP" | "PENDING_DROP_OFF" | "RECEIVED" | "PICKED_UP" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
-export type ShipmentPaymentStatus = "UNPAID" | "PAID" | "REFUNDED";
+export type ShipmentPaymentStatus = "UNPAID" | "AWAITING_CONFIRMATION" | "PAID" | "REFUND_DUE" | "REFUNDED";
+export type PaymentProofStatus = "PENDING" | "APPROVED" | "REJECTED" | "REFUNDED";
 export type KycStatus = "PENDING" | "APPROVED" | "REJECTED";
-export type WithdrawalStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "REJECTED" | "FAILED";
 export type AccountStatus = "ACTIVE" | "SUSPENDED" | "DEACTIVATED";
 
 interface StatusPresentation {
@@ -33,7 +33,16 @@ export const SHIPMENT_STATUS: Record<ShipmentStatus, StatusPresentation> = {
 
 export const PAYMENT_STATUS: Record<ShipmentPaymentStatus, StatusPresentation> = {
   UNPAID: { label: "Unpaid", className: tone.amber },
+  AWAITING_CONFIRMATION: { label: "Confirming payment", className: tone.royal },
   PAID: { label: "Paid", className: tone.emerald },
+  REFUND_DUE: { label: "Refund due", className: tone.danger },
+  REFUNDED: { label: "Refunded", className: tone.muted },
+};
+
+export const PAYMENT_PROOF_STATUS: Record<PaymentProofStatus, StatusPresentation> = {
+  PENDING: { label: "Awaiting review", className: tone.amber },
+  APPROVED: { label: "Approved", className: tone.emerald },
+  REJECTED: { label: "Rejected", className: tone.danger },
   REFUNDED: { label: "Refunded", className: tone.muted },
 };
 
@@ -41,14 +50,6 @@ export const KYC_STATUS: Record<KycStatus, StatusPresentation> = {
   PENDING: { label: "Pending review", className: tone.amber },
   APPROVED: { label: "Approved", className: tone.emerald },
   REJECTED: { label: "Rejected", className: tone.danger },
-};
-
-export const WITHDRAWAL_STATUS: Record<WithdrawalStatus, StatusPresentation> = {
-  PENDING: { label: "Pending", className: tone.amber },
-  PROCESSING: { label: "Processing", className: tone.royal },
-  COMPLETED: { label: "Completed", className: tone.emerald },
-  REJECTED: { label: "Rejected", className: tone.danger },
-  FAILED: { label: "Failed", className: tone.danger },
 };
 
 export const ACCOUNT_STATUS: Record<AccountStatus, StatusPresentation> = {

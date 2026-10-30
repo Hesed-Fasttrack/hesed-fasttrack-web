@@ -13,13 +13,15 @@ import { formatDate, formatDateTime, formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import { PAYMENT_STATUS, SHIPMENT_STATUS } from "@/lib/statuses";
 import { cn } from "@/lib/utils";
-import type { CustomerKycSubmission, CustomerShipment, CustomerShipmentEvent, ShipmentAddressSnapshot, Wallet } from "@/types/customer";
+import type { CustomerKycSubmission, CustomerShipment, CustomerShipmentEvent, ShipmentAddressSnapshot } from "@/types/customer";
 import { SHIPMENT_PURPOSES } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { ArrowRight, Box, Copy, Loader2, PackageCheck } from "lucide-react";
+import { ArrowRight, Box, Copy, Landmark } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
+import { PaymentCard } from "./_components/payment-card";
+import { PaymentDialog } from "./_components/payment-dialog";
 
 const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -61,34 +63,26 @@ const AddressBlock = function ({ label, address, align = "left" }: { label: stri
 
 export default function CustomerShipmentDetailPage() {
   const { shipmentId = "" } = useParams<{ shipmentId: string }>();
-  const router = useRouter();
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
 
   const trackingUrl = API_ENDPOINTS.customer.shipments.tracking(shipmentId);
   const { data, isFetching } = useGetData<APIResponse<{ shipment: CustomerShipment; events: CustomerShipmentEvent[] }>>({ url: trackingUrl });
   const shipment = data?.data?.shipment;
   const events = data?.data?.events ?? [];
 
-  const isAwaitingPayment = shipment?.status === "RECEIVED" && shipment.payment_status === "UNPAID";
+  // Pickups pay straight after booking; drop-offs once the office has verified the parcel.
+  const isPayable = !!shipment && shipment.payment_status === "UNPAID" && (shipment.fulfilment_type === "PICKUP" ? shipment.status === "PENDING_PICKUP" : shipment.status === "RECEIVED");
 
-  const { data: walletData } = useGetData<APIResponse<Wallet>>({ url: API_ENDPOINTS.customer.wallet.balance, shouldFetch: isAwaitingPayment });
-  const { data: kycData } = useGetData<APIResponse<CustomerKycSubmission | null>>({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: isAwaitingPayment });
+  const { data: kycData } = useGetData<APIResponse<CustomerKycSubmission | null>>({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: isPayable });
 
-  const refetchKeys = [[API_ENDPOINTS.customer.shipments.list("?page=1&limit=10")], [trackingUrl], [API_ENDPOINTS.customer.wallet.balance], [API_ENDPOINTS.customer.wallet.transactions]];
-
-  const isPaid = shipment?.payment_status === "PAID";
+  const refetchKeys = [[API_ENDPOINTS.customer.shipments.list("?page=1&limit=10")], [trackingUrl], [API_ENDPOINTS.customer.dashboard.summary]];
 
   const { mutate: cancelShipment, isPending: isCancelling } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.customer.shipments.cancel(shipmentId),
-    onSuccessMessage: isPaid ? "Shipment cancelled. Your wallet has been refunded" : "Shipment cancelled",
+    onSuccessMessage: "Shipment cancelled",
     additionalQueryKeys: refetchKeys,
     onSuccess: () => setIsConfirmingCancel(false),
-  });
-
-  const { mutate: payShipment, isPending: isPaying } = useSubmitData<Record<string, never>, unknown>({
-    url: API_ENDPOINTS.customer.shipments.pay(shipmentId),
-    onSuccessMessage: "Payment received. Your shipment is on its way",
-    additionalQueryKeys: refetchKeys,
   });
 
   if (isFetching && !shipment) {
@@ -104,9 +98,9 @@ export default function CustomerShipmentDetailPage() {
 
   const status = SHIPMENT_STATUS[shipment.status];
   const paymentStatus = PAYMENT_STATUS[shipment.payment_status];
-  const canCancel = shipment.status === "PENDING_PICKUP" || shipment.status === "PENDING_DROP_OFF";
+  const canCancel = (shipment.status === "PENDING_PICKUP" || shipment.status === "PENDING_DROP_OFF") && shipment.payment_status === "UNPAID";
   const isKycVerified = kycData?.data?.status === "APPROVED";
-  const hasEnoughBalance = (walletData?.data?.available_minor ?? 0) >= shipment.amount_minor;
+  const isKycPending = kycData?.data?.status === "PENDING";
 
   return (
     <div>
@@ -123,34 +117,31 @@ export default function CustomerShipmentDetailPage() {
         }
       />
 
-      {isAwaitingPayment && (
+      {isPayable && (
         <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-brand/25 bg-brand-muted/60 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
           <div className="flex items-start gap-3">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-brand">
-              <PackageCheck className="size-4.5" />
+              <Landmark className="size-4.5" />
             </span>
             <p className="text-[13px] text-foreground">
-              We&apos;ve received and verified your parcel.{" "}
+              {shipment.status === "RECEIVED" ? "We've received and verified your parcel. " : ""}
               {isKycVerified
-                ? hasEnoughBalance
-                  ? "Complete payment to start shipping."
-                  : `Your wallet holds ${formatNaira(walletData?.data?.available_minor ?? 0)}. Fund it to pay for this shipment.`
-                : "Verify your identity once to pay for shipments."}
+                ? `Pay ${formatNaira(shipment.amount_minor)} by bank transfer and upload your receipt to ${shipment.fulfilment_type === "PICKUP" ? "schedule your pickup" : "start shipping"}.`
+                : isKycPending
+                  ? "Your identity verification is under review. You can pay once it's approved."
+                  : "Verify your identity once to pay for shipments."}
             </p>
           </div>
-          {!isKycVerified ? (
-            <Button asChild className="h-10 shrink-0 rounded-xl px-4">
-              <Link href="/dashboard/customer/kyc">Verify identity</Link>
-            </Button>
-          ) : hasEnoughBalance ? (
-            <Button className="h-10 shrink-0 rounded-xl px-4" onClick={() => payShipment({})} disabled={isPaying}>
-              {isPaying && <Loader2 className="animate-spin" />}
-              Pay {formatNaira(shipment.amount_minor)}
+          {isKycVerified ? (
+            <Button className="h-10 shrink-0 rounded-xl px-4" onClick={() => setIsPaying(true)}>
+              Pay now
             </Button>
           ) : (
-            <Button className="h-10 shrink-0 rounded-xl px-4" onClick={() => router.push("/dashboard/customer/wallet")}>
-              Fund wallet
-            </Button>
+            !isKycPending && (
+              <Button asChild className="h-10 shrink-0 rounded-xl px-4">
+                <Link href="/dashboard/customer/kyc">Verify identity</Link>
+              </Button>
+            )
           )}
         </div>
       )}
@@ -222,6 +213,8 @@ export default function CustomerShipmentDetailPage() {
             </div>
           </section>
 
+          <PaymentCard shipment={shipment} isPayable={isPayable && isKycVerified} onPay={() => setIsPaying(true)} />
+
           <SectionCard title="Tracking" description="Every update on this shipment">
             {events.length === 0 ? (
               <p className="p-5 text-[13px] text-foreground-muted sm:p-5.5">No updates yet. We&apos;ll post each step here.</p>
@@ -251,7 +244,7 @@ export default function CustomerShipmentDetailPage() {
       <ConfirmDialog
         open={isConfirmingCancel}
         title="Cancel this shipment?"
-        description={isPaid ? "The full amount goes straight back to your wallet." : "Nothing has been paid yet, so there's nothing to refund."}
+        description="Nothing has been paid yet, so there's nothing to refund."
         confirmLabel="Cancel shipment"
         cancelLabel="Keep it"
         isDestructive
@@ -259,6 +252,8 @@ export default function CustomerShipmentDetailPage() {
         onConfirm={() => cancelShipment({})}
         onCancel={() => setIsConfirmingCancel(false)}
       />
+
+      <PaymentDialog shipment={shipment} open={isPaying} onClose={() => setIsPaying(false)} refetchKeys={refetchKeys} />
     </div>
   );
 }

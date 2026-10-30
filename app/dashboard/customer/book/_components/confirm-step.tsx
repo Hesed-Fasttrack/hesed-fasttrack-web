@@ -8,11 +8,10 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatNaira } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useBookingStore } from "@/store/booking";
-import type { CustomerKycSubmission, Wallet } from "@/types/customer";
+import type { CustomerKycSubmission, CustomerShipment } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { addDays, format } from "date-fns";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -38,21 +37,17 @@ export const ConfirmStep = function () {
 
   const isDropOff = fulfilmentType === "DROP_OFF";
 
-  const { data: walletData } = useGetData<APIResponse<Wallet>>({ url: API_ENDPOINTS.customer.wallet.balance, shouldFetch: !isDropOff });
-  const { data: kycData, isFetching: isFetchingKyc } = useGetData<APIResponse<CustomerKycSubmission | null>>({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: !isDropOff });
+  const { data: kycData } = useGetData<APIResponse<CustomerKycSubmission | null>>({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: !isDropOff });
 
   const isKycVerified = kycData?.data?.status === "APPROVED";
-  const isKycPending = kycData?.data?.status === "PENDING";
-  const balance = walletData?.data?.available_minor ?? 0;
-  const hasEnoughBalance = balance >= (quote?.amount_minor ?? 0);
 
-  const { mutate: bookShipment, isPending: isBooking } = useSubmitData<Record<string, unknown> | FormData, unknown>({
+  const { mutate: bookShipment, isPending: isBooking } = useSubmitData<Record<string, unknown> | FormData, APIResponse<CustomerShipment>>({
     url: API_ENDPOINTS.customer.shipments.create,
     onSuccessMessage: "Shipment booked",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.shipments.list()], [API_ENDPOINTS.customer.wallet.balance]],
-    onSuccess: () => {
+    additionalQueryKeys: [[API_ENDPOINTS.customer.shipments.list()], [API_ENDPOINTS.customer.dashboard.summary]],
+    onSuccess: response => {
       reset();
-      router.push("/dashboard/customer/shipments");
+      router.push(response?.data?.id ? `/dashboard/customer/shipments/${response.data.id}` : "/dashboard/customer/shipments");
     },
   });
 
@@ -87,8 +82,6 @@ export const ConfirmStep = function () {
     bookShipment(payload);
   };
 
-  const isGated = !isDropOff && (!isKycVerified || !hasEnoughBalance);
-
   return (
     <div className="max-w-3xl space-y-5">
       <Button variant="ghost" size="sm" className="-ml-2 rounded-lg" onClick={() => setStep("rates")}>
@@ -112,7 +105,7 @@ export const ConfirmStep = function () {
           <p className="text-[15px] font-bold tracking-tight text-foreground">Drop-off location</p>
           <p className="mt-2 text-sm text-foreground">{OFFICE_ADDRESS.name}</p>
           <p className="mt-0.5 text-sm text-foreground-muted">{OFFICE_ADDRESS.lines}</p>
-          <p className="mt-2 text-xs text-foreground-muted">No payment now. You pay from your wallet after we verify your parcel at the office.</p>
+          <p className="mt-2 text-xs text-foreground-muted">No payment now. You pay by bank transfer after we verify your parcel at the office.</p>
         </div>
       ) : (
         <div className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
@@ -138,36 +131,20 @@ export const ConfirmStep = function () {
         <p className="text-2xl font-bold text-brand">{formatNaira(quote.amount_minor)}</p>
       </div>
 
-      <p className={cn("text-center text-sm", isGated ? "text-danger" : "text-foreground-muted")}>
+      <p className="text-center text-sm text-foreground-muted">
         {isDropOff
           ? "No payment now. You pay after we verify your parcel."
-          : !isKycVerified
-            ? isKycPending
-              ? "Your identity verification is under review. You can pay once it's approved."
-              : "Verify your identity once to pay for shipments."
-            : hasEnoughBalance
-              ? `Paid from your wallet · balance ${formatNaira(balance)}`
-              : `Your wallet holds ${formatNaira(balance)}. Fund it to book this shipment.`}
+          : `Next, pay by bank transfer and upload your receipt. We schedule your pickup once it's confirmed.${isKycVerified ? "" : " You'll need to verify your identity before paying."}`}
       </p>
 
       <p className="text-center text-xs text-foreground-muted">
         Delivery dates are estimates, not guarantees. Your shipment may arrive earlier or later due to customs clearance, flight or shipping schedule changes, weather or other circumstances beyond our control.
       </p>
 
-      {!isDropOff && !isKycVerified ? (
-        <Button size="lg" className="h-11 w-full rounded-xl" disabled={isFetchingKyc || isKycPending} asChild={!isKycPending}>
-          {isKycPending ? "Verification in review" : <Link href="/dashboard/customer/kyc">Verify identity</Link>}
-        </Button>
-      ) : !isDropOff && !hasEnoughBalance ? (
-        <Button size="lg" className="h-11 w-full rounded-xl" asChild>
-          <Link href="/dashboard/customer/wallet">Fund wallet</Link>
-        </Button>
-      ) : (
-        <Button size="lg" className="h-11 w-full rounded-xl" onClick={handleBook} disabled={isBooking}>
-          {isBooking && <Loader2 className="animate-spin" />}
-          Book shipment
-        </Button>
-      )}
+      <Button size="lg" className="h-11 w-full rounded-xl" onClick={handleBook} disabled={isBooking}>
+        {isBooking && <Loader2 className="animate-spin" />}
+        Book shipment
+      </Button>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { AdminQueues } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
 import Cookies from "js-cookie";
-import { Banknote, Crown, History, LayoutGrid, MessageSquareHeart, Package, Settings, ShieldCheck, UserRoundCog, Users } from "lucide-react";
+import { Crown, History, Landmark, LayoutGrid, MessageSquareHeart, Package, Settings, ShieldCheck, UserRoundCog, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type AdminNavItem = DashboardNavItem & { superOnly?: boolean };
@@ -25,7 +25,7 @@ const NAV_GROUPS: { label?: string; items: AdminNavItem[] }[] = [
     label: "Customers & money",
     items: [
       { label: "Users", href: "/dashboard/admin/users", icon: Users, superOnly: true },
-      { label: "Withdrawals", href: "/dashboard/admin/withdrawals", icon: Banknote, superOnly: true },
+      { label: "Payments", href: "/dashboard/admin/payments", icon: Landmark, superOnly: true },
       { label: "Surveys", href: "/dashboard/admin/surveys", icon: MessageSquareHeart, superOnly: true },
     ],
   },
@@ -52,9 +52,8 @@ export const AdminSidebar = function ({ className, onNavigate }: { className?: s
   const queues = data?.data;
 
   const counts: Record<string, number | undefined> = {
-    "/dashboard/admin/shipments": queues?.drop_offs.count,
+    "/dashboard/admin/shipments": queues ? queues.drop_offs.count + queues.payments.count : undefined,
     "/dashboard/admin/kyc": queues?.kyc.count,
-    "/dashboard/admin/withdrawals": queues?.withdrawals?.count,
   };
 
   const groups: DashboardNavGroup[] = NAV_GROUPS.map(group => ({

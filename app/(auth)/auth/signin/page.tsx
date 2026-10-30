@@ -79,7 +79,7 @@ export default function SignInPage() {
 
   return (
     <div>
-      <AuthHeading icon={LogIn} eyebrow="Welcome back" title="Sign in to your account" description="Pick up where you left off: your shipments, wallet and quotes." />
+      <AuthHeading icon={LogIn} eyebrow="Welcome back" title="Sign in to your account" description="Pick up where you left off: your shipments, payments and quotes." />
 
       <form onSubmit={handleSubmit(data => login(data))} className="mt-6.5 space-y-3.5">
         <FormInput<LoginFormValues> control={control} name="email" errors={errors} label="Email" type="email" icon={Mail} placeholder="you@example.com" autoComplete="email" className="rounded-xl" />

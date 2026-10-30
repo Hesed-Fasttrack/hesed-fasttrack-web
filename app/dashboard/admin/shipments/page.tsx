@@ -25,23 +25,27 @@ function AdminShipmentsPageContent() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [paymentStatus, setPaymentStatus] = useState("all");
   const debouncedSearch = useDebounce(search);
   const searchParams = useSearchParams();
   const searchParam = searchParams.get("search");
   const statusParam = searchParams.get("status");
+  const paymentStatusParam = searchParams.get("payment_status");
 
   // The topbar search and overview queue links arrive as query params.
   useEffect(() => {
     if (searchParam !== null) setSearch(searchParam);
     if (statusParam !== null) setStatus(statusParam);
+    if (paymentStatusParam !== null) setPaymentStatus(paymentStatusParam);
     setPage(1);
-  }, [searchParam, statusParam]);
+  }, [searchParam, statusParam, paymentStatusParam]);
 
   const query = buildQuery({
     page,
     limit: 10,
     search: debouncedSearch || undefined,
     status: status === "all" ? undefined : status,
+    payment_status: paymentStatus === "all" ? undefined : paymentStatus,
   });
 
   const { data, isFetching } = useGetData<PaginatedResponse<AdminShipment>>({ url: API_ENDPOINTS.admin.shipments.list(query) });
@@ -71,6 +75,16 @@ function AdminShipmentsPageContent() {
                 setPage(1);
               }}
               options={[{ label: "All statuses", value: "all" }, ...Object.entries(SHIPMENT_STATUS).map(([value, presentation]) => ({ label: presentation.label, value }))]}
+            />
+            <AppSimpleSelect
+              containerClassName="w-full sm:w-52"
+              className={TOOLBAR_SELECT_CLASS}
+              value={paymentStatus}
+              onValueChange={value => {
+                setPaymentStatus(value);
+                setPage(1);
+              }}
+              options={[{ label: "All payments", value: "all" }, ...Object.entries(PAYMENT_STATUS).map(([value, presentation]) => ({ label: presentation.label, value }))]}
             />
           </>
         }

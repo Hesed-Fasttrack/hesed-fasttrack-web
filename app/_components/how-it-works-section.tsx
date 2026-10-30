@@ -1,4 +1,4 @@
-import { CalendarCheck, MapPin, PackageSearch, Wallet } from "lucide-react";
+import { CalendarCheck, Landmark, MapPin, PackageSearch } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 
 const STEPS = [
@@ -13,9 +13,9 @@ const STEPS = [
     description: "Choose courier pickup or drop-off at our office, add your parcel details and pick a date.",
   },
   {
-    icon: Wallet,
-    title: "Pay from your wallet",
-    description: "Fund your wallet once by bank transfer and every booking settles instantly. No card fees.",
+    icon: Landmark,
+    title: "Pay by bank transfer",
+    description: "Transfer to our company account, upload your receipt and we confirm it. No card fees.",
   },
   {
     icon: MapPin,

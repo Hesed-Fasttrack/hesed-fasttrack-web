@@ -6,7 +6,7 @@ import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { CustomerDashboardSummary } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
-import { Calculator, LayoutGrid, MapPin, Package, Plus, Radar, Settings, ShieldCheck, Wallet } from "lucide-react";
+import { Calculator, LayoutGrid, MapPin, Package, Plus, Radar, Settings, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 export const CustomerSidebar = function ({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
@@ -23,7 +23,6 @@ export const CustomerSidebar = function ({ className, onNavigate }: { className?
         { label: "Quick quote", href: "/dashboard/customer/quick-quote", icon: Calculator },
       ],
     },
-    { label: "Money", items: [{ label: "Wallet", href: "/dashboard/customer/wallet", icon: Wallet }] },
     {
       label: "Account",
       items: [

@@ -21,7 +21,7 @@ const Stat = function ({ icon: Icon, label, value, hint, className }: { icon: Lu
 
 export const SummaryStats = function ({ summary }: { summary: CustomerDashboardSummary | undefined }) {
   const waiting = summary ? summary.awaiting_drop_off + summary.awaiting_pickup : 0;
-  const waitingHint = !summary || waiting === 0 ? undefined : summary.awaiting_drop_off > 0 ? "bring to the office" : "awaiting pickup";
+  const waitingHint = !summary || waiting === 0 ? undefined : summary.awaiting_payment > 0 ? "to pay" : summary.awaiting_drop_off > 0 ? "bring to the office" : "awaiting pickup";
 
   return (
     <section className="grid grid-cols-2 overflow-hidden rounded-2xl border border-line bg-white lg:grid-cols-4">

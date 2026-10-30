@@ -1,4 +1,4 @@
-import type { AccountStatus, KycStatus, ShipmentPaymentStatus, ShipmentStatus, WithdrawalStatus } from "@/lib/statuses";
+import type { AccountStatus, KycStatus, PaymentProofStatus, ShipmentPaymentStatus, ShipmentStatus } from "@/lib/statuses";
 
 export interface PaginatedResponse<TItem> {
   message: string;
@@ -15,7 +15,7 @@ export interface AdminStats {
   revenue: { current_minor: number; previous_minor: number };
   shipments: { current: number; previous: number; total: number; by_status: Partial<Record<ShipmentStatus, number>> };
   customers: { total: number; new_in_range: number };
-  wallets: { total_balance_minor: number; funded_count: number };
+  payments: { pending: PaymentTotal; refund_due: PaymentTotal };
   daily: { date: string; count: number }[];
 }
 
@@ -23,7 +23,7 @@ export interface AdminQueues {
   drop_offs: { count: number; oldest_at: string | null };
   kyc: { count: number; oldest_at: string | null };
   courier_failures: { count: number; latest: { id: string; reference: string } | null };
-  withdrawals: { count: number; total_minor: number } | null;
+  payments: { count: number; oldest_at: string | null };
 }
 
 export interface AdminUserRow {
@@ -45,17 +45,7 @@ export interface AdminUserDetail extends AdminUserRow {
   state: string | null;
   city: string | null;
   address: string | null;
-  wallet: { id: string; available_minor: number } | null;
   kyc: KycSubmission | null;
-}
-
-export interface WalletTransaction {
-  id: string;
-  type: string;
-  amount_minor: number;
-  reference: string;
-  narration: string | null;
-  createdAt: string;
 }
 
 export interface ReviewUser {
@@ -98,6 +88,7 @@ export interface AdminShipment {
   courier_tracking_number: string | null;
   courier_tracking_url: string | null;
   courier_purchase_error: string | null;
+  payments?: AdminShipmentPayment[];
   createdAt: string;
   user?: ReviewUser;
 }
@@ -125,17 +116,41 @@ export interface KycSubmission {
   user?: ReviewUser;
 }
 
-export interface Withdrawal {
-  id: string;
+export type StaffUser = ReviewUser & { role: string };
+
+export interface PaymentTotal {
+  count: number;
   amount_minor: number;
-  bank_name: string;
-  account_number: string;
-  account_name: string;
-  status: WithdrawalStatus;
-  reference: string;
+}
+
+export interface AdminShipmentPayment {
+  id: string;
+  shipmentId: string;
+  amount_minor: number;
+  proof_url: string;
+  payer_name: string | null;
+  note: string | null;
+  status: PaymentProofStatus;
   rejection_reason: string | null;
+  reviewedAt: string | null;
+  reviewedBy: StaffUser | null;
+  refundedAt: string | null;
+  refundedBy: StaffUser | null;
+  refund_note: string | null;
   createdAt: string;
-  user?: ReviewUser;
+}
+
+export interface AdminPaymentRow extends AdminShipmentPayment {
+  shipment: { id: string; reference: string; status: ShipmentStatus; payment_status: ShipmentPaymentStatus; fulfilment_type: "PICKUP" | "DROP_OFF" };
+  user: ReviewUser;
+}
+
+export interface PaymentsSummary {
+  approved: PaymentTotal;
+  pending: PaymentTotal;
+  rejected: { count: number };
+  refunded: PaymentTotal;
+  refund_due: PaymentTotal;
 }
 
 export interface AdminRow {

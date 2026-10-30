@@ -13,23 +13,23 @@ export const metadata = buildPageMetadata({
 const FAQS = [
   {
     q: "How do I ship a package?",
-    a: "Sign in, get a quote with your route and parcel details, then compare courier prices. Pick a rate and book with 'Drop off at our office'. Once we receive and verify your parcel, pay from your wallet and shipping begins.",
+    a: "Sign in, get a quote with your route and parcel details, then compare courier prices. Pick a rate and book with 'Drop off at our office'. Once we receive and verify your parcel, pay by bank transfer, upload your receipt and shipping begins once we confirm it.",
   },
   {
     q: "How do I pay for a shipment?",
-    a: "Shipments are paid from your in-app wallet. Fund it once by bank transfer to your personal account number and every booking settles instantly.",
+    a: "By direct bank transfer. Open the shipment, transfer the amount shown to our company account using your shipment reference as the narration, then upload the receipt. We confirm it and let you know.",
   },
   {
     q: "Can I drop my parcel off instead of booking a pickup?",
-    a: "Yes. Choose 'Drop off at our office' when booking. We verify your parcel at the office, then you pay from your wallet and shipping begins.",
+    a: "Yes. Choose 'Drop off at our office' when booking. We verify your parcel at the office, then you pay by bank transfer and shipping begins once we confirm your receipt.",
   },
   {
     q: "Can I cancel a booking?",
-    a: "Any shipment still awaiting pickup or drop-off can be cancelled from its detail screen. Paid bookings are refunded to your wallet in full.",
+    a: "Any unpaid shipment still awaiting pickup or drop-off can be cancelled from its detail screen. If you've already paid, contact support and we'll refund you by bank transfer.",
   },
   {
-    q: "How long does wallet funding take to reflect?",
-    a: "Bank transfers to your wallet account usually land within a minute. Pull down to refresh your wallet if it hasn't appeared.",
+    q: "How long does payment confirmation take?",
+    a: "We check every receipt against our bank account, usually within working hours on the same day. You'll get a notification as soon as your payment is confirmed.",
   },
   {
     q: "Which countries do you ship to?",

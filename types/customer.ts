@@ -1,4 +1,4 @@
-import type { KycStatus, ShipmentPaymentStatus, ShipmentStatus, WithdrawalStatus } from "@/lib/statuses";
+import type { KycStatus, PaymentProofStatus, ShipmentPaymentStatus, ShipmentStatus } from "@/lib/statuses";
 
 export interface Address {
   id: string;
@@ -16,45 +16,23 @@ export interface Address {
   createdAt: string;
 }
 
-export interface FundingAccount {
+export interface PaymentAccount {
   bank_name: string;
   account_number: string;
   account_name: string;
 }
 
-export interface Wallet {
+export interface ShipmentPayment {
   id: string;
-  available_minor: number;
-  lifetime_funded_minor: number;
+  amount_minor: number;
   currency: string;
-  dva_account_number: string | null;
-  dva_account_name: string | null;
-  dva_bank_name: string | null;
-  dva_accounts?: FundingAccount[] | null;
-}
-
-export interface CustomerTransaction {
-  id: string;
-  type: string;
-  amount_minor: number;
-  reference: string;
-  narration: string | null;
-  createdAt: string;
-}
-
-export interface Bank {
-  name: string;
-  code: string;
-}
-
-export interface CustomerWithdrawal {
-  id: string;
-  amount_minor: number;
-  bank_name: string;
-  account_number: string;
-  account_name: string;
-  status: WithdrawalStatus;
+  proof_url: string;
+  payer_name: string | null;
+  note: string | null;
+  status: PaymentProofStatus;
   rejection_reason: string | null;
+  reviewedAt: string | null;
+  refundedAt: string | null;
   createdAt: string;
 }
 
@@ -122,6 +100,7 @@ export interface CustomerShipment {
   eta_min_days: number | null;
   eta_max_days: number | null;
   courier_tracking_number?: string | null;
+  payments?: ShipmentPayment[];
   createdAt: string;
 }
 
@@ -215,6 +194,7 @@ export interface CustomerNotification {
   title: string | null;
   message: string;
   status: "UNREAD" | "READ";
+  metadata?: { shipmentId?: string } | null;
   createdAt: string;
 }
 
@@ -235,6 +215,7 @@ export interface CustomerDashboardSummary {
   on_the_move: number;
   awaiting_drop_off: number;
   awaiting_pickup: number;
+  awaiting_payment: number;
   delivered_this_year: number;
   spent_this_month_minor: number;
   open_shipments: CustomerShipment[];

@@ -6,7 +6,7 @@ import { useGetData } from "@/hooks/use-get-data";
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { PaginatedResponse } from "@/types/admin";
-import type { CustomerDashboardSummary, CustomerShipment, Wallet } from "@/types/customer";
+import type { CustomerDashboardSummary, CustomerShipment } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { format } from "date-fns";
 import { Calculator, PackagePlus } from "lucide-react";
@@ -14,10 +14,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ActiveShipmentCard } from "./_components/active-shipment-card";
 import { OfficeCard, TrackCard, VerificationNote } from "./_components/overview-side-cards";
+import { PaymentInfoCard } from "./_components/payment-info-card";
 import { RecentShipmentsCard } from "./_components/recent-shipments-card";
 import { SummaryStats } from "./_components/summary-stats";
 import { SurveyPromptCard } from "./_components/survey-prompt-card";
-import { WalletCard } from "./_components/wallet-card";
 
 const greetingFor = function (hour: number) {
   if (hour < 12) return "Good morning";
@@ -45,8 +45,6 @@ export default function CustomerOverviewPage() {
 
   const { data: summaryData, isFetching: isFetchingSummary } = useGetData<APIResponse<CustomerDashboardSummary>>({ url: API_ENDPOINTS.customer.dashboard.summary, staleTime: 60 * 1000 });
   const summary = summaryData?.data;
-
-  const { data: walletData } = useGetData<APIResponse<Wallet>>({ url: API_ENDPOINTS.customer.wallet.balance });
 
   const { data: shipmentsData, isFetching: isFetchingShipments } = useGetData<PaginatedResponse<CustomerShipment>>({
     url: API_ENDPOINTS.customer.shipments.list("?page=1&limit=5"),
@@ -81,7 +79,7 @@ export default function CustomerOverviewPage() {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
         <ActiveShipmentCard shipments={summary?.open_shipments ?? []} isLoading={isFetchingSummary} />
-        <WalletCard wallet={walletData?.data} />
+        <PaymentInfoCard summary={summary} />
       </div>
 
       <div className="mt-5">

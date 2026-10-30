@@ -25,9 +25,6 @@ export const API_ENDPOINTS = {
       list: (query = "") => `/admin/users${query}`,
       detail: (userId: string) => `/admin/users/${userId}`,
       updateStatus: (userId: string) => `/admin/users/${userId}/status`,
-      wallet: (userId: string) => `/admin/users/${userId}/wallet`,
-      walletTransactions: (userId: string) => `/admin/users/${userId}/wallet/transactions`,
-      walletAdjust: (userId: string) => `/admin/users/${userId}/wallet/adjust`,
     },
 
     shipments: {
@@ -37,6 +34,7 @@ export const API_ENDPOINTS = {
       edit: (shipmentId: string) => `/admin/shipments/${shipmentId}`,
       attachSenderId: (shipmentId: string) => `/admin/shipments/${shipmentId}/sender-id`,
       retryCourierPurchase: (shipmentId: string) => `/admin/shipments/${shipmentId}/courier-purchase`,
+      reviewPayment: (shipmentId: string, paymentId: string) => `/admin/shipments/${shipmentId}/payments/${paymentId}/review`,
     },
 
     kyc: {
@@ -45,9 +43,10 @@ export const API_ENDPOINTS = {
       review: (submissionId: string) => `/admin/kyc/${submissionId}/review`,
     },
 
-    withdrawals: {
-      list: (query = "") => `/admin/withdrawals${query}`,
-      decide: (withdrawalId: string) => `/admin/withdrawals/${withdrawalId}/decide`,
+    // Super-admin-only ledger of every bank-transfer payment and who approved it.
+    payments: {
+      list: (query = "") => `/admin/payments${query}`,
+      markRefunded: (paymentId: string) => `/admin/payments/${paymentId}/refund`,
     },
 
     // S12 — super-admin-only admin management (server lands with that batch)
@@ -91,17 +90,10 @@ export const API_ENDPOINTS = {
       tracking: (shipmentId: string) => `/customer/shipments/${shipmentId}/tracking`,
       trackByReference: (reference: string) => `/customer/shipments/track/${reference}`,
       cancel: (shipmentId: string) => `/customer/shipments/${shipmentId}/cancel`,
-      pay: (shipmentId: string) => `/customer/shipments/${shipmentId}/pay`,
+      paymentProof: (shipmentId: string) => `/customer/shipments/${shipmentId}/payment-proof`,
     },
-    wallet: {
-      balance: "/customer/wallet",
-      transactions: "/customer/wallet/transactions",
-      fundingAccount: "/customer/wallet/virtual-account",
-      sync: "/customer/wallet/sync",
-      banks: "/customer/wallet/banks",
-      resolveAccount: "/customer/wallet/resolve-account",
-      withdrawals: "/customer/wallet/withdrawals",
-      withdrawalsSync: "/customer/wallet/withdrawals/sync",
+    payments: {
+      account: "/customer/payments/account",
     },
     kyc: {
       status: "/customer/kyc",

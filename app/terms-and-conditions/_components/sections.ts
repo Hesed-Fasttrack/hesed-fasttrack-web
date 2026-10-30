@@ -22,7 +22,7 @@ export const TERMS_SECTIONS: LegalSection[] = [
   {
     heading: "Bookings, pickup and drop-off",
     bullets: [
-      "Courier pickup bookings are paid from your wallet at the time of booking.",
+      "Courier pickup bookings are paid by bank transfer after booking. Pickup is scheduled once we confirm your payment.",
       "Drop-off bookings are paid after our office receives and verifies your parcel. If the verified weight or dimensions differ from what you declared, the price may be adjusted before payment.",
       "You must declare parcel contents truthfully. Misdeclared shipments may be delayed, returned or handed to authorities.",
     ],
@@ -40,12 +40,12 @@ export const TERMS_SECTIONS: LegalSection[] = [
     ],
   },
   {
-    heading: "Wallet, payments and refunds",
+    heading: "Payments and refunds",
     bullets: [
-      "Your wallet is funded by bank transfer to your dedicated account number. Wallet balances are not interest-bearing.",
-      "Shipments cancelled before pickup are refunded in full to your wallet.",
-      "Wallet withdrawals are paid to a verified bank account in your name and may take up to two business days.",
-      "Fees charged by payment providers for funding may be passed on at the prevailing rate.",
+      "Shipments are paid by direct bank transfer to the company account shown in the app. You must upload the transfer receipt, and a shipment counts as paid only once we confirm the money has arrived.",
+      "Use your shipment reference as the transfer narration. We may reject a receipt we cannot match to a transfer, and you will be asked to upload a new one.",
+      "Unpaid shipments can be cancelled at no cost. Paid shipments cancelled before pickup are refunded in full by bank transfer to the account you paid from.",
+      "Bank charges on your side of the transfer are your responsibility.",
     ],
   },
   {
@@ -60,7 +60,7 @@ export const TERMS_SECTIONS: LegalSection[] = [
   {
     heading: "Account deletion",
     paragraphs: [
-      "You may delete your account at any time from the app's settings. Deletion is permanent and removes your profile, addresses, wallet history and documents, subject to records we must keep by law. Any wallet balance should be withdrawn before deletion.",
+      "You may delete your account at any time from the app's settings. Deletion is permanent and removes your profile, addresses, shipment history and documents, subject to records we must keep by law.",
     ],
   },
   {

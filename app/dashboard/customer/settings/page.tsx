@@ -123,7 +123,7 @@ export default function CustomerSettingsPage() {
             </span>
             <div>
               <p className="text-[15px] font-bold tracking-tight text-danger">Danger zone</p>
-              <p className="mt-0.5 text-[12.5px] text-foreground-muted">Deleting your account is permanent. Withdraw any wallet balance first.</p>
+              <p className="mt-0.5 text-[12.5px] text-foreground-muted">Deleting your account is permanent and cannot be undone.</p>
             </div>
           </div>
           <Button variant="destructive" className="h-10 shrink-0 rounded-xl px-5" onClick={() => setIsDeleteOpen(true)}>
@@ -137,7 +137,7 @@ export default function CustomerSettingsPage() {
         onOpenChange={isOpen => !isOpen && setIsDeleteOpen(false)}
         title="Delete your account?"
         icon={TriangleAlert} tone="danger"
-        description="This permanently removes your profile, addresses, wallet history and documents. It cannot be undone."
+        description="This permanently removes your profile, addresses, shipment history and documents. It cannot be undone."
         isSubmitting={isDeleting}
         dialogFooter={
           <>

@@ -124,7 +124,7 @@ export const KycStatusBanner = function ({ submission }: { submission: CustomerK
         </div>
         <p className="mt-1 text-[13px] text-foreground-muted">
           {submission.status === "APPROVED"
-            ? "You're verified. You can pay for shipments and withdraw from your wallet."
+            ? "You're verified. You can pay for shipments."
             : submission.status === "PENDING"
               ? "Your documents are with our team. This usually takes less than a business day."
               : "One or more documents were rejected. Fix the issues below and resubmit."}

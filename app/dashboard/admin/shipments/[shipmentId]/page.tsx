@@ -17,6 +17,7 @@ import { ArrowRight, Box, Loader2, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { EditShipmentDialog } from "./_components/edit-shipment-dialog";
+import { PaymentReviewCard } from "./_components/payment-review-card";
 import { TransitionDialog } from "./_components/transition-dialog";
 
 const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
@@ -216,7 +217,7 @@ export default function AdminShipmentDetailPage() {
                 </div>
               </div>
             ) : (
-              <p className="p-5 text-[13px] text-foreground-muted sm:p-5.5">{shipment.payment_status === "PAID" ? "Dispatch pending…" : "Dispatches once the shipment is paid."}</p>
+              <p className="p-5 text-[13px] text-foreground-muted sm:p-5.5">{shipment.payment_status === "PAID" ? "Dispatch pending…" : "Dispatches once the payment is approved."}</p>
             )}
           </SectionCard>
         </div>
@@ -231,6 +232,8 @@ export default function AdminShipmentDetailPage() {
               <StatusBadge label={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off" : "Courier pickup"} className="bg-surface-muted text-foreground-muted" />
             </div>
           </section>
+
+          <PaymentReviewCard shipment={shipment} />
 
           <SectionCard title="Timeline" description="Oldest first">
             {shipment.events.length === 0 ? (

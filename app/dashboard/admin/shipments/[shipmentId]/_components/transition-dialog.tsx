@@ -38,7 +38,7 @@ export const TransitionDialog = function ({ shipmentId, currentStatus, open, onC
       onOpenChange={isOpen => !isOpen && onClose()}
       title="Update shipment status"
       icon={Truck}
-      description="The status machine validates the move, records the event, refunds cancelled paid shipments and notifies the customer."
+      description="The status machine validates the move, records the event, flags a refund on cancelled paid shipments and notifies the customer."
       isSubmitting={isPending}
       dialogFooter={
         <>

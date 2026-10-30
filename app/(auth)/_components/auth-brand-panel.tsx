@@ -1,7 +1,7 @@
 "use client";
 
 import { SITE } from "@/app/_lib/site";
-import { Bell, Calculator, Landmark, MapPin, Plane, Wallet, type LucideIcon } from "lucide-react";
+import { Bell, Calculator, Landmark, MapPin, Plane, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
@@ -18,7 +18,7 @@ const SIGNIN: PanelCopy = {
   points: [
     { icon: Plane, label: "Air and sea freight" },
     { icon: MapPin, label: "Pickup or drop-off" },
-    { icon: Wallet, label: "Pay from your wallet" },
+    { icon: Landmark, label: "Pay by simple bank transfer" },
   ],
   showShipment: true,
 };
@@ -29,13 +29,13 @@ const PANELS: Record<string, PanelCopy> = {
     description: "Create an account to get live quotes in naira, book a pickup or drop-off, and follow every step to the doorstep.",
     points: [
       { icon: Calculator, label: "Instant quotes for air and sea" },
-      { icon: Landmark, label: "Your own account number for funding" },
+      { icon: Landmark, label: "Pay by bank transfer, no card needed" },
       { icon: Bell, label: "Updates at every handover" },
     ],
   },
   "/auth/verify-email": {
     title: "One last step.",
-    description: "Confirming your email keeps your account and wallet safe. It takes a few seconds.",
+    description: "Confirming your email keeps your account safe. It takes a few seconds.",
   },
   "/auth/forgot-password": {
     title: "Locked out? We'll get you back in.",

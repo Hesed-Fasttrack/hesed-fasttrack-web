@@ -1,10 +1,9 @@
 import { SectionCard } from "@/components/shared/section-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatNaira } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { AdminQueues } from "@/types/admin";
 import { formatDistanceToNowStrict } from "date-fns";
-import { Banknote, ChevronRight, IdCard, PackageOpen, TriangleAlert, type LucideIcon } from "lucide-react";
+import { ChevronRight, IdCard, Landmark, PackageOpen, TriangleAlert, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 interface Row {
@@ -23,9 +22,7 @@ export const AttentionCard = function ({ queues }: { queues: AdminQueues | undef
     ? [
         { title: "Drop-offs to confirm", detail: waitingFor(queues.drop_offs.oldest_at), count: queues.drop_offs.count, href: "/dashboard/admin/shipments?status=PENDING_DROP_OFF", icon: PackageOpen, tone: "bg-amber/10 text-amber" },
         { title: "KYC to review", detail: waitingFor(queues.kyc.oldest_at), count: queues.kyc.count, href: "/dashboard/admin/kyc", icon: IdCard, tone: "bg-royal/10 text-royal" },
-        ...(queues.withdrawals
-          ? [{ title: "Withdrawals pending", detail: queues.withdrawals.count ? `${formatNaira(queues.withdrawals.total_minor)} total` : "Nothing waiting", count: queues.withdrawals.count, href: "/dashboard/admin/withdrawals", icon: Banknote, tone: "bg-brand-muted text-brand" }]
-          : []),
+        { title: "Payments to confirm", detail: waitingFor(queues.payments.oldest_at), count: queues.payments.count, href: "/dashboard/admin/shipments?payment_status=AWAITING_CONFIRMATION", icon: Landmark, tone: "bg-brand-muted text-brand" },
         {
           title: "Courier dispatch failed",
           detail: queues.courier_failures.latest ? `Latest: ${queues.courier_failures.latest.reference}` : "All paid shipments dispatched",

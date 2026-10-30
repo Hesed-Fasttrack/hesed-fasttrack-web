@@ -22,7 +22,7 @@ export const TeamActivityCard = function () {
           ))}
         </div>
       ) : activities.length === 0 ? (
-        <EmptyState icon={History} title="No activity yet" message="Admin actions on shipments, KYC and wallets show up here." compact />
+        <EmptyState icon={History} title="No activity yet" message="Admin actions on shipments, KYC and payments show up here." compact />
       ) : (
         <ol className="px-5 py-1.5 sm:px-5.5">
           {activities.map((activity, index) => {

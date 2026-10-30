@@ -13,14 +13,13 @@ import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatDateTime, formatNaira } from "@/lib/format";
-import { ACCOUNT_STATUS, KYC_STATUS } from "@/lib/statuses";
-import { cn } from "@/lib/utils";
-import { displayName, type AdminUserDetail, type PaginatedResponse, type WalletTransaction } from "@/types/admin";
+import { ACCOUNT_STATUS, KYC_STATUS, PAYMENT_PROOF_STATUS } from "@/lib/statuses";
+import { displayName, type AdminPaymentRow, type AdminUserDetail, type PaginatedResponse } from "@/types/admin";
 import type { APIResponse } from "@/types/response";
 import { ReceiptText } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { WalletAdjustDialog } from "./_components/wallet-adjust-dialog";
 
 const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -34,16 +33,15 @@ const InfoRow = function ({ label, value }: { label: string; value: React.ReactN
 export default function AdminUserDetailPage() {
   const { userId = "" } = useParams<{ userId: string }>();
   const [isConfirmingStatus, setIsConfirmingStatus] = useState(false);
-  const [isAdjustOpen, setIsAdjustOpen] = useState(false);
 
   const { data, isFetching } = useGetData<APIResponse<AdminUserDetail>>({ url: API_ENDPOINTS.admin.users.detail(userId) });
   const user = data?.data;
 
-  const { data: transactionsData, isFetching: isFetchingTransactions } = useGetData<PaginatedResponse<WalletTransaction>>({
-    url: API_ENDPOINTS.admin.users.walletTransactions(userId),
+  const { data: paymentsData, isFetching: isFetchingPayments } = useGetData<PaginatedResponse<AdminPaymentRow>>({
+    url: API_ENDPOINTS.admin.payments.list(`?user_id=${userId}&limit=20`),
     shouldFetch: !!user,
   });
-  const transactions = transactionsData?.data ?? [];
+  const payments = paymentsData?.data ?? [];
 
   const isSuspended = user?.account_status === "SUSPENDED";
 
@@ -96,17 +94,6 @@ export default function AdminUserDetailPage() {
         </SectionCard>
 
         <div className="flex min-w-0 flex-col gap-5">
-          <section className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-[13px] font-medium text-foreground-muted">Wallet balance</p>
-              <Button variant="outline" size="sm" className="rounded-lg" onClick={() => setIsAdjustOpen(true)}>
-                Adjust
-              </Button>
-            </div>
-            <p className="mt-1.5 text-[28px] font-extrabold tracking-tight text-foreground tabular-nums">{formatNaira(user.wallet?.available_minor ?? 0)}</p>
-            <p className="mt-0.5 text-[12.5px] text-foreground-muted">Available balance</p>
-          </section>
-
           <SectionCard title="KYC" action={kycStatus ? <StatusBadge label={kycStatus.label} className={kycStatus.className} /> : undefined}>
             {user.kyc ? (
               <div className="divide-y divide-line px-5 sm:px-5.5">
@@ -120,35 +107,41 @@ export default function AdminUserDetailPage() {
         </div>
       </div>
 
-      <TableCard title="Wallet transactions" className="mt-5">
+      <TableCard title="Payments" className="mt-5">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Type</TableHead>
+              <TableHead>Shipment</TableHead>
               <TableHead className="text-right">Amount</TableHead>
-              <TableHead>Reference</TableHead>
-              <TableHead>Narration</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Reviewed by</TableHead>
+              <TableHead>Submitted</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isFetchingTransactions && transactions.length === 0 ? (
+            {isFetchingPayments && payments.length === 0 ? (
               <TableSkeletonRows columns={5} />
-            ) : transactions.length === 0 ? (
-              <TableEmptyRow columns={5} icon={ReceiptText} title="No transactions yet" message="Wallet funding, payments and refunds show up here." compact />
+            ) : payments.length === 0 ? (
+              <TableEmptyRow columns={5} icon={ReceiptText} title="No payments yet" message="Bank-transfer receipts this customer uploads show up here." compact />
             ) : (
-              transactions.map(transaction => (
-                <TableRow key={transaction.id}>
-                  <TableCell className="font-medium capitalize">{transaction.type.toLowerCase().replaceAll("_", " ")}</TableCell>
-                  <TableCell className={cn("text-right font-semibold tabular-nums", transaction.amount_minor > 0 ? "text-emerald" : "text-danger")}>
-                    {transaction.amount_minor > 0 ? "+" : ""}
-                    {formatNaira(transaction.amount_minor)}
-                  </TableCell>
-                  <TableCell className="font-mono text-[12.5px]">{transaction.reference}</TableCell>
-                  <TableCell className="max-w-56 truncate text-foreground-muted">{transaction.narration ?? "-"}</TableCell>
-                  <TableCell className="text-foreground-muted">{formatDateTime(transaction.createdAt)}</TableCell>
-                </TableRow>
-              ))
+              payments.map(payment => {
+                const status = PAYMENT_PROOF_STATUS[payment.status];
+                return (
+                  <TableRow key={payment.id}>
+                    <TableCell>
+                      <Link href={`/dashboard/admin/shipments/${payment.shipment.id}`} className="font-mono text-[12.5px] font-medium text-brand hover:underline">
+                        {payment.shipment.reference}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-right font-semibold tabular-nums">{formatNaira(payment.amount_minor)}</TableCell>
+                    <TableCell>
+                      <StatusBadge label={status.label} className={status.className} />
+                    </TableCell>
+                    <TableCell className="text-foreground-muted">{payment.reviewedBy ? displayName(payment.reviewedBy) : "-"}</TableCell>
+                    <TableCell className="text-foreground-muted">{formatDateTime(payment.createdAt)}</TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
@@ -165,7 +158,6 @@ export default function AdminUserDetailPage() {
         onCancel={() => setIsConfirmingStatus(false)}
       />
 
-      <WalletAdjustDialog userId={userId} open={isAdjustOpen} onClose={() => setIsAdjustOpen(false)} />
     </div>
   );
 }

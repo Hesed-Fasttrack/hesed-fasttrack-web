@@ -7,21 +7,20 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn } from "@/lib/utils";
 import type { CustomerNotification, NotificationType } from "@/types/customer";
 import { formatDistanceToNowStrict } from "date-fns";
-import { AlertTriangle, Bell, BellRing, CheckCheck, CircleCheck, MessageCircle, ShieldCheck, Tag, Truck, Wallet, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Bell, BellRing, CheckCheck, CircleCheck, Landmark, MessageCircle, ShieldCheck, Tag, Truck, type LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const TYPE_ROUTES: Partial<Record<NotificationType, string>> = {
   SHIPMENT_STATUS: "/dashboard/customer/shipments",
-  PAYMENT: "/dashboard/customer/wallet",
-  WALLET: "/dashboard/customer/wallet",
+  PAYMENT: "/dashboard/customer/shipments",
   KYC: "/dashboard/customer/kyc",
 };
 
 const TYPE_LOOK: Record<NotificationType, { icon: LucideIcon; tile: string }> = {
   SHIPMENT_STATUS: { icon: Truck, tile: "bg-royal/10 text-royal" },
-  PAYMENT: { icon: Wallet, tile: "bg-emerald/10 text-emerald" },
-  WALLET: { icon: Wallet, tile: "bg-emerald/10 text-emerald" },
+  PAYMENT: { icon: Landmark, tile: "bg-emerald/10 text-emerald" },
+  WALLET: { icon: Landmark, tile: "bg-emerald/10 text-emerald" },
   KYC: { icon: ShieldCheck, tile: "bg-brand-muted text-brand" },
   SUCCESS: { icon: CircleCheck, tile: "bg-emerald/10 text-emerald" },
   WARNING: { icon: AlertTriangle, tile: "bg-amber/10 text-amber" },
@@ -65,7 +64,8 @@ export const NotificationsBell = function () {
     if (notification.status === "UNREAD") markRead({ id: notification.id });
     setIsOpen(false);
 
-    const route = TYPE_ROUTES[notification.type];
+    const shipmentId = notification.metadata?.shipmentId;
+    const route = (notification.type === "SHIPMENT_STATUS" || notification.type === "PAYMENT") && shipmentId ? `/dashboard/customer/shipments/${shipmentId}` : TYPE_ROUTES[notification.type];
     if (route) router.push(route);
   };
 
@@ -95,7 +95,7 @@ export const NotificationsBell = function () {
               <BellRing className="size-5 text-brand" />
             </span>
             <p className="mt-3.5 text-[14px] font-bold tracking-tight text-foreground">You&apos;re all caught up</p>
-            <p className="mt-1 max-w-64 text-[12.5px] leading-relaxed text-foreground-muted">Shipment, wallet and verification updates land here.</p>
+            <p className="mt-1 max-w-64 text-[12.5px] leading-relaxed text-foreground-muted">Shipment, payment and verification updates land here.</p>
           </div>
         ) : (
           <ul className="max-h-[min(420px,60dvh)] divide-y divide-line overflow-y-auto">

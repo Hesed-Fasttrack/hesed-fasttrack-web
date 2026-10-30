@@ -16,7 +16,7 @@ export default function CustomerKycPage() {
 
   return (
     <div>
-      <PageHeader title="Identity verification" description="Verify once to pay for shipments and withdraw from your wallet." />
+      <PageHeader title="Identity verification" description="Verify once to pay for shipments." />
 
       {isFetching && !data ? (
         <Skeleton className="h-72 max-w-2xl rounded-2xl" />
