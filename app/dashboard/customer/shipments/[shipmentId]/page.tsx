@@ -76,12 +76,9 @@ export default function CustomerShipmentDetailPage() {
 
   const { data: kycData } = useGetData<APIResponse<CustomerKycSubmission | null>>({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: isPayable });
 
-  const refetchKeys = [[API_ENDPOINTS.customer.shipments.list("?page=1&limit=10")], [trackingUrl], [API_ENDPOINTS.customer.dashboard.summary]];
-
   const { mutate: cancelShipment, isPending: isCancelling } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.customer.shipments.cancel(shipmentId),
     onSuccessMessage: "Shipment cancelled",
-    additionalQueryKeys: refetchKeys,
     onSuccess: () => setIsConfirmingCancel(false),
   });
 
@@ -253,7 +250,7 @@ export default function CustomerShipmentDetailPage() {
         onCancel={() => setIsConfirmingCancel(false)}
       />
 
-      <PaymentDialog shipment={shipment} open={isPaying} onClose={() => setIsPaying(false)} refetchKeys={refetchKeys} />
+      <PaymentDialog shipment={shipment} open={isPaying} onClose={() => setIsPaying(false)} />
     </div>
   );
 }

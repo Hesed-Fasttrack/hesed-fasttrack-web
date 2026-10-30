@@ -38,7 +38,6 @@ export const EditShipmentDialog = function ({ shipment, open, onClose }: Props) 
     url: API_ENDPOINTS.admin.shipments.edit(shipment.id),
     method: "patch",
     onSuccessMessage: "Shipment updated. The price was re-derived and the customer notified",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipment.id)]],
     onSuccess: onClose,
   });
 

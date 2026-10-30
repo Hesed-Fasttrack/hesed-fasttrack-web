@@ -25,7 +25,6 @@ export const RejectPaymentDialog = function ({ shipmentId, paymentId, onClose }:
   const { mutate: review, isPending } = useSubmitData<{ decision: "REJECT"; reason: string }, unknown>({
     url: API_ENDPOINTS.admin.shipments.reviewPayment(shipmentId, paymentId ?? ""),
     onSuccessMessage: "Payment rejected. The customer has been asked for a new receipt",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)], [API_ENDPOINTS.admin.queues]],
     onSuccess: handleClose,
   });
 

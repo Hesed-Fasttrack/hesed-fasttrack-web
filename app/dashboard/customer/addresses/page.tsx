@@ -29,7 +29,6 @@ export default function CustomerAddressesPage() {
     method: "delete",
     getBody: () => undefined,
     onSuccessMessage: "Address deleted",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.addresses.list]],
     onSuccess: () => setDeleting(null),
   });
 
@@ -37,7 +36,6 @@ export default function CustomerAddressesPage() {
     url: variables => API_ENDPOINTS.customer.addresses.setDefault(variables.id),
     getBody: () => ({}),
     onSuccessMessage: "Default address updated",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.addresses.list]],
   });
 
   const openCreate = function () {

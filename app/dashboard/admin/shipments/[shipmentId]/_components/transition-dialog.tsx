@@ -24,7 +24,6 @@ export const TransitionDialog = function ({ shipmentId, currentStatus, open, onC
   const { mutate: transition, isPending } = useSubmitData<{ status: string; note?: string }, unknown>({
     url: API_ENDPOINTS.admin.shipments.transition(shipmentId),
     onSuccessMessage: "Shipment status updated",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)]],
     onSuccess: () => {
       setStatus("");
       setNote("");

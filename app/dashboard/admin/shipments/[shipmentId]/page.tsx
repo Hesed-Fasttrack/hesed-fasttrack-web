@@ -61,13 +61,11 @@ export default function AdminShipmentDetailPage() {
   const { mutate: retryDispatch, isPending: isRetrying } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.admin.shipments.retryCourierPurchase(shipmentId),
     onSuccessMessage: "Shipment dispatched to the courier",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)]],
   });
 
   const { mutate: attachSenderId, isPending: isAttachingSenderId } = useSubmitData<FormData, unknown>({
     url: API_ENDPOINTS.admin.shipments.attachSenderId(shipmentId),
     onSuccessMessage: "Sender ID attached",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipmentId)]],
   });
 
   const handleSenderIdPick = function (event: React.ChangeEvent<HTMLInputElement>) {

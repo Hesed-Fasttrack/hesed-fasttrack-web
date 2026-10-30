@@ -99,7 +99,6 @@ export const AddressFormDialog = function ({ open, address, onClose, onCreated }
     url: isEditing ? API_ENDPOINTS.customer.addresses.update(address.id) : API_ENDPOINTS.customer.addresses.create,
     method: isEditing ? "put" : "post",
     onSuccessMessage: isEditing ? "Address updated" : "Address saved",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.addresses.list]],
     onSuccess: response => {
       if (!isEditing && response?.data) onCreated?.(response.data);
       onClose();

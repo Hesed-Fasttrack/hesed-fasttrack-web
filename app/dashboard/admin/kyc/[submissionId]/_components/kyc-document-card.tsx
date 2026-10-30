@@ -29,7 +29,6 @@ export const KycDocumentCard = function ({ submissionId, document, title, imageU
   const { mutate: review, isPending } = useSubmitData<{ identity?: object; address?: object }, unknown>({
     url: API_ENDPOINTS.admin.kyc.review(submissionId),
     onSuccessMessage: "Decision recorded",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.kyc.detail(submissionId)], [API_ENDPOINTS.admin.kyc.list("?page=1&limit=10&status=PENDING")]],
     onSuccess: () => {
       setIsRejectOpen(false);
       setReason("");

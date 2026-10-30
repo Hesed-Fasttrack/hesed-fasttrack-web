@@ -50,14 +50,12 @@ export const NotificationsBell = function () {
     method: "patch",
     getBody: () => undefined,
     silent: true,
-    additionalQueryKeys: [[LIST_URL]],
   });
 
   const { mutate: markAllRead, isPending: isMarkingAll } = useSubmitData<Record<string, never>, unknown>({
     url: API_ENDPOINTS.customer.notifications.readAll,
     method: "patch",
     silent: true,
-    additionalQueryKeys: [[LIST_URL]],
   });
 
   const handleOpen = function (notification: CustomerNotification) {

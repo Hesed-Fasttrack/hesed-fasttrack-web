@@ -12,11 +12,10 @@ import { useState } from "react";
 
 interface Props {
   payment: AdminPaymentRow | null;
-  refetchUrl: string;
   onClose: () => void;
 }
 
-export const MarkRefundedDialog = function ({ payment, refetchUrl, onClose }: Props) {
+export const MarkRefundedDialog = function ({ payment, onClose }: Props) {
   const [note, setNote] = useState("");
 
   const handleClose = function () {
@@ -27,7 +26,6 @@ export const MarkRefundedDialog = function ({ payment, refetchUrl, onClose }: Pr
   const { mutate: markRefunded, isPending } = useSubmitData<{ note: string }, unknown>({
     url: API_ENDPOINTS.admin.payments.markRefunded(payment?.id ?? ""),
     onSuccessMessage: "Refund recorded. The customer has been notified",
-    additionalQueryKeys: [[refetchUrl]],
     onSuccess: handleClose,
   });
 

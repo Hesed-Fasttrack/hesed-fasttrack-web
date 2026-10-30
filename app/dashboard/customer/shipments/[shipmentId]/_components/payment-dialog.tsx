@@ -44,10 +44,9 @@ interface Props {
   shipment: CustomerShipment;
   open: boolean;
   onClose: () => void;
-  refetchKeys: string[][];
 }
 
-export const PaymentDialog = function ({ shipment, open, onClose, refetchKeys }: Props) {
+export const PaymentDialog = function ({ shipment, open, onClose }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [payerName, setPayerName] = useState("");
 
@@ -63,7 +62,6 @@ export const PaymentDialog = function ({ shipment, open, onClose, refetchKeys }:
   const { mutate: submitProof, isPending } = useSubmitData<FormData, unknown>({
     url: API_ENDPOINTS.customer.shipments.paymentProof(shipment.id),
     onSuccessMessage: "Receipt sent. We'll confirm your payment shortly",
-    additionalQueryKeys: refetchKeys,
     onSuccess: handleClose,
   });
 

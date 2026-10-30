@@ -49,7 +49,6 @@ export default function AdminUserDetailPage() {
     url: API_ENDPOINTS.admin.users.updateStatus(userId),
     method: "patch",
     onSuccessMessage: isSuspended ? "Account reinstated" : "Account suspended",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.users.detail(userId)]],
     onSuccess: () => setIsConfirmingStatus(false),
   });
 

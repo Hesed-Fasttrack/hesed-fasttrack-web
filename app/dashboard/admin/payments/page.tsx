@@ -173,7 +173,7 @@ export default function AdminPaymentsPage() {
         </Table>
       </TableCard>
 
-      <MarkRefundedDialog payment={refunding} refetchUrl={listUrl} onClose={() => setRefunding(null)} />
+      <MarkRefundedDialog payment={refunding} onClose={() => setRefunding(null)} />
     </div>
   );
 }

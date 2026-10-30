@@ -48,7 +48,6 @@ export const PaymentReviewCard = function ({ shipment }: { shipment: AdminShipme
   const { mutate: approve, isPending: isApproving } = useSubmitData<{ decision: "APPROVE" }, unknown>({
     url: API_ENDPOINTS.admin.shipments.reviewPayment(shipment.id, approvingId ?? ""),
     onSuccessMessage: "Payment approved. The shipment is now paid",
-    additionalQueryKeys: [[API_ENDPOINTS.admin.shipments.detail(shipment.id)], [API_ENDPOINTS.admin.queues]],
     onSuccess: () => setApprovingId(null),
   });
 

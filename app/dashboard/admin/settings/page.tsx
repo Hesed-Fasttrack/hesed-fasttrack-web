@@ -72,7 +72,6 @@ export default function AdminSettingsPage() {
     url: API_ENDPOINTS.auth.updateProfile,
     method: "put",
     onSuccessMessage: "Profile updated",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
   });
 
   const { mutate: updatePassword, isPending: isSavingPassword } = useSubmitData<

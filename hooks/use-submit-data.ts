@@ -5,13 +5,11 @@ import { queryClient } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 
 interface UseSubmitDataOptions<TData, TResponse> {
   url: string | ((data: TData) => string);
   getBody?: (data: TData) => unknown;
   method?: "post" | "put" | "patch" | "delete";
-  additionalQueryKeys?: string[][];
   onSuccessMessage?: string;
   onLoadingMessage?: string;
   onError?: (error: AxiosError<{ message?: string }>) => void;
@@ -19,14 +17,14 @@ interface UseSubmitDataOptions<TData, TResponse> {
   redirectTo?: string;
   skipAuth?: boolean;
   silent?: boolean;
+  skipRefetch?: boolean;
 }
 
 export function useSubmitData<TData = unknown, TResponse = unknown>(options: UseSubmitDataOptions<TData, TResponse>) {
-  const { url, getBody, method = "post", additionalQueryKeys, onSuccessMessage = "Operation successful", onLoadingMessage, onError, onSuccess, redirectTo, skipAuth, silent } = options;
+  const { url, getBody, method = "post", onSuccessMessage = "Operation successful", onLoadingMessage, onError, onSuccess, redirectTo, skipAuth, silent, skipRefetch } = options;
 
   const router = useRouter();
   const handleErrors = useHandleErrors();
-  const lastResolvedUrl = useRef<string>("");
 
   const mutation = useMutation<TResponse, AxiosError<{ message?: string }>, TData>({
     mutationFn: async (data: TData) => {
@@ -39,8 +37,6 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(options: Use
       if (!resolvedUrl.trim()) {
         throw new Error("This action isn't wired up to an endpoint yet");
       }
-
-      lastResolvedUrl.current = resolvedUrl;
 
       const body = getBody ? getBody(data) : data;
 
@@ -55,11 +51,8 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(options: Use
     onSuccess: data => {
       if (!silent) showToast("success", onSuccessMessage);
 
-      queryClient.refetchQueries({ queryKey: [lastResolvedUrl.current] });
-
-      additionalQueryKeys?.forEach(key => {
-        queryClient.refetchQueries({ queryKey: key });
-      });
+      // A write can change data under any key (a booking changes paged lists and the summary): on-screen queries refetch now, the rest on their next mount.
+      if (!skipRefetch) queryClient.invalidateQueries();
 
       onSuccess?.(data);
 

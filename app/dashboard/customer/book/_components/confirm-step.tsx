@@ -44,7 +44,6 @@ export const ConfirmStep = function () {
   const { mutate: bookShipment, isPending: isBooking } = useSubmitData<Record<string, unknown> | FormData, APIResponse<CustomerShipment>>({
     url: API_ENDPOINTS.customer.shipments.create,
     onSuccessMessage: "Shipment booked",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.shipments.list()], [API_ENDPOINTS.customer.dashboard.summary]],
     onSuccess: response => {
       reset();
       router.push(response?.data?.id ? `/dashboard/customer/shipments/${response.data.id}` : "/dashboard/customer/shipments");

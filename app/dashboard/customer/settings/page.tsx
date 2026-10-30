@@ -62,7 +62,6 @@ export default function CustomerSettingsPage() {
     url: API_ENDPOINTS.auth.updateProfile,
     method: "put",
     onSuccessMessage: "Profile updated",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
   });
 
   const { mutate: updatePassword, isPending: isSavingPassword } = useSubmitData<{ current_password: string; new_password: string }, unknown>({

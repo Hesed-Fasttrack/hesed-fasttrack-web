@@ -58,7 +58,6 @@ export const KycForm = function ({ submission }: Props) {
   const { mutate: submitKyc, isPending } = useSubmitData<FormData, unknown>({
     url: API_ENDPOINTS.customer.kyc.submit,
     onSuccessMessage: "Documents submitted. We'll review them shortly",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.kyc.status]],
   });
 
   const handleSubmit = function () {

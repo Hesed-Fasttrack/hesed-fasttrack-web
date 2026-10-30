@@ -89,7 +89,6 @@ export default function AdminManagementPage() {
   >({
     url: API_ENDPOINTS.admin.admins.create,
     onSuccessMessage: "Admin created. Share their sign-in details securely",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => {
       reset();
       setIsCreateOpen(false);
@@ -106,7 +105,6 @@ export default function AdminManagementPage() {
     getBody: (variables) => ({ account_status: variables.account_status }),
     method: "patch",
     onSuccessMessage: isSuspending ? "Admin suspended" : "Admin reinstated",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setTogglingStatus(null),
   });
 
@@ -118,7 +116,6 @@ export default function AdminManagementPage() {
     method: "delete",
     getBody: () => undefined,
     onSuccessMessage: "Admin removed",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setRemoving(null),
   });
 

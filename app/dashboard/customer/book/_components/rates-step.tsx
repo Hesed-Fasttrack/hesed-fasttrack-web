@@ -19,6 +19,7 @@ export const RatesStep = function () {
   const { mutate: fetchQuotes, isPending } = useSubmitData<Record<string, unknown>, APIResponse<CourierQuote[]>>({
     url: API_ENDPOINTS.customer.quotes,
     silent: true,
+    skipRefetch: true,
     onSuccess: response => setQuotes(response.data),
   });
 

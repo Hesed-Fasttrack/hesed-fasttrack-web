@@ -40,7 +40,6 @@ export default function SurveyPage() {
   const { mutate: submitSurvey, isPending } = useSubmitData<Record<string, unknown>, unknown>({
     url: API_ENDPOINTS.customer.survey.submit,
     onSuccessMessage: "Thank you for your feedback!",
-    additionalQueryKeys: [[API_ENDPOINTS.customer.survey.status]],
     onSuccess: () => setIsDone(true),
   });
 
