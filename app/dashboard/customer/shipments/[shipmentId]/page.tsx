@@ -3,6 +3,7 @@
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { PageHeader } from "@/components/shared/page-header";
 import { SectionCard } from "@/components/shared/section-card";
+import { TrackingTimeline } from "@/components/shared/tracking-timeline";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,7 +14,13 @@ import { formatDate, formatDateTime, formatNaira } from "@/lib/format";
 import { showToast } from "@/lib/show-toast";
 import { PAYMENT_STATUS, SHIPMENT_STATUS } from "@/lib/statuses";
 import { cn } from "@/lib/utils";
-import type { CustomerKycSubmission, CustomerShipment, CustomerShipmentEvent, ShipmentAddressSnapshot } from "@/types/customer";
+import type { ShipmentCheckpoint } from "@/lib/tracking";
+import type {
+  CustomerKycSubmission,
+  CustomerShipment,
+  CustomerShipmentEvent,
+  ShipmentAddressSnapshot,
+} from "@/types/customer";
 import { SHIPMENT_PURPOSES } from "@/types/customer";
 import type { APIResponse } from "@/types/response";
 import { ArrowRight, Box, Copy, Landmark } from "lucide-react";
@@ -23,16 +30,30 @@ import { useState } from "react";
 import { PaymentCard } from "./_components/payment-card";
 import { PaymentDialog } from "./_components/payment-dialog";
 
-const InfoRow = function ({ label, value }: { label: string; value: React.ReactNode }) {
+const InfoRow = function ({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div className="flex justify-between gap-4 py-2.5 text-[13px]">
       <span className="shrink-0 text-foreground-muted">{label}</span>
-      <span className="min-w-0 text-right font-medium break-words text-foreground">{value}</span>
+      <span className="min-w-0 text-right font-medium break-words text-foreground">
+        {value}
+      </span>
     </div>
   );
 };
 
-const CopyButton = function ({ label, value }: { label: string; value: string }) {
+const CopyButton = function ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
   return (
     <button
       type="button"
@@ -48,12 +69,24 @@ const CopyButton = function ({ label, value }: { label: string; value: string })
   );
 };
 
-const AddressBlock = function ({ label, address, align = "left" }: { label: string; address: ShipmentAddressSnapshot; align?: "left" | "right" }) {
+const AddressBlock = function ({
+  label,
+  address,
+  align = "left",
+}: {
+  label: string;
+  address: ShipmentAddressSnapshot;
+  align?: "left" | "right";
+}) {
   return (
     <div className={cn("min-w-0", align === "right" && "sm:text-right")}>
       <p className="text-xs text-foreground-muted">{label}</p>
-      <p className="truncate text-xl font-bold tracking-tight text-foreground">{address.city}</p>
-      <p className="mt-1 text-[12.5px] text-foreground-muted">{address.contact_name}</p>
+      <p className="truncate text-xl font-bold tracking-tight text-foreground">
+        {address.city}
+      </p>
+      <p className="mt-1 text-[12.5px] text-foreground-muted">
+        {address.contact_name}
+      </p>
       <p className="text-[12.5px] text-foreground-muted">
         {address.line1}, {address.state}
       </p>
@@ -67,16 +100,33 @@ export default function CustomerShipmentDetailPage() {
   const [isPaying, setIsPaying] = useState(false);
 
   const trackingUrl = API_ENDPOINTS.customer.shipments.tracking(shipmentId);
-  const { data, isFetching } = useGetData<APIResponse<{ shipment: CustomerShipment; events: CustomerShipmentEvent[] }>>({ url: trackingUrl });
+  const { data, isFetching } = useGetData<
+    APIResponse<{
+      shipment: CustomerShipment;
+      events: CustomerShipmentEvent[];
+      checkpoints?: ShipmentCheckpoint[];
+    }>
+  >({ url: trackingUrl });
   const shipment = data?.data?.shipment;
   const events = data?.data?.events ?? [];
+  const checkpoints = data?.data?.checkpoints ?? [];
 
   // Pickups pay straight after booking; drop-offs once the office has verified the parcel.
-  const isPayable = !!shipment && shipment.payment_status === "UNPAID" && (shipment.fulfilment_type === "PICKUP" ? shipment.status === "PENDING_PICKUP" : shipment.status === "RECEIVED");
+  const isPayable =
+    !!shipment &&
+    shipment.payment_status === "UNPAID" &&
+    (shipment.fulfilment_type === "PICKUP"
+      ? shipment.status === "PENDING_PICKUP"
+      : shipment.status === "RECEIVED");
 
-  const { data: kycData } = useGetData<APIResponse<CustomerKycSubmission | null>>({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: isPayable });
+  const { data: kycData } = useGetData<
+    APIResponse<CustomerKycSubmission | null>
+  >({ url: API_ENDPOINTS.customer.kyc.status, shouldFetch: isPayable });
 
-  const { mutate: cancelShipment, isPending: isCancelling } = useSubmitData<Record<string, never>, unknown>({
+  const { mutate: cancelShipment, isPending: isCancelling } = useSubmitData<
+    Record<string, never>,
+    unknown
+  >({
     url: API_ENDPOINTS.customer.shipments.cancel(shipmentId),
     onSuccessMessage: "Shipment cancelled",
     onSuccess: () => setIsConfirmingCancel(false),
@@ -95,7 +145,10 @@ export default function CustomerShipmentDetailPage() {
 
   const status = SHIPMENT_STATUS[shipment.status];
   const paymentStatus = PAYMENT_STATUS[shipment.payment_status];
-  const canCancel = (shipment.status === "PENDING_PICKUP" || shipment.status === "PENDING_DROP_OFF") && shipment.payment_status === "UNPAID";
+  const canCancel =
+    (shipment.status === "PENDING_PICKUP" ||
+      shipment.status === "PENDING_DROP_OFF") &&
+    shipment.payment_status === "UNPAID";
   const isKycVerified = kycData?.data?.status === "APPROVED";
   const isKycPending = kycData?.data?.status === "PENDING";
 
@@ -107,7 +160,11 @@ export default function CustomerShipmentDetailPage() {
         description={`Booked ${formatDateTime(shipment.createdAt)}`}
         action={
           canCancel ? (
-            <Button variant="destructive" className="h-10 w-full rounded-xl px-4 sm:w-auto" onClick={() => setIsConfirmingCancel(true)}>
+            <Button
+              variant="destructive"
+              className="h-10 w-full rounded-xl px-4 sm:w-auto"
+              onClick={() => setIsConfirmingCancel(true)}
+            >
               Cancel shipment
             </Button>
           ) : undefined
@@ -121,7 +178,9 @@ export default function CustomerShipmentDetailPage() {
               <Landmark className="size-4.5" />
             </span>
             <p className="text-[13px] text-foreground">
-              {shipment.status === "RECEIVED" ? "We've received and verified your parcel. " : ""}
+              {shipment.status === "RECEIVED"
+                ? "We've received and verified your parcel. "
+                : ""}
               {isKycVerified
                 ? `Pay ${formatNaira(shipment.amount_minor)} by bank transfer and upload your receipt to ${shipment.fulfilment_type === "PICKUP" ? "schedule your pickup" : "start shipping"}.`
                 : isKycPending
@@ -130,7 +189,10 @@ export default function CustomerShipmentDetailPage() {
             </p>
           </div>
           {isKycVerified ? (
-            <Button className="h-10 shrink-0 rounded-xl px-4" onClick={() => setIsPaying(true)}>
+            <Button
+              className="h-10 shrink-0 rounded-xl px-4"
+              onClick={() => setIsPaying(true)}
+            >
               Pay now
             </Button>
           ) : (
@@ -145,13 +207,20 @@ export default function CustomerShipmentDetailPage() {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-5">
-          <SectionCard title="Route" description={`${shipment.courier_name} · ${shipment.service_name}`}>
+          <SectionCard
+            title="Route"
+            description={`${shipment.courier_name} · ${shipment.service_name}`}
+          >
             <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-5 sm:p-5.5">
               <AddressBlock label="From" address={shipment.origin} />
               <span className="hidden size-8 items-center justify-center rounded-full bg-brand-muted text-brand sm:flex">
                 <ArrowRight className="size-4" />
               </span>
-              <AddressBlock label="To" address={shipment.destination} align="right" />
+              <AddressBlock
+                label="To"
+                address={shipment.destination}
+                align="right"
+              />
             </div>
             <div className="divide-y divide-line border-t border-line px-5 sm:px-5.5">
               <InfoRow
@@ -168,19 +237,54 @@ export default function CustomerShipmentDetailPage() {
                   label="Tracking number"
                   value={
                     <span className="inline-flex items-center gap-1.5">
-                      <span className="font-mono">{shipment.courier_tracking_number}</span>
-                      <CopyButton label="Tracking number" value={shipment.courier_tracking_number} />
+                      <span className="font-mono">
+                        {shipment.courier_tracking_number}
+                      </span>
+                      <CopyButton
+                        label="Tracking number"
+                        value={shipment.courier_tracking_number}
+                      />
                     </span>
                   }
                 />
               )}
-              <InfoRow label="ETA" value={shipment.eta_min_days ? `${shipment.eta_min_days} to ${shipment.eta_max_days} business days` : "-"} />
-              <InfoRow label={shipment.fulfilment_type === "DROP_OFF" ? "Fulfilment" : "Pickup date"} value={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off at our office" : shipment.pickup_date ? formatDate(shipment.pickup_date) : "-"} />
-              <InfoRow label="Purpose" value={SHIPMENT_PURPOSES.find(entry => entry.value === shipment.purpose)?.label ?? shipment.purpose} />
+              <InfoRow
+                label="ETA"
+                value={
+                  shipment.eta_min_days
+                    ? `${shipment.eta_min_days} to ${shipment.eta_max_days} business days`
+                    : "-"
+                }
+              />
+              <InfoRow
+                label={
+                  shipment.fulfilment_type === "DROP_OFF"
+                    ? "Fulfilment"
+                    : "Pickup date"
+                }
+                value={
+                  shipment.fulfilment_type === "DROP_OFF"
+                    ? "Drop-off at our office"
+                    : shipment.pickup_date
+                      ? formatDate(shipment.pickup_date)
+                      : "-"
+                }
+              />
+              <InfoRow
+                label="Purpose"
+                value={
+                  SHIPMENT_PURPOSES.find(
+                    (entry) => entry.value === shipment.purpose,
+                  )?.label ?? shipment.purpose
+                }
+              />
             </div>
           </SectionCard>
 
-          <SectionCard title="Parcels" description={`${shipment.parcels.length} ${shipment.parcels.length === 1 ? "box" : "boxes"}`}>
+          <SectionCard
+            title="Parcels"
+            description={`${shipment.parcels.length} ${shipment.parcels.length === 1 ? "box" : "boxes"}`}
+          >
             <ul className="divide-y divide-line">
               {shipment.parcels.map((parcel, index) => (
                 <li key={index} className="flex gap-3 px-5 py-3.5 sm:px-5.5">
@@ -191,7 +295,11 @@ export default function CustomerShipmentDetailPage() {
                     <p className="font-semibold text-foreground tabular-nums">
                       {parcel.length_cm}×{parcel.width_cm}×{parcel.height_cm}cm
                     </p>
-                    <p className="text-foreground-muted">{parcel.items.map(item => `${item.quantity}× ${item.name}`).join(", ")}</p>
+                    <p className="text-foreground-muted">
+                      {parcel.items
+                        .map((item) => `${item.quantity}× ${item.name}`)
+                        .join(", ")}
+                    </p>
                   </div>
                 </li>
               ))}
@@ -201,39 +309,44 @@ export default function CustomerShipmentDetailPage() {
 
         <div className="flex min-w-0 flex-col gap-5">
           <section className="rounded-2xl border border-line bg-white p-5 sm:p-5.5">
-            <p className="text-[13px] font-medium text-foreground-muted">Shipment total</p>
-            <p className="mt-1.5 text-[28px] font-extrabold tracking-tight text-foreground tabular-nums">{formatNaira(shipment.amount_minor)}</p>
+            <p className="text-[13px] font-medium text-foreground-muted">
+              Shipment total
+            </p>
+            <p className="mt-1.5 text-[28px] font-extrabold tracking-tight text-foreground tabular-nums">
+              {formatNaira(shipment.amount_minor)}
+            </p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <StatusBadge label={status.label} className={status.className} />
-              <StatusBadge label={paymentStatus.label} className={paymentStatus.className} />
-              <StatusBadge label={shipment.fulfilment_type === "DROP_OFF" ? "Drop-off" : "Courier pickup"} className="bg-surface-muted text-foreground-muted" />
+              <StatusBadge
+                label={paymentStatus.label}
+                className={paymentStatus.className}
+              />
+              <StatusBadge
+                label={
+                  shipment.fulfilment_type === "DROP_OFF"
+                    ? "Drop-off"
+                    : "Courier pickup"
+                }
+                className="bg-surface-muted text-foreground-muted"
+              />
             </div>
           </section>
 
-          <PaymentCard shipment={shipment} isPayable={isPayable && isKycVerified} onPay={() => setIsPaying(true)} />
+          <PaymentCard
+            shipment={shipment}
+            isPayable={isPayable && isKycVerified}
+            onPay={() => setIsPaying(true)}
+          />
 
-          <SectionCard title="Tracking" description="Every update on this shipment">
-            {events.length === 0 ? (
-              <p className="p-5 text-[13px] text-foreground-muted sm:p-5.5">No updates yet. We&apos;ll post each step here.</p>
-            ) : (
-              <ol className="px-5 py-1.5 sm:px-5.5">
-                {events.map((event, index) => {
-                  const eventStatus = SHIPMENT_STATUS[event.to_status];
-                  const isLatest = index === events.length - 1;
-                  return (
-                    <li key={event.id} className="relative flex gap-3 py-3">
-                      {!isLatest && <span aria-hidden className="absolute top-7 -bottom-1 left-1.25 w-px bg-line" />}
-                      <span className={cn("mt-1 size-2.75 shrink-0 rounded-full", isLatest ? "bg-brand ring-4 ring-brand-muted" : "bg-line-strong")} />
-                      <div className="min-w-0">
-                        <p className="text-[13px] font-semibold text-foreground">{eventStatus?.label ?? event.to_status}</p>
-                        {event.note && <p className="mt-0.5 text-[13px] break-words text-foreground-muted">{event.note}</p>}
-                        <p className="mt-0.5 text-xs text-foreground-subtle">{formatDateTime(event.createdAt)}</p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            )}
+          <SectionCard
+            title="Tracking"
+            description="Every update on this shipment"
+          >
+            <TrackingTimeline
+              events={events}
+              checkpoints={checkpoints}
+              emptyMessage="No updates yet. We'll post each step here."
+            />
           </SectionCard>
         </div>
       </div>
@@ -250,7 +363,11 @@ export default function CustomerShipmentDetailPage() {
         onCancel={() => setIsConfirmingCancel(false)}
       />
 
-      <PaymentDialog shipment={shipment} open={isPaying} onClose={() => setIsPaying(false)} />
+      <PaymentDialog
+        shipment={shipment}
+        open={isPaying}
+        onClose={() => setIsPaying(false)}
+      />
     </div>
   );
 }

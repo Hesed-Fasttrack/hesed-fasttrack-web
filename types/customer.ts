@@ -1,4 +1,10 @@
-import type { KycStatus, PaymentProofStatus, ShipmentPaymentStatus, ShipmentStatus } from "@/lib/statuses";
+import type { ShipmentCheckpoint } from "@/lib/tracking";
+import type {
+  KycStatus,
+  PaymentProofStatus,
+  ShipmentPaymentStatus,
+  ShipmentStatus,
+} from "@/lib/statuses";
 
 export interface Address {
   id: string;
@@ -46,7 +52,8 @@ export interface CourierQuote {
   eta_days: { min: number; max: number };
 }
 
-export type ShipmentPurpose = "PERSONAL" | "COMMERCIAL" | "GIFT" | "DOCUMENTS" | "RETURN";
+export type ShipmentPurpose =
+  "PERSONAL" | "COMMERCIAL" | "GIFT" | "DOCUMENTS" | "RETURN";
 
 export type PackageType = "DOCUMENT" | "PACKAGE";
 export type FulfilmentType = "PICKUP" | "DROP_OFF";
@@ -150,16 +157,29 @@ export const SHIPMENT_PURPOSES: { value: ShipmentPurpose; label: string }[] = [
   { value: "DOCUMENTS", label: "Documents" },
 ];
 
-export const BOOKABLE_PURPOSES = SHIPMENT_PURPOSES.filter(entry => entry.value !== "DOCUMENTS");
+export const BOOKABLE_PURPOSES = SHIPMENT_PURPOSES.filter(
+  (entry) => entry.value !== "DOCUMENTS",
+);
 
 export const PACKAGE_TYPES: { value: PackageType; label: string }[] = [
   { value: "PACKAGE", label: "Package (physical goods)" },
   { value: "DOCUMENT", label: "Document (papers only)" },
 ];
 
-export type NotificationType = "INFO" | "SUCCESS" | "WARNING" | "ERROR" | "SHIPMENT_STATUS" | "PAYMENT" | "WALLET" | "KYC" | "PROMO" | "MESSAGE";
+export type NotificationType =
+  | "INFO"
+  | "SUCCESS"
+  | "WARNING"
+  | "ERROR"
+  | "SHIPMENT_STATUS"
+  | "PAYMENT"
+  | "WALLET"
+  | "KYC"
+  | "PROMO"
+  | "MESSAGE";
 
-export type SurveyFrequency = "FIRST_TIME" | "OCCASIONALLY" | "MONTHLY" | "WEEKLY";
+export type SurveyFrequency =
+  "FIRST_TIME" | "OCCASIONALLY" | "MONTHLY" | "WEEKLY";
 
 export const SURVEY_FREQUENCIES: { value: SurveyFrequency; label: string }[] = [
   { value: "FIRST_TIME", label: "This was my first shipment" },
@@ -177,7 +197,12 @@ export interface SurveyResponse {
   frequency: SurveyFrequency;
   improvements: string | null;
   createdAt: string;
-  user?: { id: string; first_name: string | null; last_name: string | null; email: string };
+  user?: {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    email: string;
+  };
 }
 
 export interface SurveySummary {
@@ -208,7 +233,13 @@ export interface PublicTracking {
   destination: { city: string | null; state: string | null };
   createdAt: string;
   delivered_at: string | null;
-  events: { id: string; to_status: ShipmentStatus; note: string | null; createdAt: string }[];
+  events: {
+    id: string;
+    to_status: ShipmentStatus;
+    note: string | null;
+    createdAt: string;
+  }[];
+  checkpoints?: ShipmentCheckpoint[];
 }
 
 export interface CustomerDashboardSummary {
